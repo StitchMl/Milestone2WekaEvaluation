@@ -20,7 +20,8 @@ public class Milestone2Runner {
     private static final String CONFIG_FILE = "datasets.txt";
 
     public static void main(String[] args) {
-        logger.info("Working directory: {}", System.getProperty("user.dir"));
+        String dir = System.getProperty("user.dir");
+        logger.info("Working directory: {}", dir);
 
         try {
             String[] datasetPaths = loadDatasetPaths();

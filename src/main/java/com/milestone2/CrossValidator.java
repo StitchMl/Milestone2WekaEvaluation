@@ -18,6 +18,8 @@ public class CrossValidator {
     private static final int FOLDS   = 10;
     private static final int REPEATS = 10;
 
+    private CrossValidator() {}
+
     public static CVResult runRepeatedCV(Classifier baseCls, Instances data) throws Exception {
         logger.info("Starting {}×{}-fold CV for {}", REPEATS, FOLDS,
                 baseCls.getClass().getSimpleName());
@@ -53,9 +55,6 @@ public class CrossValidator {
             sumA += MetricsCalculator.auc(eval);
             sumK += MetricsCalculator.kappa(eval);
             sumN += MetricsCalculator.npOfBX(eval, 20.0);
-
-            // 5) Free references and I invoke GC
-            System.gc();
 
             long freeMb  = Runtime.getRuntime().freeMemory()/(1024*1024);
             long totalMb = Runtime.getRuntime().totalMemory()/(1024*1024);

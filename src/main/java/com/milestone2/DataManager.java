@@ -4,7 +4,9 @@ import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
 public class DataManager {
-    /** Load a dataset from ARFF or CSV file */
+    private DataManager() {}
+
+    /** Load a dataset from an ARFF or CSV file */
     public static Instances loadDataset(String path) throws Exception {
         DataSource source = new DataSource(path);
         Instances data = source.getDataSet();

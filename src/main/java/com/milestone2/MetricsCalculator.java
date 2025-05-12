@@ -10,6 +10,7 @@ import java.util.Comparator;
 import weka.classifiers.evaluation.Prediction;
 
 public class MetricsCalculator {
+    private MetricsCalculator() {}
 
     /**
      * Calculate the percentage of true positives (TP) in the predictions.
