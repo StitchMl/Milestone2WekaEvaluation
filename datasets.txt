@@ -1,0 +1,3 @@
+# Enter paths to datasets here
+C:\Users\matte\IdeaProjects\MantiMetrics\output\avro_dataset.arff
+C:\Users\matte\IdeaProjects\MantiMetrics\output\bookkeeper_dataset.arff
