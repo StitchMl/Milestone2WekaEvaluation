@@ -22,7 +22,8 @@ public class Milestone2Runner {
     private static final String OUTPUT_CSV  = "results.csv";
 
     public static void main(String[] args) {
-        logger.info("Working directory: {}", System.getProperty("user.dir"));
+        String dir = System.getProperty("user.dir");
+        logger.info("Working directory: {}", dir);
 
         // Open the CSV in try-with-resources: it will be closed automatically
         try (PrintWriter csv = new PrintWriter(Files.newBufferedWriter(Paths.get(OUTPUT_CSV)))) {
