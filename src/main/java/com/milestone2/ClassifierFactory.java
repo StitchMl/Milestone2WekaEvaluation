@@ -8,9 +8,9 @@ import weka.classifiers.lazy.IBk;
 public class ClassifierFactory {
     public static Classifier createRandomForest() {
         RandomForest rf = new RandomForest();
-        rf.setNumIterations(10);          // only 10 trees to reduce memory
-        rf.setMaxDepth(5);                // maximum depth 5 → smaller trees
-        rf.setBagSizePercent(50);         // use only 50 per cent of the instances per tree
+        rf.setNumIterations(50);          // only 10 trees to reduce memory
+        rf.setMaxDepth(10);                // maximum depth 5 → smaller trees
+        rf.setBagSizePercent(50);         // use only 50% of the instances per tree
         return rf;
     }
 
