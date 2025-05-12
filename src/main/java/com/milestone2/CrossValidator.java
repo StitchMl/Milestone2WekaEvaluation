@@ -24,7 +24,11 @@ public class CrossValidator {
         logger.info("Starting {}×{}-fold CV for {}", REPEATS, FOLDS,
                 baseCls.getClass().getSimpleName());
 
-        double sumP=0, sumR=0, sumA=0, sumK=0, sumN=0;
+        double sumP=0;
+        double sumR=0;
+        double sumA=0;
+        double sumK=0;
+        double sumN=0;
         long maxMb = Runtime.getRuntime().maxMemory()/(1024*1024);
         logger.info("JVM max heap: {} MB", maxMb);
 
@@ -76,7 +80,11 @@ public class CrossValidator {
 
     /** Container for average classifier metrics */
     public static class CVResult {
-        public final double precision, recall, auc, kappa, npOfB20;
+        public final double precision;
+        public final double recall;
+        public final double auc;
+        public final double kappa;
+        public final double npOfB20;
         public CVResult(double p,double r,double a,double k,double n){
             this.precision=p; this.recall=r;
             this.auc=a; this.kappa=k;

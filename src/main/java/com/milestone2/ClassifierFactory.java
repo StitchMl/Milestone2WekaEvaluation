@@ -6,6 +6,8 @@ import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.lazy.IBk;
 
 public class ClassifierFactory {
+    private ClassifierFactory() {}
+
     public static Classifier createRandomForest() {
         RandomForest rf = new RandomForest();
         rf.setNumIterations(50);          // only 10 trees to reduce memory

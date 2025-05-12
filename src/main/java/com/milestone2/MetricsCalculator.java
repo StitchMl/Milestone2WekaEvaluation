@@ -49,10 +49,10 @@ public class MetricsCalculator {
     }
 
     /**
-     * NPofBX: percentage of defects found in the first X% of ordered instances
-     * by descending probability, normalized on X.
+     * NPofBX: percentage of defects found in the first percentage% of ordered instances
+     * by descending probability, normalized on percentage.
      */
-    public static double npOfBX(Evaluation eval, double X) {
+    public static double npOfBX(Evaluation eval, double percentage) {
         List<NominalPrediction> predictionsList = getNominalPredictions(eval);
         List<Double[]> list = new ArrayList<>();
         for (NominalPrediction np : predictionsList) {
@@ -61,8 +61,9 @@ public class MetricsCalculator {
         }
         // sort by decreasing probPos
         list.sort(Comparator.comparing((Double[] a) -> a[0]).reversed());
-        int cutoff = (int) Math.ceil(list.size() * X / 100.0);
-        int found = 0, totalPos = 0;
+        int cutoff = (int) Math.ceil(list.size() * percentage / 100.0);
+        int found = 0;
+        int totalPos = 0;
         for (Double[] p : list) {
             if (p[1] == 1.0) totalPos++;
         }
@@ -70,6 +71,6 @@ public class MetricsCalculator {
             if (list.get(i)[1] == 1.0) found++;
         }
         double pofBX = (double) found / totalPos * 100.0;
-        return pofBX / X;
+        return pofBX / percentage;
     }
 }
