@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.Locale;
 
 public class CsvResultWriter implements ResultWriter {
     private static final Logger logger = LoggerFactory.getLogger(CsvResultWriter.class);
@@ -24,9 +25,16 @@ public class CsvResultWriter implements ResultWriter {
 
     @Override
     public void writeResult(String dataset, String clsName, CVResult r) {
-        out.printf("%s,%s,%.4f,%.4f,%.4f,%.4f,%.4f%n",
-                escape(dataset), clsName,
-                r.precision, r.recall, r.auc, r.kappa, r.npOfB20);
+        // Usa Locale.US per avere il punto decimale
+        out.printf(Locale.US,
+                "%s,%s,%.4f,%.4f,%.4f,%.4f,%.4f%n",
+                escape(dataset),
+                clsName,
+                r.precision,
+                r.recall,
+                r.auc,
+                r.kappa,
+                r.npOfB20);
         out.flush();
     }
 
