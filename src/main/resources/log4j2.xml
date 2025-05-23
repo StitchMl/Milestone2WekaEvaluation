@@ -28,6 +28,9 @@
             <AppenderRef ref="Console"/>
         </Logger>
 
+        <Logger name="com.github.fommil.netlib" level="error" additivity="false"/>
+        <Logger name="com.github.fommil.jni" level="error" additivity="false"/>
+
         <!-- default logger -->
         <Root level="trace">
             <AppenderRef ref="Console"/>

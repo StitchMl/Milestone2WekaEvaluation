@@ -10,18 +10,53 @@
   <packaging>jar</packaging>
 
   <properties>
-    <!-- Versione di WEKA -->
-    <weka.version>3.8.0</weka.version>
-    <!-- Configurazione Java -->
+    <!-- Version of WEKA -->
+    <weka.version>3.9.6</weka.version>
+
+    <!-- Versione netlib-java -->
+    <netlib.version>1.1.2</netlib.version>
+
+    <!-- Java Configuration -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
   <dependencies>
-    <!-- Dipendenza WEKA Stable -->
+    <!-- Netlib-java main dependency -->
+    <dependency>
+      <groupId>com.github.fommil.netlib</groupId>
+      <artifactId>all</artifactId>
+      <version>${netlib.version}</version>
+      <type>pom</type>
+    </dependency>
+
+    <!-- Implementazione nativa per Windows -->
+    <dependency>
+      <groupId>com.github.fommil.netlib</groupId>
+      <artifactId>netlib-native_system-win-x86_64</artifactId>
+      <version>1.1</version>
+      <classifier>natives</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.fommil.netlib</groupId>
+      <artifactId>netlib-native_ref-win-x86_64</artifactId>
+      <version>1.1</version>
+      <classifier>natives</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sourceforge.f2j</groupId>
+      <artifactId>arpack_combined_all</artifactId>
+      <version>0.1</version>
+    </dependency>
+
+
+
+    <!-- WEKA Stable dependency -->
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
-      <artifactId>weka-stable</artifactId>
+      <artifactId>weka-dev</artifactId>
       <version>${weka.version}</version>
     </dependency>
 
@@ -31,6 +66,8 @@
       <artifactId>log4j-slf4j-impl</artifactId>
       <version>2.20.0</version>
     </dependency>
+
+    <!-- SLF4J API -->
     <dependency>
       <groupId>org.fusesource.jansi</groupId>
       <artifactId>jansi</artifactId>
@@ -40,7 +77,23 @@
 
   <build>
     <plugins>
-      <!-- Plugin per la compilazione Java -->
+      <!-- Plugin per eseguire la tua classe principale -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <mainClass>com.milestone2.runner.Milestone2Runner</mainClass>
+          <systemProperties>
+            <property>
+              <key>weka.packageManager.offline</key>
+              <value>true</value>
+            </property>
+          </systemProperties>
+        </configuration>
+      </plugin>
+
+      <!-- Java Compilation Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -50,7 +103,8 @@
           <target>${maven.compiler.target}</target>
         </configuration>
       </plugin>
-      <!-- (Opzionale) Plugin per creare un uber-jar -->
+
+      <!-- (Optional) Plugin for creating an uber-jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>

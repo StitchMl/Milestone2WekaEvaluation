@@ -1,0 +1,7 @@
+Dataset,Classifier,Precision,Recall,AUC,Kappa,NPofB20
+src\main\resources\datasets\avro_dataset.csv,RandomForest,1,0000,0,9389,1,0000,0,9677,5,0000
+src\main\resources\datasets\avro_dataset.csv,NaiveBayes,0,5849,0,9972,0,9975,0,7286,5,0000
+src\main\resources\datasets\avro_dataset.csv,IBk(k=5),1,0000,0,9194,1,0000,0,9570,5,0000
+src\main\resources\datasets\bookkeeper_dataset.csv,RandomForest,1,0000,1,0000,1,0000,1,0000,1,3053
+src\main\resources\datasets\bookkeeper_dataset.csv,NaiveBayes,0,9845,0,8647,0,9663,0,7201,1,2679
+src\main\resources\datasets\bookkeeper_dataset.csv,IBk(k=5),1,0000,1,0000,1,0000,1,0000,1,3053
