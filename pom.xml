@@ -38,6 +38,7 @@
       <classifier>natives</classifier>
     </dependency>
 
+    <!-- Implementazione nativa per Linux -->
     <dependency>
       <groupId>com.github.fommil.netlib</groupId>
       <artifactId>netlib-native_ref-win-x86_64</artifactId>
@@ -45,19 +46,39 @@
       <classifier>natives</classifier>
     </dependency>
 
+    <!-- Implementazione nativa per Mac -->
     <dependency>
       <groupId>net.sourceforge.f2j</groupId>
       <artifactId>arpack_combined_all</artifactId>
       <version>0.1</version>
     </dependency>
 
+    <!-- JFreeChart for plotting -->
+    <dependency>
+      <groupId>org.jfree</groupId>
+      <artifactId>jfreechart</artifactId>
+      <version>1.5.3</version>
+    </dependency>
 
+    <!-- JFreeChart for plotting -->
+    <dependency>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>5.7.1</version>
+    </dependency>
 
     <!-- WEKA Stable dependency -->
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
       <version>${weka.version}</version>
+    </dependency>
+
+    <!-- WEKA GUI dependency -->
+    <dependency>
+      <groupId>nz.ac.waikato.cms.weka</groupId>
+      <artifactId>gridSearch</artifactId>
+      <version>1.0.7</version>
     </dependency>
 
     <!-- Log4j2 binding for SLF4J -->
@@ -99,8 +120,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
+          <source>11</source>
+          <target>11</target>
         </configuration>
       </plugin>
 
