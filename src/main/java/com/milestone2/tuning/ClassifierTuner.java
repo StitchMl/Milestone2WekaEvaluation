@@ -129,9 +129,53 @@ public class ClassifierTuner {
      * @return dataset con attributi nominali convertiti in numerici
      */
     private static Instances convertNominalToNumeric(Instances data) throws Exception {
+        // I create a copy of the dataset
+        Instances result = new Instances(data);
+
+        // I count the number of nominal attributes and their unique values
+        int totalBinaryAttributes = 0;
+        for (int i = 0; i < result.numAttributes(); i++) {
+            if (result.attribute(i).isNominal() && i != result.classIndex()) {
+                totalBinaryAttributes += result.attribute(i).numValues();
+            }
+        }
+
+        // If the total number of binary attributes is too large, I use an alternative approach
+        if (totalBinaryAttributes > 1000) {
+            logger.warn("Too many potential binary attributes ({}). Using alternative approach.", totalBinaryAttributes);
+            return convertNominalToNumericSelective(result);
+        }
+
+        // Otherwise, I use the standard filter
         weka.filters.unsupervised.attribute.NominalToBinary nomToBin =
                 new weka.filters.unsupervised.attribute.NominalToBinary();
-        nomToBin.setInputFormat(data);
-        return weka.filters.Filter.useFilter(data, nomToBin);
+        nomToBin.setInputFormat(result);
+        return weka.filters.Filter.useFilter(result, nomToBin);
+    }
+
+    /**
+     * Converts nominal attributes to numeric selectively.
+     * Only attributes with less than 10 unique values are converted.
+     * Attributes with more than 10 unique values are removed.
+     *
+     * @param data the dataset to process
+     * @return a new dataset with selected nominal attributes converted to numeric
+     */
+    private static Instances convertNominalToNumericSelective(Instances data) throws Exception {
+        Instances result = new Instances(data);
+
+        // I only convert nominal attributes with less than 10 unique values
+        for (int i = result.numAttributes() - 1; i >= 0; i--) {
+            if (result.attribute(i).isNominal() && i != result.classIndex() && result.attribute(i).numValues() > 10) {
+                // For attributes with too many values, I remove them
+                result.deleteAttributeAt(i);
+            }
+        }
+
+        // I only apply the filter to the remaining nominal attributes
+        weka.filters.unsupervised.attribute.NominalToBinary nomToBin =
+                new weka.filters.unsupervised.attribute.NominalToBinary();
+        nomToBin.setInputFormat(result);
+        return weka.filters.Filter.useFilter(result, nomToBin);
     }
 }
