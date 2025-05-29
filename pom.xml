@@ -67,11 +67,18 @@
       <version>5.7.1</version>
     </dependency>
 
-    <!-- WEKA Stable dependency -->
+    <!-- WEKA Core dependency -->
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
-      <artifactId>weka-dev</artifactId>
-      <version>${weka.version}</version>
+      <artifactId>weka-stable</artifactId>
+      <version>3.8.6</version>
+    </dependency>
+
+    <!-- WEKA Core dependency -->
+    <dependency>
+      <groupId>nz.ac.waikato.cms.weka</groupId>
+      <artifactId>SMOTE</artifactId>
+      <version>1.0.3</version>
     </dependency>
 
     <!-- WEKA GUI dependency -->

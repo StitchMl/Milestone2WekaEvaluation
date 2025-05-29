@@ -4,6 +4,7 @@ import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
 public class DataManager {
+    /** Singleton instance */
     private DataManager() {}
 
     /** Load ARFF or CSV dataset, set class as the last column if necessary */

@@ -14,11 +14,25 @@ public class CrossValidator {
     private final int folds;
     private final int repeats;
 
+    /**
+     * Constructs a CrossValidator with a specified number of folds and repeats.
+     *
+     * @param folds   Number of folds for cross-validation
+     * @param repeats Number of times to repeat the cross-validation
+     */
     public CrossValidator(int folds, int repeats) {
         this.folds = folds;
         this.repeats = repeats;
     }
 
+    /**
+     * Runs repeated k-fold cross-validation on the given classifier and dataset.
+     *
+     * @param baseCls Classifier to evaluate
+     * @param data    Dataset to use for evaluation
+     * @return CVResult containing average metrics across all folds and repeats
+     * @throws Exception if an error occurs during evaluation
+     */
     public CVResult runRepeatedCV(Classifier baseCls, Instances data) throws Exception {
         logger.info("Execution {}×{}-fold CV for {}", repeats, folds, baseCls.getClass().getSimpleName());
 
@@ -28,9 +42,10 @@ public class CrossValidator {
         double sumK=0;
         double sumN=0;
         for (int i = 0; i < repeats; i++) {
+            data.setClassIndex(data.numAttributes() - 1);
             Classifier cls = AbstractClassifier.makeCopy(baseCls);
             Evaluation eval = new Evaluation(data);
-            eval.crossValidateModel(cls, data, folds, new Random(i));
+            eval.crossValidateModel(cls, data, folds, new Random(i)); // Rimosso parametri non necessari
             sumP += MetricsCalculator.precision(eval);
             sumR += MetricsCalculator.recall(eval);
             sumA += MetricsCalculator.auc(eval);
