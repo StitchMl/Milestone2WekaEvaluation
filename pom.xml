@@ -9,93 +9,64 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
+  <!-- === General properties === -->
   <properties>
-    <!-- Version of WEKA -->
-    <weka.version>3.9.6</weka.version>
-
-    <!-- Versione netlib-java -->
-    <netlib.version>1.1.2</netlib.version>
-
-    <!-- Java Configuration -->
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- WEKA stable branch -->
+    <weka.version>3.8.6</weka.version>  <!-- turn0search0 -->
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
+  <!-- === Dependencies === -->
   <dependencies>
-    <!-- Netlib-java main dependency -->
+    <!-- CSV handling -->
     <dependency>
-      <groupId>com.github.fommil.netlib</groupId>
-      <artifactId>all</artifactId>
-      <version>${netlib.version}</version>
-      <type>pom</type>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-csv</artifactId>
+      <version>1.14.0</version>           <!-- turn0search3 -->
     </dependency>
 
-    <!-- Implementazione nativa per Windows -->
-    <dependency>
-      <groupId>com.github.fommil.netlib</groupId>
-      <artifactId>netlib-native_system-win-x86_64</artifactId>
-      <version>1.1</version>
-      <classifier>natives</classifier>
-    </dependency>
-
-    <!-- Implementazione nativa per Linux -->
-    <dependency>
-      <groupId>com.github.fommil.netlib</groupId>
-      <artifactId>netlib-native_ref-win-x86_64</artifactId>
-      <version>1.1</version>
-      <classifier>natives</classifier>
-    </dependency>
-
-    <!-- Implementazione nativa per Mac -->
-    <dependency>
-      <groupId>net.sourceforge.f2j</groupId>
-      <artifactId>arpack_combined_all</artifactId>
-      <version>0.1</version>
-    </dependency>
-
-    <!-- JFreeChart for plotting -->
-    <dependency>
-      <groupId>org.jfree</groupId>
-      <artifactId>jfreechart</artifactId>
-      <version>1.5.3</version>
-    </dependency>
-
-    <!-- JFreeChart for plotting -->
-    <dependency>
-      <groupId>com.opencsv</groupId>
-      <artifactId>opencsv</artifactId>
-      <version>5.7.1</version>
-    </dependency>
-
-    <!-- WEKA Core dependency -->
+    <!-- WEKA core -->
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-stable</artifactId>
-      <version>3.8.6</version>
+      <version>${weka.version}</version>  <!-- turn0search0 -->
     </dependency>
 
-    <!-- WEKA Core dependency -->
-    <dependency>
-      <groupId>nz.ac.waikato.cms.weka</groupId>
-      <artifactId>SMOTE</artifactId>
-      <version>1.0.3</version>
-    </dependency>
-
-    <!-- WEKA GUI dependency -->
+    <!-- WEKA add-on packages -->
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>gridSearch</artifactId>
-      <version>1.0.7</version>
+      <version>1.0.6</version>            <!-- turn0search2 -->
+    </dependency>
+    <dependency>
+      <groupId>nz.ac.waikato.cms.weka</groupId>
+      <artifactId>SMOTE</artifactId>
+      <version>1.0.3</version>            <!-- compatibile 3.8.x -->
     </dependency>
 
-    <!-- Log4j2 binding for SLF4J -->
+    <!-- Math backend -->
+    <dependency>
+      <groupId>com.github.fommil.netlib</groupId>
+      <artifactId>all</artifactId>
+      <version>1.1.2</version>
+      <type>pom</type>                    <!-- include fallback Java impl -->
+    </dependency>
+
+    <!-- Charting -->
+    <dependency>
+      <groupId>org.jfree</groupId>
+      <artifactId>jfreechart</artifactId>
+      <version>1.5.3</version>            <!-- turn0search4 -->
+    </dependency>
+
+    <!-- Logging (Log4j2 binding for SLF4J) -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
       <version>2.20.0</version>
     </dependency>
-
-    <!-- SLF4J API -->
     <dependency>
       <groupId>org.fusesource.jansi</groupId>
       <artifactId>jansi</artifactId>
@@ -103,40 +74,37 @@
     </dependency>
   </dependencies>
 
+  <!-- === Build plugins === -->
   <build>
     <plugins>
-      <!-- Plugin per eseguire la tua classe principale -->
+      <!-- Esegui la main class -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
         <configuration>
           <mainClass>com.milestone2.runner.Milestone2Runner</mainClass>
           <systemProperties>
-            <property>
-              <key>weka.packageManager.offline</key>
-              <value>true</value>
-            </property>
+            <weka.packageManager.offline>true</weka.packageManager.offline>
           </systemProperties>
         </configuration>
       </plugin>
 
-      <!-- Java Compilation Plugin -->
+      <!-- Compiler -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.11.0</version>
         <configuration>
-          <source>11</source>
-          <target>11</target>
+          <release>11</release>
         </configuration>
       </plugin>
 
-      <!-- (Optional) Plugin for creating an uber-jar -->
+      <!-- Shade: uber-jar portabile -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.4</version>
+        <version>3.5.0</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -146,4 +114,32 @@
       </plugin>
     </plugins>
   </build>
+
+  <!-- === Optional OS-specific natives === -->
+  <profiles>
+    <profile>
+      <id>windows-amd64</id>
+      <activation><os><family>Windows</family></os></activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.github.fommil.netlib</groupId>
+          <artifactId>netlib-native_system-win-x86_64</artifactId>
+          <version>1.1</version>
+          <classifier>natives</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>linux-amd64</id>
+      <activation><os><family>unix</family></os></activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.github.fommil.netlib</groupId>
+          <artifactId>netlib-native_ref-linux-x86_64</artifactId>
+          <version>1.1</version>
+          <classifier>natives</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 </project>
