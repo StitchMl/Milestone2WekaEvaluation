@@ -67,10 +67,31 @@
       <artifactId>log4j-slf4j-impl</artifactId>
       <version>2.20.0</version>
     </dependency>
+    <!-- Log4j 2 API -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.20.0</version>
+    </dependency>
+
+    <!-- Log4j 2 Core (sicurezza, appends, plugin system) -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.20.0</version>
+    </dependency>
+
     <dependency>
       <groupId>org.fusesource.jansi</groupId>
       <artifactId>jansi</artifactId>
       <version>2.4.0</version>
+    </dependency>
+
+    <!-- Logback Classic: implementazione SLF4J e supporto ai converter custom -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.5.18</version>
     </dependency>
   </dependencies>
 
@@ -96,7 +117,13 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
         <configuration>
-          <release>11</release>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-core</artifactId>
+              <version>2.20.0</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
 
