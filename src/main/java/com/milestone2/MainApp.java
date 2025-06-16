@@ -175,11 +175,11 @@ public class MainApp {
             // 3.2.3) Writing results per fold
             for (PerFoldResult r : folds) {
                 Metrics m = r.getMetrics();
-                String key = ds + "," + r.getClassifierName() + "," + r.getRun() + "," + r.getFold();
+                String key = ds + "," + ct + "," + r.getRun() + "," + r.getFold();
                 if (!existingFold.contains(key)) {
                     foldWriter.write(String.format(Locale.US,
                             "%s,%s,%d,%d,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f%n",
-                            ds, r.getClassifierName(), r.getRun(), r.getFold(),
+                            ds, ct, r.getRun(), r.getFold(),
                             m.getAccuracy(), m.getPrecision(), m.getRecall(),
                             m.getF1(), m.getKappa(), m.getAUC(), m.getNpOfb20()));
                     existingFold.add(key);
