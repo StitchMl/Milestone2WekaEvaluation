@@ -14,10 +14,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /**
- * ModelEvaluator extended to support:
- * - 10×10-fold manual CV via trainCV/testCV
- * - collection of metrics for run/fold
- * - aggregation (averaging) of metrics
+ * Performs cross-validation (N_RUNS x N_FOLDS) and collects metrics.
  */
 public class ModelEvaluator {
 
@@ -31,28 +28,26 @@ public class ModelEvaluator {
     private static final Logger log = LoggerFactory.getLogger(ModelEvaluator.class);
 
     /**
-     * Utility class, no instantiation.
+     * Cannot be instantiated.
      */
     private ModelEvaluator() {
-        // Utility class, no instantiation
+        // Utility class
     }
 
     /**
-     * Performs 10 manual 10-fold CV runs:
-     * - randomises and stratifies (if nominal) the dataset
-     * - for each fold uses trainCV/testCV to get train/test set
-     * - for each fold train a classifier clone and evaluate with
-     * evaluateModelOnceAndRecordPrediction
-     * - calculates NPofB20 on the test set
+     * Runs Config.N_RUNS times a manual Config.N_FOLDS-fold CV:
+     * - randomises and stratifies the dataset
+     * - generates split train/test for each fold
+     * - calculates metrics for each pair (run, fold)
      */
     public static List<PerFoldResult> evaluateWithFolds(
             FilteredClassifier cls,
             Instances data,
             int folds) throws Exception {
 
-        log.info("=== Starting 10×{}-fold cross-validation ===", folds);
+        log.info("=== Starting {}×{}-fold cross-validation ===", Config.N_RUNS, folds);
 
-        // 1) Pre-generates all splits 📂
+        // 1) Pre-generation of all train/test splits
         class Split {
             final int run;
             final int fold;
@@ -63,8 +58,8 @@ public class ModelEvaluator {
                 this.train = train; this.test = test;
             }
         }
-        List<Split> splits = new ArrayList<>(10 * folds);
-        for (int run = 0; run < 10; run++) {
+        List<Split> splits = new ArrayList<>(Config.N_RUNS * folds);
+        for (int run = 0; run < Config.N_RUNS; run++) {
             Instances rand = new Instances(data);
             rand.randomize(new Random(run));
             if (rand.classAttribute().isNominal()) rand.stratify(folds);
@@ -78,27 +73,27 @@ public class ModelEvaluator {
         }
         log.info("Precomputed {} train/test splits", splits.size());
 
-        // 2) Pool sized to cores, not to tasks 🖥️
+        // 2) Creation of a thread pool
         int cores = Runtime.getRuntime().availableProcessors();
         ExecutorService pool = Executors.newFixedThreadPool(cores);
         CompletionService<PerFoldResult> ecs =
                 new ExecutorCompletionService<>(pool);
-        log.info("ExecutorService creato con {} thread", cores);
+        log.info("ExecutorService created with {} thread", cores);
 
-        // 3) Submit tasks using only the necessary split
+        // 3) Submission of training/eval tasks
         for (Split s : splits) {
             ecs.submit(() -> {
                 // copy of the classifier
                 FilteredClassifier copy =
                         (FilteredClassifier) AbstractClassifier.makeCopy(cls);
-                // build and evaluation
+                // trains and performs predictions
                 copy.buildClassifier(s.train);
                 Evaluation ev = new Evaluation(s.train);
                 for (Instance inst : s.test) {
                     ev.evaluateModelOnceAndRecordPrediction(
                             copy.distributionForInstance(inst), inst);
                 }
-                // metric calculation
+                // calculation of metrics
                 Metrics m = new Metrics(
                         (1 - ev.errorRate()) * 100,
                         ev.precision(1),
@@ -116,15 +111,15 @@ public class ModelEvaluator {
         }
         log.info("Submitted {} tasks to pool", splits.size());
 
-        // 4) Shutdown and wait (without OOM) 🚦
+        // 4) Waiting for completion without forced interruption
         pool.shutdown();
         if (!pool.awaitTermination(10, TimeUnit.MINUTES)) {
-            log.warn("Timeout in CV, but we do not interrupt threads to avoid OOM");
+            log.warn("Timeout in CV, we do not interrupt threads to avoid OOM");
         } else {
             log.info("All tasks completed");
         }
 
-        // 5) Non-blocking result collection 🎯
+        // 5) Collecting results
         List<PerFoldResult> results = new ArrayList<>(splits.size());
         for (int i = 0; i < splits.size(); i++) {
             Future<PerFoldResult> f = ecs.take();
@@ -136,26 +131,26 @@ public class ModelEvaluator {
     }
 
     /**
-     * Average (aggregate) metrics over all PerFoldResults.
+     * Aggregates average metrics over all repetitions (run/fold).
      */
     public static Map<String, Double> aggregate(List<PerFoldResult> list) {
         Map<String, Double> sum = new HashMap<>();
         // initialise
-        Arrays.asList(ACCURACY,PRECISION,RECALL,F1,KAPPA,AUC,NPOFB20)
+        Arrays.asList(ACCURACY, PRECISION, RECALL, F1, KAPPA, AUC, NPOFB20)
                 .forEach(m -> sum.put(m, 0.0));
 
         for (PerFoldResult r : list) {
-            Metrics m = r.metrics;
-            sum.put(ACCURACY,  sum.get(ACCURACY)  + m.accuracy);
-            sum.put(PRECISION, sum.get(PRECISION) + m.precision);
-            sum.put(RECALL,    sum.get(RECALL)    + m.recall);
-            sum.put(F1,        sum.get(F1)        + m.f1);
-            sum.put(KAPPA,     sum.get(KAPPA)     + m.kappa);
-            sum.put(AUC,       sum.get(AUC)       + m.auc);
-            sum.put(NPOFB20,   sum.get(NPOFB20)   + m.npOfb20);
+            Metrics m = r.getMetrics();
+            sum.put(ACCURACY,  sum.get(ACCURACY)  + m.getAccuracy());
+            sum.put(PRECISION, sum.get(PRECISION) + m.getPrecision());
+            sum.put(RECALL,    sum.get(RECALL)    + m.getRecall());
+            sum.put(F1,        sum.get(F1)        + m.getF1());
+            sum.put(KAPPA,     sum.get(KAPPA)     + m.getKappa());
+            sum.put(AUC,       sum.get(AUC)       + m.getAUC());
+            sum.put(NPOFB20,   sum.get(NPOFB20)   + m.getNpOfb20());
         }
 
-        // division by number of results
+        // calculate the average
         int n = list.size();
         Map<String, Double> avg = new HashMap<>();
         sum.forEach((k, v) -> avg.put(k, v / n));
@@ -163,14 +158,14 @@ public class ModelEvaluator {
     }
 
     /**
-     * Calculates NPofB20 on a single Evaluation and its test set.
+     * Calculates NPofB20 given an Evaluation and its test set.
      */
     private static double computeNPofB20(Evaluation ev, Instances test) {
         List<Prediction> predictionsList = ev.predictions();
         List<Double> probs = new ArrayList<>(predictionsList.size());
         List<Integer> locs  = new ArrayList<>(predictionsList.size());
 
-        // extract buggy and LOC probabilities from each test instance
+        // Extracts probability and LOC from each test instance
         for (int i = 0; i < predictionsList.size(); i++) {
             NominalPrediction np = (NominalPrediction) predictionsList.get(i);
             probs.add(np.distribution()[1]);
@@ -184,7 +179,7 @@ public class ModelEvaluator {
                 .filter(p -> p.actual() == 1)
                 .count();
 
-        // ranking by decreasing probability
+        // Sort by decreasing probability
         List<Integer> order = new ArrayList<>();
         for (int i = 0; i < probs.size(); i++) order.add(i);
         order.sort((a, b) -> Double.compare(probs.get(b), probs.get(a)));

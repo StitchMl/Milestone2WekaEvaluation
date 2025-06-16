@@ -9,7 +9,6 @@ import weka.filters.supervised.instance.SMOTE;
 import weka.attributeSelection.CfsSubsetEval;
 import weka.attributeSelection.BestFirst;
 import weka.classifiers.meta.AttributeSelectedClassifier;
-import weka.classifiers.lazy.IBk;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.trees.RandomForest;
 
@@ -40,23 +39,23 @@ public class TunedClassifierFactory {
                 log.info("[{}] Tuning RandomForest parameters", type);
                 paramSelector.addCVParameter("I 100 500 5");   // numTrees
                 paramSelector.addCVParameter("depth 0 20 5");  // maxDepth
-                RandomForest rf = new RandomForest();
+                RandomForest rf = (RandomForest) type.createClassifier();
                 int cores = Runtime.getRuntime().availableProcessors();
                 log.debug("[{}] Setting RF numExecutionSlots = {}", type, cores);
                 rf.setNumExecutionSlots(cores);
                 paramSelector.setClassifier(rf);
                 break;
 
-            case IBK:
+            case K_NEAREST_NEIGHBORS:
                 log.info("[{}] Tuning IBk parameters", type);
                 paramSelector.addCVParameter("K 1 15 2");    // k
                 paramSelector.addCVParameter("W 0 2 1");     // distanceWeighting
-                paramSelector.setClassifier(new IBk());
+                paramSelector.setClassifier(type.createClassifier());
                 break;
 
             case NAIVE_BAYES:
                 log.info("[{}] Configuring NaiveBayes with KDE", type);
-                NaiveBayes nb = new NaiveBayes();
+                NaiveBayes nb = (NaiveBayes) type.createClassifier();
                 nb.setUseKernelEstimator(true);
                 // no supervised discretization when KDE enabled
                 paramSelector.setClassifier(nb);
@@ -67,8 +66,8 @@ public class TunedClassifierFactory {
                 throw new IllegalArgumentException("Unknown classifier type: " + type);
         }
 
-        log.debug("[{}] Setting internal CV folds = 5", type);
-        paramSelector.setNumFolds(5);
+        log.debug("[{}] Setting internal CV folds = {}", type, Config.N_FOLDS);
+        paramSelector.setNumFolds(Config.N_FOLDS);
 
         log.info("[{}] Starting parameter search", type);
         long startSearch = System.currentTimeMillis();
