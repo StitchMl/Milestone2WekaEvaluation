@@ -1,5 +1,7 @@
 package com.milestone2;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.evaluation.Prediction;
@@ -9,6 +11,7 @@ import weka.core.Instance;
 import weka.classifiers.AbstractClassifier;
 
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * ModelEvaluator extended to support:
@@ -25,6 +28,7 @@ public class ModelEvaluator {
     private static final String KAPPA = "Kappa";
     private static final String AUC = "AUC";
     private static final String NPOFB20 = "NPofB20";
+    private static final Logger log = LoggerFactory.getLogger(ModelEvaluator.class);
 
     /**
      * Utility class, no instantiation.
@@ -46,66 +50,88 @@ public class ModelEvaluator {
             Instances data,
             int folds) throws Exception {
 
-        List<PerFoldResult> results = new ArrayList<>();
-        // 10 external runs
-        for (int run = 0; run < 10; run++) {
-            // copy and randomize
-            Instances randData = new Instances(data);
-            Random rnd = new Random(run);
-            randData.randomize(rnd);
-            if (randData.classAttribute().isNominal()) {
-                randData.stratify(folds);
+        log.info("=== Starting 10×{}-fold cross-validation ===", folds);
+
+        // 1) Pre-generates all splits 📂
+        class Split {
+            final int run;
+            final int fold;
+            final Instances train;
+            final Instances test;
+            Split(int run, int fold, Instances train, Instances test) {
+                this.run = run; this.fold = fold;
+                this.train = train; this.test = test;
             }
-
-            // 10 internal folds
+        }
+        List<Split> splits = new ArrayList<>(10 * folds);
+        for (int run = 0; run < 10; run++) {
+            Instances rand = new Instances(data);
+            rand.randomize(new Random(run));
+            if (rand.classAttribute().isNominal()) rand.stratify(folds);
             for (int f = 0; f < folds; f++) {
-                // train/test split
-                Instances train = randData.trainCV(folds, f, rnd);
-                Instances test  = randData.testCV(folds, f);
-
-                // deep copy of the classifier for each fold
-                FilteredClassifier copy =
-                        (FilteredClassifier) AbstractClassifier.makeCopy(cls);
-                // build on the train set
-                copy.buildClassifier(train);
-
-                // Evaluation per fold
-                Evaluation ev = new Evaluation(train);
-                // records predictions to calculate AUC and NPofB20
-                for (int i = 0; i < test.numInstances(); i++) {
-                    Instance inst = test.instance(i);
-                    double[] dist = copy.distributionForInstance(inst);
-                    ev.evaluateModelOnceAndRecordPrediction(dist, inst);
-                }
-
-                // standard metrics
-                double accuracy  = (1 - ev.errorRate()) * 100;
-                double precision = ev.precision(1);
-                double recall    = ev.recall(1);
-                double f1        = ev.fMeasure(1);
-                double kappa     = ev.kappa();
-                double auc       = ev.areaUnderROC(1);
-                // NPofB20 defined as a proportion of bugs found out of 20% LOC
-                double np20      = computeNPofB20(ev, test);
-
-                Metrics m = new Metrics(
-                        accuracy,
-                        precision,
-                        recall,
-                        f1,
-                        kappa,
-                        auc,
-                        np20
-                );
-
-                results.add(new PerFoldResult(
-                        cls.getClassifier().getClass().getSimpleName(),
-                        run,
-                        f,
-                        m
+                splits.add(new Split(
+                        run, f,
+                        rand.trainCV(folds, f, new Random(run)),
+                        rand.testCV(folds, f)
                 ));
             }
         }
+        log.info("Precomputed {} train/test splits", splits.size());
+
+        // 2) Pool sized to cores, not to tasks 🖥️
+        int cores = Runtime.getRuntime().availableProcessors();
+        ExecutorService pool = Executors.newFixedThreadPool(cores);
+        CompletionService<PerFoldResult> ecs =
+                new ExecutorCompletionService<>(pool);
+        log.info("ExecutorService creato con {} thread", cores);
+
+        // 3) Submit tasks using only the necessary split
+        for (Split s : splits) {
+            ecs.submit(() -> {
+                // copy of the classifier
+                FilteredClassifier copy =
+                        (FilteredClassifier) AbstractClassifier.makeCopy(cls);
+                // build and evaluation
+                copy.buildClassifier(s.train);
+                Evaluation ev = new Evaluation(s.train);
+                for (Instance inst : s.test) {
+                    ev.evaluateModelOnceAndRecordPrediction(
+                            copy.distributionForInstance(inst), inst);
+                }
+                // metric calculation
+                Metrics m = new Metrics(
+                        (1 - ev.errorRate()) * 100,
+                        ev.precision(1),
+                        ev.recall(1),
+                        ev.fMeasure(1),
+                        ev.kappa(),
+                        ev.areaUnderROC(1),
+                        computeNPofB20(ev, s.test)
+                );
+                return new PerFoldResult(
+                        cls.getClassifier().getClass().getSimpleName(),
+                        s.run, s.fold, m
+                );
+            });
+        }
+        log.info("Submitted {} tasks to pool", splits.size());
+
+        // 4) Shutdown and wait (without OOM) 🚦
+        pool.shutdown();
+        if (!pool.awaitTermination(10, TimeUnit.MINUTES)) {
+            log.warn("Timeout in CV, but we do not interrupt threads to avoid OOM");
+        } else {
+            log.info("All tasks completed");
+        }
+
+        // 5) Non-blocking result collection 🎯
+        List<PerFoldResult> results = new ArrayList<>(splits.size());
+        for (int i = 0; i < splits.size(); i++) {
+            Future<PerFoldResult> f = ecs.take();
+            results.add(f.get());
+        }
+        log.info("Collected {} overall results", results.size());
+
         return results;
     }
 

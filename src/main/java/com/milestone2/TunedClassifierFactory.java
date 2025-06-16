@@ -24,80 +24,75 @@ public class TunedClassifierFactory {
 
     public static FilteredClassifier buildTuned(ClassifierType type,
                                                 Instances data) throws Exception {
+        String dataset = data.relationName().split("-")[0];
+        log.info("=== Building tuned classifier: {} on dataset '{}' ===", type, dataset);
+
         // 1) SMOTE
-        SMOTE smote = new SMOTE();                      // balancing
+        log.debug("[{}] Initializing SMOTE filter", type);
+        SMOTE smote = new SMOTE();
         smote.setInputFormat(data);
 
-        // 2) Base classifier + CVParameterSelection
+        // 2) CVParameterSelection
+        log.debug("[{}] Configuring CVParameterSelection", type);
         CVParameterSelection paramSelector = new CVParameterSelection();
         switch (type) {
             case RANDOM_FOREST:
-                logStart(type, data.relationName().split("-")[0]);
-                paramSelector.addCVParameter("I 100 500 5");     // trees
-                paramSelector.addCVParameter("depth 0 20 5");    // depth
-                paramSelector.setClassifier(new RandomForest());
-                logFinish(type, data.relationName().split("-")[0]);
+                log.info("[{}] Tuning RandomForest parameters", type);
+                paramSelector.addCVParameter("I 100 500 5");   // numTrees
+                paramSelector.addCVParameter("depth 0 20 5");  // maxDepth
+                RandomForest rf = new RandomForest();
+                int cores = Runtime.getRuntime().availableProcessors();
+                log.debug("[{}] Setting RF numExecutionSlots = {}", type, cores);
+                rf.setNumExecutionSlots(cores);
+                paramSelector.setClassifier(rf);
                 break;
+
             case IBK:
-                logStart(type, data.relationName().split("-")[0]);
-                paramSelector.addCVParameter("K 1 15 2");        // k‐NN
-                paramSelector.addCVParameter("W 0 2 1");         // distanceWeighting
+                log.info("[{}] Tuning IBk parameters", type);
+                paramSelector.addCVParameter("K 1 15 2");    // k
+                paramSelector.addCVParameter("W 0 2 1");     // distanceWeighting
                 paramSelector.setClassifier(new IBk());
-                logFinish(type, data.relationName().split("-")[0]);
                 break;
+
             case NAIVE_BAYES:
-                logStart(type, data.relationName().split("-")[0]);
+                log.info("[{}] Configuring NaiveBayes with KDE", type);
                 NaiveBayes nb = new NaiveBayes();
                 nb.setUseKernelEstimator(true);
-                nb.setUseSupervisedDiscretization(true);
+                // no supervised discretization when KDE enabled
                 paramSelector.setClassifier(nb);
-                logFinish(type, data.relationName().split("-")[0]);
                 break;
+
             default:
-                throw new IllegalArgumentException("Unknown classifier type");
+                log.error("[{}] Unknown classifier type", type);
+                throw new IllegalArgumentException("Unknown classifier type: " + type);
         }
-        log.info("Parameter search start");
-        paramSelector.setNumFolds(5);  // internal folds for tuning
-        log.info("Parameter search done");
-        // Start the buildClassifier in a separate thread
-        Thread tuningThread = new Thread(() -> {
-            try {
-                paramSelector.buildClassifier(data);  // parameter search
-            } catch (Exception e) {
-                throw new ParameterSelectionException("Error during parameter search", e);
-            }
-        }, "ParamSelector-Thread");
 
-        tuningThread.start();
+        log.debug("[{}] Setting internal CV folds = 5", type);
+        paramSelector.setNumFolds(5);
 
-        tuningThread.join();  // ensures that it is finished
-        log.info("\rTuning parameters done!      \n");
-        log.info("Parameter selection done for {}", type);
+        log.info("[{}] Starting parameter search", type);
+        long startSearch = System.currentTimeMillis();
+        paramSelector.buildClassifier(data);
+        long durationSearch = System.currentTimeMillis() - startSearch;
+        log.info("[{}] Parameter search completed in {} ms", type, durationSearch);
 
-        // 3) Feature selection wrapper
-        log.info("Feature selection start");
+        // 3) Feature selection
+        log.info("[{}] Starting feature selection (CfsSubsetEval + BestFirst)", type);
         CfsSubsetEval eval = new CfsSubsetEval();
         BestFirst search = new BestFirst();
         AttributeSelectedClassifier asc = new AttributeSelectedClassifier();
         asc.setEvaluator(eval);
         asc.setSearch(search);
         asc.setClassifier(paramSelector);
-        log.info("Feature selection done");
+        log.info("[{}] Feature selection wrapper configured", type);
 
         // 4) Final pipeline
-        log.info("Building final classifier with SMOTE and feature selection");
+        log.info("[{}] Building final FilteredClassifier pipeline", type);
         FilteredClassifier fc = new FilteredClassifier();
         fc.setFilter(smote);
         fc.setClassifier(asc);
-        log.info("Final classifier built");
+        log.info("[{}] Final classifier built successfully", type);
+
         return fc;
-    }
-
-    private static void logStart(ClassifierType type, String dataset) {
-        log.info("Building tuned classifier for {} on {}", type, dataset);
-    }
-
-    private static void logFinish(ClassifierType type, String dataset) {
-        log.info("Finished building tuned classifier for {} on {}", type, dataset);
     }
 }
