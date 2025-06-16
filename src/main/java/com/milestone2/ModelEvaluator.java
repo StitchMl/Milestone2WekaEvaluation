@@ -10,6 +10,7 @@ import weka.core.Instances;
 import weka.core.Instance;
 import weka.classifiers.AbstractClassifier;
 
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -61,12 +62,12 @@ public class ModelEvaluator {
         List<Split> splits = new ArrayList<>(Config.N_RUNS * folds);
         for (int run = 0; run < Config.N_RUNS; run++) {
             Instances rand = new Instances(data);
-            rand.randomize(new Random(run));
+            rand.randomize(new SecureRandom());
             if (rand.classAttribute().isNominal()) rand.stratify(folds);
             for (int f = 0; f < folds; f++) {
                 splits.add(new Split(
                         run, f,
-                        rand.trainCV(folds, f, new Random(run)),
+                        rand.trainCV(folds, f, new SecureRandom()),
                         rand.testCV(folds, f)
                 ));
             }
