@@ -9,6 +9,7 @@ import java.util.logging.LogManager;
  */
 public class AnalysisRuntime {
     public void prepare(AnalysisConfig config) throws Exception {
+        NetlibRuntimeConfigurer.configurePureJava();
         configureLogging();
         Files.createDirectories(config.getPaths().getOutputDir());
         Files.createDirectories(config.getPaths().getChartsDir());
