@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+unset _JAVA_OPTIONS || :
+exec java -jar target/milestone2-1.0-SNAPSHOT.jar "$@"

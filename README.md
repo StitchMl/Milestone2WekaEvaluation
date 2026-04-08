@@ -1,83 +1,110 @@
 ## Overview
 
-This project performs a **10×10-fold** cross-validation on three classifiers (RandomForest, NaiveBayes, IBk) to compare their performance in terms of Precision, Recall, AUC, Kappa, and NPofB20 using Weka's API. The runner dynamically reads the dataset paths from a configuration file (`datasets.txt`), clones the classifiers at each repetition to limit memory consumption, and collects the average results over the 100 experiments to identify the best classifier for each metric and dataset.
+This project evaluates defect prediction classifiers with Weka for the Milestone 2 workflow and also exposes an optional exam-oriented extension for feature what-if analysis:
 
-## Table of Contents
+- Milestone 2 accuracy benchmarking with 10x10-fold cross-validation.
+- An optional what-if analysis based on feature correlation and the derived datasets A, B+, B and C.
 
-* [Features](#features)
-* [Prerequisites](#prerequisites)
-* [Installation](#installation)
-* [Configuration](#configuration)
-* [Usage](#usage)
-* [Project Structure](#project-structure)
+The application is organized around small orchestration and reporting components instead of a single monolithic runner. Classifier evaluation, fold execution, chart generation, feature correlation, what-if scenario building, and CSV publishing are handled by separate classes.
 
-## Features
+## Build
 
-* Performing **10×10-fold cross-validation** for robust estimates of classification metrics.
-* Calculation and aggregation of **Precision, Recall, AUC, Kappa, NPofB20** for each classifier.
-* Cloning of classifiers at each repetition to avoid OutOfMemoryError.
-* Dynamic reading of datasets from a `datasets.txt` file, facilitating the addition or removal of new projects.
-* Automatic reporting of the best classifier for each metric and dataset.
-
-## Prerequisites
-
-* Java JDK 1.8+
-* Maven 3.6+
-* 64-bit JVM with at least `-Xmx4g` of heap (recommended).
-* File `datasets.txt` with the paths to the datasets in ARFF or CSV format.
-
-## Installation
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/tuo-utente/Milestone2WekaEvaluation.git
-   cd Milestone2WekaEvaluation
-   ```
-2. **Build the project with Maven**
-
-   ```bash
-   mvn clean package
-   ```
-
-   This generates an executable jar in `target/milestone2-1.0-SNAPSHOT.jar`.
-
-## Configuration
-
-Create (or edit) `datasets.txt` in the run directory, entering a path per line. For example:
-
-```
-data/projA.arff
-data/projB.csv
+```powershell
+.\mvnw.cmd clean package
 ```
 
-Blank lines and comments (`# ...`) will be ignored.
+The project produces an executable shaded jar in `target/`.
 
-## Usage
+## Run
 
-Run the application with:
-
-```bash
-java -Xmx4g -jar target/milestone2-1.0-SNAPSHOT.jar
+```powershell
+.\run-analysis.cmd
 ```
 
-The output will show for each dataset and classifier the averages of P/R/AUC/Kappa/NPofB20, followed by a summary of the 'best' classifier for each metric.
+Useful CLI options:
 
-## Project Structure
+- `--data-dir=...` selects the dataset folder. Supported formats are CSV and ARFF.
+- `--output-dir=...` chooses the output folder.
+- `--class-attribute=bug` sets the target attribute explicitly.
+- `--positive-class=yes` sets the positive class explicitly.
+- `--classifiers=RF,NB` restricts the classifier catalog.
+- `--runs=10 --folds=10 --seed=42` controls the cross-validation execution.
+- `--threads=N` caps how many cross-validation folds run concurrently. Default: automatic, up to `min(folds, CPU-1)`.
+- `--smote=true|false` enables or disables SMOTE in the preprocessing pipeline. Default: `false` for the Milestone 2 baseline.
+- `--whatif=true|false` enables or disables the optional what-if analysis. Default: `false`.
+- `--whatif-feature=NSmells` forces the feature used to build B+, B and C.
+- `--whatif-classifier=RF` forces the classifier used in the what-if prediction study.
 
-```
-├── src/
-│   ├── main/java/com/milestone2/
-│   │   ├── ClassifierFactory.java     # creates the 3 classifiers
-│   │   ├── CrossValidator.java        # handles 10×10-fold CV
-│   │   ├── DataManager.java           # ARFF/CSV charge
-│   │   ├── MetricsCalculator.java     # calculates Precision/Recall/AUC/Kappa/NPofB20
-│   │   └── Milestone2Runner.java      # co-ordinates the execution flow
-│   └── resources/
-│       └── log4j2.xml                 # log settings
-├── datasets.txt                       # list of datasets to be evaluated
-├── pom.xml                            # Maven configuration
-└── README.md                          # this file
-```
+If `--whatif-feature` is not provided, the application prefers `NSmells` when present and zeroable. Otherwise it falls back to the strongest zeroable numeric feature by absolute correlation with the bug label. If `--whatif-classifier` is not provided, the application picks the best cross-validation classifier by Kappa and then AUC.
 
-This structure follows the standard conventions of Java Maven projects.
+At startup the application validates the dataset directory, the classifier configuration path, and the current Weka classifier catalog by instantiating every configured classifier from `classifiers.properties`.
+
+During evaluation the application also rejects datasets with fewer instances than the requested folds and warns when the minority class is smaller than the fold count, because that setup makes the cross-validation metrics less reliable.
+
+Project launchers intentionally clear `_JAVA_OPTIONS` before invoking Java, so repository-local build and run commands stay free from the launcher banner injected by the machine environment.
+
+## Outputs
+
+Each run generates:
+
+- `output/results.csv`: aggregate classifier metrics for each dataset.
+- `output/fold_metrics.csv`: per-fold metrics for the 10x10 study.
+- `output/milestone2_summary.csv`: best classifier per metric plus the overall milestone winner chosen by Kappa and AUC.
+- `output/feature_correlations.csv`: ranking of numeric features by correlation with bugginess when the optional what-if analysis is enabled.
+- `output/what_if_summary.csv`: scenario summaries for A, B+, B, C plus the paired B+ -> B impact row when the optional what-if analysis is enabled.
+- `output/charts/`: bar charts and box plots for the classifier comparison.
+
+## Architecture
+
+The main flow is:
+
+1. `AnalysisApplication` prepares the runtime and opens the output bundle.
+2. `AnalysisRunner` discovers datasets and delegates each dataset to `DatasetAnalyzer`.
+3. `DatasetAnalyzer` performs:
+   - classifier evaluation through `ModelEvaluator`
+   - optional what-if analysis through `WhatIfAnalyzer`
+4. `DatasetReportPublisher` writes CSV outputs, generates charts, and logs the best metric winners.
+
+The what-if slice is intentionally separated into focused components:
+
+- `FeatureCorrelationAnalyzer`
+- `WhatIfFeatureSelector`
+- `WhatIfClassifierSelector`
+- `WhatIfDatasetBuilder`
+- `WhatIfPredictionService`
+- `WhatIfScenarioSummarizer`
+
+## Exam Workflow Support
+
+The repository is centered on Milestone 2 and also supports an optional extension for the broader exam narrative.
+
+Accuracy phase:
+
+1. compare the configured classifiers with 10x10-fold cross-validation
+2. inspect Precision, Recall, F1, Kappa, AUC, NPofB20 and Accuracy
+3. identify the best classifier for the dataset
+
+What-if phase:
+
+1. rank numeric features by correlation with the bug label
+2. select an actionable feature, preferably `NSmells`
+3. build:
+   - `A`: original dataset
+   - `B+`: instances where the selected feature is greater than zero
+   - `B`: copy of `B+` with the selected feature forced to zero
+   - `C`: instances where the selected feature is zero
+4. train the selected classifier on `A`
+5. compare predictions on `A`, `B+`, `B`, and `C`
+6. inspect the paired `B+ -> B` impact row to estimate potentially avoidable buggy methods
+
+## Report Outline
+
+The exam report outline is available in [docs/exam-report-outline.md](docs/exam-report-outline.md). It mirrors the six-section structure requested by the course material and maps each section to the outputs generated by this project.
+
+## Verification
+
+The codebase includes automated checks for:
+
+- classifier catalog loading and Weka instantiation
+- Milestone 2 smoke execution with a real ARFF dataset
+- configuration parsing and summary selection rules

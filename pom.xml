@@ -14,6 +14,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- WEKA stable branch -->
     <weka.version>3.8.6</weka.version>  <!-- turn0search0 -->
+    <junit.jupiter.version>5.14.0</junit.jupiter.version>
+    <surefire.version>3.5.5</surefire.version>
+    <enforcer.version>3.5.0</enforcer.version>
+    <native.access.arg>--enable-native-access=ALL-UNNAMED</native.access.arg>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
@@ -87,11 +91,11 @@
       <version>2.4.0</version>
     </dependency>
 
-    <!-- Logback Classic: implementazione SLF4J e supporto ai converter custom -->
     <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>1.5.18</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -104,7 +108,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
         <configuration>
-          <mainClass>com.milestone2.runner.Milestone2Runner</mainClass>
+          <mainClass>com.milestone2.MainApp</mainClass>
           <systemProperties>
             <weka.packageManager.offline>true</weka.packageManager.offline>
           </systemProperties>
@@ -127,6 +131,23 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.4.2</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.milestone2.MainApp</mainClass>
+            </manifest>
+            <manifestEntries>
+              <Enable-Native-Access>ALL-UNNAMED</Enable-Native-Access>
+              <Multi-Release>true</Multi-Release>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+
       <!-- Shade: uber-jar portabile -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -136,6 +157,81 @@
           <execution>
             <phase>package</phase>
             <goals><goal>shade</goal></goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>com.milestone2.MainApp</mainClass>
+                  <manifestEntries>
+                    <Enable-Native-Access>ALL-UNNAMED</Enable-Native-Access>
+                    <Multi-Release>true</Multi-Release>
+                  </manifestEntries>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>restore-shaded-manifest-entries</id>
+            <phase>package</phase>
+            <configuration>
+              <target>
+                <jar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
+                  <manifest>
+                    <attribute name="Main-Class" value="com.milestone2.MainApp"/>
+                    <attribute name="Enable-Native-Access" value="ALL-UNNAMED"/>
+                    <attribute name="Multi-Release" value="true"/>
+                  </manifest>
+                </jar>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire.version}</version>
+        <configuration>
+          <argLine>${native.access.arg}</argLine>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${enforcer.version}</version>
+        <executions>
+          <execution>
+            <id>ban-competing-slf4j-bindings</id>
+            <goals><goal>enforce</goal></goals>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <searchTransitive>true</searchTransitive>
+                  <excludes>
+                    <exclude>ch.qos.logback:logback-classic</exclude>
+                    <exclude>org.slf4j:slf4j-simple</exclude>
+                    <exclude>org.slf4j:slf4j-jdk14</exclude>
+                    <exclude>org.slf4j:slf4j-reload4j</exclude>
+                    <exclude>org.slf4j:slf4j-log4j12</exclude>
+                    <exclude>org.apache.logging.log4j:log4j-to-slf4j</exclude>
+                  </excludes>
+                  <message>Use only Log4j2 through log4j-slf4j-impl in this project.</message>
+                </bannedDependencies>
+              </rules>
+            </configuration>
           </execution>
         </executions>
       </plugin>
