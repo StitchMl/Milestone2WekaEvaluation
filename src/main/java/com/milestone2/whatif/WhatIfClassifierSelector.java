@@ -28,7 +28,7 @@ public class WhatIfClassifierSelector {
 
         return new WhatIfClassifierSelection(
                 bestReport.getDefinition(),
-                "best cross-validation classifier by Kappa, then AUC"
+                "best validation classifier by Kappa, then AUC"
         );
     }
 

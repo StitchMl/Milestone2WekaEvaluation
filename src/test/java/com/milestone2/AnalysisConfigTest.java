@@ -3,6 +3,7 @@ package com.milestone2;
 import com.milestone2.analysis.AnalysisConfig;
 import com.milestone2.analysis.Config;
 import com.milestone2.analysis.AnalysisGranularity;
+import com.milestone2.validation.ValidationStrategy;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
@@ -29,7 +30,10 @@ class AnalysisConfigTest {
                 "--seed=123",
                 "--threads=2",
                 "--smote=false",
-                "--whatif=false",
+                "--validation=cross-validation",
+                "--temporal-attribute=VersionId",
+                "--min-train-periods=2",
+                "--whatif=true",
                 "--whatif-feature=NSmells",
                 "--whatif-classifier=RF"
         });
@@ -52,25 +56,31 @@ class AnalysisConfigTest {
         assertEquals(123L, config.getExecution().getSeed());
         assertEquals(2, config.getExecution().getMaxParallelism());
         assertFalse(config.getExecution().isApplySmote());
-        assertFalse(config.getWhatIfOptions().isEnabled());
+        assertEquals(ValidationStrategy.CROSS_VALIDATION, config.getExecution().getValidationStrategy());
+        assertEquals("VersionId", config.getExecution().getTemporalAttributeName());
+        assertEquals(2, config.getExecution().getMinimumTrainingPeriods());
+        assertTrue(config.getWhatIfOptions().isEnabled());
         assertEquals("NSmells", config.getWhatIfOptions().getFeatureName());
         assertEquals("RF", config.getWhatIfOptions().getClassifierId());
     }
 
     @Test
-    void fromArgsDisablesWhatIfByDefaultForMilestone2Flow() {
+    void fromArgsUsesMilestoneDefaults() {
         AnalysisConfig config = AnalysisConfig.fromArgs(new String[0]);
 
         assertEquals(Config.DEFAULT_MAX_PARALLELISM, config.getExecution().getMaxParallelism());
         assertFalse(config.getExecution().isApplySmote());
-        assertFalse(config.getWhatIfOptions().isEnabled());
+        assertEquals(ValidationStrategy.WALK_FORWARD, config.getExecution().getValidationStrategy());
+        assertEquals(Config.DEFAULT_TEMPORAL_ATTRIBUTE, config.getExecution().getTemporalAttributeName());
+        assertEquals(Config.DEFAULT_MINIMUM_TRAINING_PERIODS, config.getExecution().getMinimumTrainingPeriods());
+        assertTrue(config.getWhatIfOptions().isEnabled());
     }
 
     @Test
-    void fromArgsCanEnableWhatIfExplicitly() {
-        AnalysisConfig config = AnalysisConfig.fromArgs(new String[]{"--whatif=true"});
+    void fromArgsCanDisableWhatIfExplicitly() {
+        AnalysisConfig config = AnalysisConfig.fromArgs(new String[]{"--whatif=false"});
 
-        assertTrue(config.getWhatIfOptions().isEnabled());
+        assertFalse(config.getWhatIfOptions().isEnabled());
     }
 }
 

@@ -42,6 +42,8 @@ public class ResultsWriter implements AutoCloseable {
         record.add(execution.getRunId());
         record.add(selection.getGranularity());
         record.add(datasetName);
+        record.add(execution.getValidationStrategy().getCliValue());
+        record.add(execution.getTemporalAttributeName());
         record.add(definition.getDisplayName());
         record.add(definition.getClassName());
         record.add(classAttribute);
@@ -60,6 +62,8 @@ public class ResultsWriter implements AutoCloseable {
         header.add("RunId");
         header.add("Granularity");
         header.add("Dataset");
+        header.add("ValidationStrategy");
+        header.add("TemporalAttribute");
         header.add("Classifier");
         header.add("ClassifierClass");
         header.add("ClassAttribute");
@@ -77,5 +81,4 @@ public class ResultsWriter implements AutoCloseable {
         printer.close();
     }
 }
-
 

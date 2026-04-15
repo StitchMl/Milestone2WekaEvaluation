@@ -36,12 +36,11 @@ public class FoldEvaluationService {
                                   Preprocessor preprocessor,
                                   Instances train,
                                   Instances test,
-                                  int runIndex,
-                                  int foldIndex) throws Exception {
+                                  FoldContext context) throws Exception {
         AnalysisExecution execution = config.getExecution();
         Classifier baseClassifier = TunedClassifierFactory.createClassifier(
                 definition,
-                execution.getSeed() + (runIndex * 1_000L) + foldIndex
+                execution.getSeed() + (context.getRunIndex() * 1_000L) + context.getFoldIndex()
         );
         FilteredClassifier pipeline = preprocessor.buildPipeline(baseClassifier, config);
         pipeline.buildClassifier(train);
@@ -70,7 +69,15 @@ public class FoldEvaluationService {
                 )
         );
 
-        return new PerFoldResult(runIndex, foldIndex, metrics);
+        return new PerFoldResult(
+                context.getRunIndex(),
+                context.getFoldIndex(),
+                context.getTrainingWindowLabel(),
+                context.getTestWindowLabel(),
+                context.getTrainingInstances(),
+                context.getTestInstances(),
+                metrics
+        );
     }
 }
 

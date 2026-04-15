@@ -44,6 +44,8 @@ public class FoldResultsWriter implements AutoCloseable {
             record.add(execution.getRunId());
             record.add(selection.getGranularity());
             record.add(datasetName);
+            record.add(execution.getValidationStrategy().getCliValue());
+            record.add(execution.getTemporalAttributeName());
             record.add(definition.getDisplayName());
             record.add(definition.getClassName());
             record.add(classAttribute);
@@ -52,6 +54,10 @@ public class FoldResultsWriter implements AutoCloseable {
             record.add(execution.getSeed());
             record.add(result.getRun());
             record.add(result.getFold());
+            record.add(result.getTrainingWindowLabel());
+            record.add(result.getTestWindowLabel());
+            record.add(result.getTrainingInstances() < 0 ? null : result.getTrainingInstances());
+            record.add(result.getTestInstances() < 0 ? null : result.getTestInstances());
             for (MetricDefinition metric : MetricDefinition.values()) {
                 record.add(metric.extract(metrics));
             }
@@ -65,6 +71,8 @@ public class FoldResultsWriter implements AutoCloseable {
         header.add("RunId");
         header.add("Granularity");
         header.add("Dataset");
+        header.add("ValidationStrategy");
+        header.add("TemporalAttribute");
         header.add("Classifier");
         header.add("ClassifierClass");
         header.add("ClassAttribute");
@@ -73,6 +81,10 @@ public class FoldResultsWriter implements AutoCloseable {
         header.add("Seed");
         header.add("Run");
         header.add("Fold");
+        header.add("TrainingWindow");
+        header.add("TestWindow");
+        header.add("TrainingInstances");
+        header.add("TestInstances");
         for (MetricDefinition metric : MetricDefinition.values()) {
             header.add(metric.getDisplayName());
         }
@@ -84,4 +96,3 @@ public class FoldResultsWriter implements AutoCloseable {
         printer.close();
     }
 }
-

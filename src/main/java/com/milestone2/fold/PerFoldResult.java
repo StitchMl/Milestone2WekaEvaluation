@@ -10,13 +10,31 @@ import java.util.Objects;
 public class PerFoldResult {
     private final int run;
     private final int fold;
+    private final String trainingWindowLabel;
+    private final String testWindowLabel;
+    private final int trainingInstances;
+    private final int testInstances;
     private final Metrics metrics;
 
     public PerFoldResult(int run,
                          int fold,
                          Metrics metrics) {
+        this(run, fold, null, null, -1, -1, metrics);
+    }
+
+    public PerFoldResult(int run,
+                         int fold,
+                         String trainingWindowLabel,
+                         String testWindowLabel,
+                         int trainingInstances,
+                         int testInstances,
+                         Metrics metrics) {
         this.run = run;
         this.fold = fold;
+        this.trainingWindowLabel = trainingWindowLabel;
+        this.testWindowLabel = testWindowLabel;
+        this.trainingInstances = trainingInstances;
+        this.testInstances = testInstances;
         this.metrics = metrics;
     }
 
@@ -28,6 +46,22 @@ public class PerFoldResult {
         return fold;
     }
 
+    public String getTrainingWindowLabel() {
+        return trainingWindowLabel;
+    }
+
+    public String getTestWindowLabel() {
+        return testWindowLabel;
+    }
+
+    public int getTrainingInstances() {
+        return trainingInstances;
+    }
+
+    public int getTestInstances() {
+        return testInstances;
+    }
+
     public Metrics getMetrics() {
         return metrics;
     }
@@ -37,6 +71,10 @@ public class PerFoldResult {
         return "PerFoldResult{" +
                 "run=" + run +
                 ", fold=" + fold +
+                ", trainingWindowLabel='" + trainingWindowLabel + '\'' +
+                ", testWindowLabel='" + testWindowLabel + '\'' +
+                ", trainingInstances=" + trainingInstances +
+                ", testInstances=" + testInstances +
                 ", metrics=" + metrics +
                 '}';
     }
@@ -49,13 +87,17 @@ public class PerFoldResult {
         PerFoldResult that = (PerFoldResult) o;
         return run == that.run &&
                 fold == that.fold &&
+                trainingInstances == that.trainingInstances &&
+                testInstances == that.testInstances &&
+                Objects.equals(trainingWindowLabel, that.trainingWindowLabel) &&
+                Objects.equals(testWindowLabel, that.testWindowLabel) &&
                 Objects.equals(metrics, that.metrics);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(run, fold, metrics);
+        return Objects.hash(run, fold, trainingWindowLabel, testWindowLabel,
+                trainingInstances, testInstances, metrics);
     }
 }
-
 

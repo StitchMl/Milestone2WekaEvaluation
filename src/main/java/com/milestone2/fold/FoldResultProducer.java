@@ -7,6 +7,5 @@ import weka.core.Instances;
  */
 @FunctionalInterface
 public interface FoldResultProducer {
-    PerFoldResult produce(Instances train, Instances test, int runIndex, int foldIndex) throws Exception;
+    PerFoldResult produce(Instances train, Instances test, FoldContext context) throws Exception;
 }
-

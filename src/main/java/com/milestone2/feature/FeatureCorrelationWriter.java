@@ -22,6 +22,8 @@ public class FeatureCorrelationWriter implements AutoCloseable {
             "RunId",
             "Granularity",
             "Dataset",
+            "ValidationStrategy",
+            "TemporalAttribute",
             "ClassAttribute",
             "PositiveClass",
             "Feature",
@@ -59,6 +61,8 @@ public class FeatureCorrelationWriter implements AutoCloseable {
             record.add(config.getExecution().getRunId());
             record.add(config.getSelection().getGranularity());
             record.add(report.getDatasetName());
+            record.add(config.getExecution().getValidationStrategy().getCliValue());
+            record.add(config.getExecution().getTemporalAttributeName());
             record.add(report.getClassAttributeName());
             record.add(report.getPositiveClassValue());
             record.add(correlation.getFeatureName());
@@ -81,4 +85,3 @@ public class FeatureCorrelationWriter implements AutoCloseable {
         printer.close();
     }
 }
-

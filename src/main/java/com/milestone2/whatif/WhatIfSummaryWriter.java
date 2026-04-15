@@ -20,6 +20,8 @@ public class WhatIfSummaryWriter implements AutoCloseable {
             "RunId",
             "Granularity",
             "Dataset",
+            "ValidationStrategy",
+            "TemporalAttribute",
             "ClassAttribute",
             "PositiveClass",
             "Feature",

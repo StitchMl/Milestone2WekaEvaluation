@@ -20,6 +20,8 @@ public class Milestone2SummaryWriter implements AutoCloseable {
             "RunId",
             "Granularity",
             "Dataset",
+            "ValidationStrategy",
+            "TemporalAttribute",
             "ClassAttribute",
             "PositiveClass",
             "RowType",

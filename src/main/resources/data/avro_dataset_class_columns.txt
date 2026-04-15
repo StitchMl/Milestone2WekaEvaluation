@@ -1,0 +1,42 @@
+﻿File: avro_dataset_class.csv
+Total columns: 38
+
+Columns:
+01. Project
+02. Path
+03. Class
+04. ReleaseId
+05. LOC
+06. StmtCount
+07. Cyclomatic
+08. Cognitive
+09. DistinctOperators
+10. DistinctOperands
+11. TotalOperators
+12. TotalOperands
+13. Vocabulary
+14. Length
+15. Volume
+16. Difficulty
+17. Effort
+18. MaxNestingDepth
+19. isLongMethod
+20. isGodClass
+21. isFeatureEnvy
+22. isDuplicatedCode
+23. CodeSmells
+24. NSmells
+25. Touches
+26. TotalTouches
+27. IssueTouches
+28. TotalIssueTouches
+29. Authors
+30. TotalAuthors
+31. AddedLines
+32. DeletedLines
+33. Churn
+34. TotalChurn
+35. prevCodeSmells
+36. AgeInReleases
+37. prevBuggy
+38. Buggy

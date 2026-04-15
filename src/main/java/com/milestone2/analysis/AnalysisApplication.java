@@ -34,10 +34,12 @@ public class AnalysisApplication {
             AnalysisExecution execution = config.getExecution();
             analysisRuntime.prepare(config);
 
-            log.info("Analysis run '{}' started with granularity={} dataDir='{}' seed={}",
+            log.info("Analysis run '{}' started with granularity={} dataDir='{}' strategy={} temporalAttribute='{}' seed={}",
                     execution.getRunId(),
                     selection.getGranularity(),
                     paths.getDataDir(),
+                    execution.getValidationStrategy().getCliValue(),
+                    execution.getTemporalAttributeName(),
                     execution.getSeed());
 
             ClassifierCatalog classifierCatalog = ClassifierCatalog.load(

@@ -1,9 +1,12 @@
 package com.milestone2.crossvalidation;
 
 import com.milestone2.fold.FoldResultProducer;
+import com.milestone2.fold.FoldContext;
 import com.milestone2.fold.PerFoldResult;
 import com.milestone2.analysis.AnalysisConfig;
 import com.milestone2.analysis.AnalysisExecution;
+import com.milestone2.validation.ValidationExecutor;
+import com.milestone2.validation.ValidationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weka.core.Instances;
@@ -20,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Executes deterministic cross-validation folds in parallel.
  */
-public class CrossValidationExecutor {
+public class CrossValidationExecutor implements ValidationExecutor {
     private static final Logger log = LoggerFactory.getLogger(CrossValidationExecutor.class);
 
     private final CrossValidationParallelismResolver parallelismResolver;
@@ -33,6 +36,12 @@ public class CrossValidationExecutor {
         this.parallelismResolver = parallelismResolver;
     }
 
+    @Override
+    public ValidationStrategy supportedStrategy() {
+        return ValidationStrategy.CROSS_VALIDATION;
+    }
+
+    @Override
     public List<PerFoldResult> execute(Instances data,
                                        AnalysisConfig config,
                                        FoldResultProducer producer) throws Exception {
@@ -58,6 +67,7 @@ public class CrossValidationExecutor {
         return results;
     }
 
+    @SuppressWarnings("UnnecessaryLocalVariable")
     private void submitRunTasks(Instances data,
                                 AnalysisConfig config,
                                 FoldResultProducer producer,
@@ -75,8 +85,10 @@ public class CrossValidationExecutor {
             final int foldIndex = fold;
             final Instances train = new Instances(randomized.trainCV(execution.getFolds(), fold));
             final Instances test = new Instances(randomized.testCV(execution.getFolds(), fold));
+            final FoldContext context =
+                    FoldContext.crossValidation(runIndex, foldIndex, train.numInstances(), test.numInstances());
 
-            completionService.submit(() -> producer.produce(train, test, runIndex, foldIndex));
+            completionService.submit(() -> producer.produce(train, test, context));
         }
     }
 

@@ -10,7 +10,7 @@ This file is a compact writing scaffold aligned with the exam workflow supported
 ## 2. Why This Method
 
 - Describe how the target method or entity was selected.
-- Use `feature_correlations.csv` to motivate why the chosen feature matters.
+- Use `feature_correlations.csv` to discuss both the most correlated feature and the actionable smell feature selected for the what-if study.
 - Explain why the chosen method belongs to the risky subset represented by `B+`.
 
 ## 3. Before The Change
@@ -30,7 +30,7 @@ This file is a compact writing scaffold aligned with the exam workflow supported
 
 ## 6. What-If Analysis
 
-- Summarize the cross-validation comparison from `results.csv`.
+- Summarize the walk-forward classifier comparison from `results.csv`.
 - Explain which classifier was selected and why, with emphasis on Kappa and AUC.
 - Use `what_if_summary.csv` to compare A, B+, B and C.
 - Discuss the `B+->B` impact row as the estimate of potentially avoidable buggy methods.

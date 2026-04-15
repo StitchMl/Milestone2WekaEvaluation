@@ -1,6 +1,7 @@
 package com.milestone2.dataset;
 
 import com.milestone2.analysis.AnalysisConfig;
+import com.milestone2.validation.ValidationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weka.core.Instance;
@@ -13,8 +14,6 @@ public class DatasetValidationService {
     private static final Logger log = LoggerFactory.getLogger(DatasetValidationService.class);
 
     public void validate(Instances data, AnalysisConfig config) {
-        int folds = config.getExecution().getFolds();
-
         if (data.classIndex() < 0) {
             throw new IllegalArgumentException("Dataset '" + data.relationName() + "' has no class attribute configured");
         }
@@ -23,6 +22,20 @@ public class DatasetValidationService {
                     "Class attribute '" + data.classAttribute().name() + "' must be nominal for classification"
             );
         }
+        validateStrategySpecificConstraints(data, config);
+    }
+
+    private void validateStrategySpecificConstraints(Instances data, AnalysisConfig config) {
+        if (config.getExecution().getValidationStrategy() != ValidationStrategy.CROSS_VALIDATION) {
+            if (data.numInstances() < 2) {
+                throw new IllegalArgumentException(
+                        "Dataset '" + data.relationName() + "' must contain at least two instances"
+                );
+            }
+            return;
+        }
+
+        int folds = config.getExecution().getFolds();
         if (folds < 2) {
             throw new IllegalArgumentException("The number of folds must be at least 2");
         }

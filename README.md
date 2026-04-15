@@ -1,11 +1,12 @@
 ## Overview
 
-This project evaluates defect prediction classifiers with Weka for the Milestone 2 workflow and also exposes an optional exam-oriented extension for feature what-if analysis:
+This project evaluates defect prediction classifiers with Weka for the Milestone 2 workflow and ships a maintainability-oriented what-if study by default:
 
-- Milestone 2 accuracy benchmarking with 10x10-fold cross-validation.
-- An optional what-if analysis based on feature correlation and the derived datasets A, B+, B and C.
+- Walk-forward validation that preserves release order through the `ReleaseId` temporal attribute.
+- Comparison of the three milestone classifiers: Random Forest, Naive Bayes and IBk.
+- A what-if analysis based on feature correlation and the derived datasets A, B+, B and C.
 
-The application is organized around small orchestration and reporting components instead of a single monolithic runner. Classifier evaluation, fold execution, chart generation, feature correlation, what-if scenario building, and CSV publishing are handled by separate classes.
+The application is intentionally organized around small orchestration, validation, reporting and what-if components instead of a monolithic runner. The largest production files stay small and responsibilities are isolated by package.
 
 ## Build
 
@@ -28,18 +29,21 @@ Useful CLI options:
 - `--class-attribute=bug` sets the target attribute explicitly.
 - `--positive-class=yes` sets the positive class explicitly.
 - `--classifiers=RF,NB` restricts the classifier catalog.
-- `--runs=10 --folds=10 --seed=42` controls the cross-validation execution.
+- `--validation=walk-forward|cross-validation` selects the validation strategy. Default: `walk-forward`.
+- `--temporal-attribute=ReleaseId` selects the attribute used to preserve temporal order. Default: `ReleaseId`.
+- `--min-train-periods=N` sets how many historical periods must be accumulated before the first walk-forward prediction. Default: `1`.
+- `--runs=N --folds=N` controls the legacy randomized cross-validation flow when `--validation=cross-validation`.
 - `--threads=N` caps how many cross-validation folds run concurrently. Default: automatic, up to `min(folds, CPU-1)`.
 - `--smote=true|false` enables or disables SMOTE in the preprocessing pipeline. Default: `false` for the Milestone 2 baseline.
-- `--whatif=true|false` enables or disables the optional what-if analysis. Default: `false`.
+- `--whatif=true|false` enables or disables the what-if analysis. Default: `true`.
 - `--whatif-feature=NSmells` forces the feature used to build B+, B and C.
 - `--whatif-classifier=RF` forces the classifier used in the what-if prediction study.
 
-If `--whatif-feature` is not provided, the application prefers `NSmells` when present and zeroable. Otherwise it falls back to the strongest zeroable numeric feature by absolute correlation with the bug label. If `--whatif-classifier` is not provided, the application picks the best cross-validation classifier by Kappa and then AUC.
+If `--whatif-feature` is not provided, the application prefers `NSmells` when present and zeroable. Otherwise it falls back to the strongest zeroable numeric feature by absolute correlation with the bug label. If `--whatif-classifier` is not provided, the application picks the best validated classifier by Kappa and then AUC.
 
 At startup the application validates the dataset directory, the classifier configuration path, and the current Weka classifier catalog by instantiating every configured classifier from `classifiers.properties`.
 
-During evaluation the application also rejects datasets with fewer instances than the requested folds and warns when the minority class is smaller than the fold count, because that setup makes the cross-validation metrics less reliable.
+During walk-forward validation the application requires a temporal attribute with contiguous ordered periods. During randomized cross-validation it rejects datasets with fewer instances than the requested folds and warns when the minority class is smaller than the fold count, because that setup makes the metrics less reliable.
 
 Project launchers intentionally clear `_JAVA_OPTIONS` before invoking Java, so repository-local build and run commands stay free from the launcher banner injected by the machine environment.
 
@@ -47,11 +51,11 @@ Project launchers intentionally clear `_JAVA_OPTIONS` before invoking Java, so r
 
 Each run generates:
 
-- `output/results.csv`: aggregate classifier metrics for each dataset.
-- `output/fold_metrics.csv`: per-fold metrics for the 10x10 study.
+- `output/results.csv`: aggregate classifier metrics for each dataset, including validation strategy and temporal attribute.
+- `output/fold_metrics.csv`: per-split metrics plus explicit training and test windows for the validation strategy in use.
 - `output/milestone2_summary.csv`: best classifier per metric plus the overall milestone winner chosen by Kappa and AUC.
-- `output/feature_correlations.csv`: ranking of numeric features by correlation with bugginess when the optional what-if analysis is enabled.
-- `output/what_if_summary.csv`: scenario summaries for A, B+, B, C plus the paired B+ -> B impact row when the optional what-if analysis is enabled.
+- `output/feature_correlations.csv`: ranking of numeric features by correlation with bugginess, plus the feature actually selected for the what-if study.
+- `output/what_if_summary.csv`: scenario summaries for A, B+, B, C plus the paired B+ -> B impact row used to estimate potentially avoidable buggy entities.
 - `output/charts/`: bar charts and box plots for the classifier comparison.
 
 ## Architecture
@@ -62,8 +66,14 @@ The main flow is:
 2. `AnalysisRunner` discovers datasets and delegates each dataset to `DatasetAnalyzer`.
 3. `DatasetAnalyzer` performs:
    - classifier evaluation through `ModelEvaluator`
-   - optional what-if analysis through `WhatIfAnalyzer`
+   - what-if analysis through `WhatIfAnalyzer`
 4. `DatasetReportPublisher` writes CSV outputs, generates charts, and logs the best metric winners.
+
+Validation is now split into dedicated slices:
+
+- `crossvalidation/`: legacy randomized repeated k-fold execution.
+- `validation/`: strategy selection and validation abstractions.
+- `validation/timeseries/`: walk-forward period extraction and temporal window generation.
 
 The what-if slice is intentionally separated into focused components:
 
@@ -74,20 +84,22 @@ The what-if slice is intentionally separated into focused components:
 - `WhatIfPredictionService`
 - `WhatIfScenarioSummarizer`
 
+A full class-by-class architecture inventory is available in [docs/architecture-map.md](docs/architecture-map.md).
+
 ## Exam Workflow Support
 
-The repository is centered on Milestone 2 and also supports an optional extension for the broader exam narrative.
+The repository is centered on Milestone 2 and keeps the default workflow aligned with the deliverable.
 
 Accuracy phase:
 
-1. compare the configured classifiers with 10x10-fold cross-validation
+1. compare the configured classifiers with walk-forward validation over ordered releases
 2. inspect Precision, Recall, F1, Kappa, AUC, NPofB20 and Accuracy
 3. identify the best classifier for the dataset
 
 What-if phase:
 
 1. rank numeric features by correlation with the bug label
-2. select an actionable feature, preferably `NSmells`
+2. identify the strongest overall correlation and the actionable what-if feature, preferably `NSmells`
 3. build:
    - `A`: original dataset
    - `B+`: instances where the selected feature is greater than zero
@@ -106,5 +118,6 @@ The exam report outline is available in [docs/exam-report-outline.md](docs/exam-
 The codebase includes automated checks for:
 
 - classifier catalog loading and Weka instantiation
-- Milestone 2 smoke execution with a real ARFF dataset
+- walk-forward temporal window construction and ordering guarantees
+- Milestone 2 smoke execution with real ARFF and CSV datasets
 - configuration parsing and summary selection rules

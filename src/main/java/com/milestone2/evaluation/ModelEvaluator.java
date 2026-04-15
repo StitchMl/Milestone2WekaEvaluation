@@ -3,12 +3,14 @@ package com.milestone2.evaluation;
 import com.milestone2.analysis.AnalysisConfig;
 import com.milestone2.analysis.AnalysisExecution;
 import com.milestone2.classifier.ClassifierDefinition;
-import com.milestone2.crossvalidation.CrossValidationExecutor;
 import com.milestone2.dataset.DatasetValidationService;
 import com.milestone2.fold.FoldEvaluationService;
 import com.milestone2.fold.PerFoldResult;
 import com.milestone2.metric.MetricAggregator;
 import com.milestone2.metric.MetricDefinition;
+import com.milestone2.validation.ValidationExecutor;
+import com.milestone2.validation.ValidationExecutorSelector;
+import com.milestone2.validation.ValidationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weka.core.Instances;
@@ -25,26 +27,26 @@ public class ModelEvaluator {
     private final PositiveClassResolver positiveClassResolver;
     private final DatasetValidationService datasetValidationService;
     private final MetricAggregator metricAggregator;
-    private final CrossValidationExecutor crossValidationExecutor;
+    private final ValidationExecutorSelector validationExecutorSelector;
     private final FoldEvaluationService foldEvaluationService;
 
     public ModelEvaluator() {
         this(new PositiveClassResolver(),
                 new DatasetValidationService(),
                 new MetricAggregator(),
-                new CrossValidationExecutor(),
+                new ValidationExecutorSelector(),
                 new FoldEvaluationService());
     }
 
     ModelEvaluator(PositiveClassResolver positiveClassResolver,
                    DatasetValidationService datasetValidationService,
                    MetricAggregator metricAggregator,
-                   CrossValidationExecutor crossValidationExecutor,
+                   ValidationExecutorSelector validationExecutorSelector,
                    FoldEvaluationService foldEvaluationService) {
         this.positiveClassResolver = positiveClassResolver;
         this.datasetValidationService = datasetValidationService;
         this.metricAggregator = metricAggregator;
-        this.crossValidationExecutor = crossValidationExecutor;
+        this.validationExecutorSelector = validationExecutorSelector;
         this.foldEvaluationService = foldEvaluationService;
     }
 
@@ -55,22 +57,20 @@ public class ModelEvaluator {
         AnalysisExecution execution = config.getExecution();
         datasetValidationService.validate(data, config);
 
-        log.info("=== Starting {}x{}-fold cross-validation for {} ===",
-                execution.getRuns(),
-                execution.getFolds(),
-                definition.getDisplayName());
+        logValidationStart(execution, definition.getDisplayName());
+        ValidationExecutor validationExecutor =
+                validationExecutorSelector.select(execution.getValidationStrategy());
 
-        List<PerFoldResult> results = crossValidationExecutor.execute(
+        List<PerFoldResult> results = validationExecutor.execute(
                 data,
                 config,
-                (train, test, runIndex, foldIndex) -> foldEvaluationService.evaluate(
+                (train, test, context) -> foldEvaluationService.evaluate(
                         definition,
                         config,
                         preprocessor,
                         train,
                         test,
-                        runIndex,
-                        foldIndex
+                        context
                 )
         );
 
@@ -85,6 +85,19 @@ public class ModelEvaluator {
     public String resolvePositiveClassValue(Instances data, AnalysisConfig config) {
         return positiveClassResolver.resolvePositiveClassValue(data.classAttribute(), config);
     }
-}
 
+    private void logValidationStart(AnalysisExecution execution, String classifierName) {
+        if (execution.getValidationStrategy() == ValidationStrategy.CROSS_VALIDATION) {
+            log.info("=== Starting {}x{}-fold cross-validation for {} ===",
+                    execution.getRuns(),
+                    execution.getFolds(),
+                    classifierName);
+            return;
+        }
+
+        log.info("=== Starting walk-forward validation for {} using temporal attribute '{}' ===",
+                classifierName,
+                execution.getTemporalAttributeName());
+    }
+}
 

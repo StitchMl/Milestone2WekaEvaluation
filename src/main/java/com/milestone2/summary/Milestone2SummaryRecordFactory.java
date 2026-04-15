@@ -49,6 +49,8 @@ public class Milestone2SummaryRecordFactory {
         record.add(config.getExecution().getRunId());
         record.add(config.getSelection().getGranularity());
         record.add(report.getDatasetName());
+        record.add(config.getExecution().getValidationStrategy().getCliValue());
+        record.add(config.getExecution().getTemporalAttributeName());
         record.add(report.getClassAttributeName());
         record.add(report.getPositiveClassValue());
         return record;

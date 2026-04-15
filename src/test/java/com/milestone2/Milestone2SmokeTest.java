@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class Milestone2SmokeTest {
@@ -28,11 +27,8 @@ class Milestone2SmokeTest {
                 "--classifier-config=classifiers.properties",
                 "--class-attribute=bug",
                 "--positive-class=yes",
-                "--runs=2",
-                "--folds=2",
                 "--seed=123",
-                "--smote=false",
-                "--whatif=false"
+                "--smote=false"
         });
 
         try {
@@ -52,19 +48,29 @@ class Milestone2SmokeTest {
             assertTrue(Files.exists(config.getPaths().getResultsCsv()));
             assertTrue(Files.exists(config.getPaths().getFoldCsv()));
             assertTrue(Files.exists(config.getPaths().getMilestone2SummaryCsv()));
-            assertFalse(Files.exists(config.getPaths().getFeatureCorrelationsCsv()));
-            assertFalse(Files.exists(config.getPaths().getWhatIfSummaryCsv()));
+            assertTrue(Files.exists(config.getPaths().getFeatureCorrelationsCsv()));
+            assertTrue(Files.exists(config.getPaths().getWhatIfSummaryCsv()));
             assertTrue(Files.size(config.getPaths().getResultsCsv()) > 0);
             assertTrue(Files.size(config.getPaths().getFoldCsv()) > 0);
             assertTrue(Files.size(config.getPaths().getMilestone2SummaryCsv()) > 0);
+            assertTrue(Files.size(config.getPaths().getFeatureCorrelationsCsv()) > 0);
+            assertTrue(Files.size(config.getPaths().getWhatIfSummaryCsv()) > 0);
 
             String results = Files.readString(config.getPaths().getResultsCsv(), StandardCharsets.UTF_8);
+            String foldMetrics = Files.readString(config.getPaths().getFoldCsv(), StandardCharsets.UTF_8);
             String summary = Files.readString(config.getPaths().getMilestone2SummaryCsv(), StandardCharsets.UTF_8);
+            String correlations = Files.readString(config.getPaths().getFeatureCorrelationsCsv(), StandardCharsets.UTF_8);
+            String whatIf = Files.readString(config.getPaths().getWhatIfSummaryCsv(), StandardCharsets.UTF_8);
             assertTrue(results.contains("Random Forest"));
             assertTrue(results.contains("Naive Bayes"));
             assertTrue(results.contains("K-Nearest Neighbors"));
+            assertTrue(results.contains("walk-forward"));
+            assertTrue(foldMetrics.contains("r1..r3") || foldMetrics.contains("r1..r2"));
             assertTrue(summary.contains("OVERALL_WINNER"));
             assertTrue(summary.contains("METRIC_WINNER"));
+            assertTrue(correlations.contains("NSmells"));
+            assertTrue(correlations.contains("SelectedForWhatIf"));
+            assertTrue(whatIf.contains("B+->B"));
         } finally {
             deleteRecursively(tempRoot);
         }
@@ -84,6 +90,7 @@ class Milestone2SmokeTest {
                 "--classifier-config=classifiers.properties",
                 "--class-attribute=bug",
                 "--positive-class=yes",
+                "--validation=cross-validation",
                 "--runs=2",
                 "--folds=2",
                 "--threads=1",
@@ -115,33 +122,59 @@ class Milestone2SmokeTest {
     private String demoDataset() {
         return String.join(System.lineSeparator(),
                 "@relation demo",
+                "@attribute ReleaseId {r1,r2,r3,r4}",
                 "@attribute LOC numeric",
                 "@attribute WMC numeric",
+                "@attribute NSmells numeric",
                 "@attribute RFC numeric",
                 "@attribute bug {yes,no}",
                 "@data",
-                "10,1,4,no",
-                "14,2,5,no",
-                "18,3,7,yes",
-                "22,4,8,yes",
-                "11,1,4,no",
-                "13,2,5,no",
-                "19,3,7,yes",
-                "24,5,9,yes"
+                "r1,10,1,0,4,no",
+                "r1,12,1,0,5,no",
+                "r1,14,2,1,6,no",
+                "r1,18,3,2,7,yes",
+                "r1,20,4,3,8,yes",
+                "r2,11,1,0,4,no",
+                "r2,13,2,1,5,no",
+                "r2,17,3,2,7,yes",
+                "r2,19,4,3,8,yes",
+                "r2,22,5,4,9,yes",
+                "r3,12,1,0,4,no",
+                "r3,15,2,1,5,no",
+                "r3,18,3,2,7,yes",
+                "r3,21,4,4,8,yes",
+                "r3,24,5,5,10,yes",
+                "r4,13,1,0,4,no",
+                "r4,16,2,1,5,no",
+                "r4,20,3,3,7,yes",
+                "r4,23,4,4,9,yes",
+                "r4,26,6,6,11,yes"
         );
     }
 
     private String demoCsvDataset() {
         return String.join(System.lineSeparator(),
-                "LOC,WMC,RFC,bug",
-                "10,1,4,no",
-                "14,2,5,no",
-                "18,3,7,yes",
-                "22,4,8,yes",
-                "11,1,4,no",
-                "13,2,5,no",
-                "19,3,7,yes",
-                "24,5,9,yes"
+                "ReleaseId,LOC,WMC,NSmells,RFC,bug",
+                "r1,10,1,0,4,no",
+                "r1,12,1,0,5,no",
+                "r1,14,2,1,6,no",
+                "r1,18,3,2,7,yes",
+                "r1,20,4,3,8,yes",
+                "r2,11,1,0,4,no",
+                "r2,13,2,1,5,no",
+                "r2,17,3,2,7,yes",
+                "r2,19,4,3,8,yes",
+                "r2,22,5,4,9,yes",
+                "r3,12,1,0,4,no",
+                "r3,15,2,1,5,no",
+                "r3,18,3,2,7,yes",
+                "r3,21,4,4,8,yes",
+                "r3,24,5,5,10,yes",
+                "r4,13,1,0,4,no",
+                "r4,16,2,1,5,no",
+                "r4,20,3,3,7,yes",
+                "r4,23,4,4,9,yes",
+                "r4,26,6,6,11,yes"
         );
     }
 
@@ -161,4 +194,3 @@ class Milestone2SmokeTest {
                 });
     }
 }
-
