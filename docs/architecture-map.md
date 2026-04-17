@@ -1,6 +1,6 @@
 # Architecture Map
 
-This document assigns a concrete responsibility to each production file so the project stays maintainable, navigable and free from God classes.
+This document assigns a concrete responsibility to each production file, so the project stays maintainable, navigable and free from God classes.
 
 ## Package Roles
 
@@ -42,7 +42,7 @@ This document assigns a concrete responsibility to each production file so the p
 - `AnalysisRuntime`: prepares filesystem and logging before execution.
 - `AnalysisSelection`: stores class attribute, positive class, size attribute and classifier selection.
 - `AnalysisSelectionBuilder`: parses selection-oriented CLI switches.
-- `AnalysisStartupValidator`: validates paths and classifier catalog wiring at startup.
+- `AnalysisStartupValidator`: validates paths and classifier catalog wiring at a startup.
 - `CliArgument`: immutable representation of one `--key=value` argument.
 - `Config`: central place for project defaults and constant filenames.
 - `NetlibRuntimeConfigurer`: forces the pure-Java netlib backend for portability.
@@ -110,7 +110,7 @@ This document assigns a concrete responsibility to each production file so the p
 
 ### `prediction`
 
-- `PredictionRecord`: stores one scenario prediction with actual label and positive probability.
+- `PredictionRecord`: stores one scenario prediction with an actual label and positive probability.
 - `RankedPrediction`: sortable prediction used by effort-based metrics.
 - `RankedPredictionFactory`: converts Weka predictions into ranked prediction objects.
 - `ScenarioPredictionSummary`: aggregated view of predictions for one what-if scenario.
@@ -158,5 +158,5 @@ This document assigns a concrete responsibility to each production file so the p
 - `WhatIfScenario`: enum listing the named what-if datasets.
 - `WhatIfScenarioReport`: immutable report that joins feature choice, classifier choice and scenario results.
 - `WhatIfScenarioSummarizer`: aggregates raw scenario predictions into business-level summaries.
-- `WhatIfSummaryRecordFactory`: creates CSV rows for scenario and impact output.
+- `WhatIfSummaryRecordFactory`: creates CSV rows for a scenario and impact output.
 - `WhatIfSummaryWriter`: exports the what-if summary CSV.

@@ -39,4 +39,4 @@ Columns:
 35. prevCodeSmells
 36. AgeInReleases
 37. prevBuggy
-38. Buggy
+38. Buggy.
