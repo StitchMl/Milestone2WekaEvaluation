@@ -39,9 +39,9 @@ Useful CLI options:
 - `--whatif-feature=NSmells` forces the feature used to build B+, B and C.
 - `--whatif-classifier=RF` forces the classifier used in the what-if prediction study.
 
-If `--whatif-feature` is not provided, the application prefers `NSmells` when present and zeroable. Otherwise it falls back to the strongest zeroable numeric feature by absolute correlation with the bug label. If `--whatif-classifier` is not provided, the application picks the best validated classifier by Kappa and then AUC.
+If `--whatif-feature` is not provided, the application prefers `NSmells` when present and zeroable. Otherwise, it falls back to the strongest zeroable numeric feature by an absolute correlation with the bug label. If `--whatif-classifier` is not provided, the application picks the best validated classifier by Kappa and then AUC.
 
-At startup the application validates the dataset directory, the classifier configuration path, and the current Weka classifier catalog by instantiating every configured classifier from `classifiers.properties`.
+At a startup the application validates the dataset directory, the classifier configuration path, and the current Weka classifier catalog by instantiating every configured classifier from `classifiers.properties`.
 
 During walk-forward validation the application requires a temporal attribute with contiguous ordered periods. During randomized cross-validation it rejects datasets with fewer instances than the requested folds and warns when the minority class is smaller than the fold count, because that setup makes the metrics less reliable.
 
@@ -54,8 +54,8 @@ Each run generates:
 - `output/results.csv`: aggregate classifier metrics for each dataset, including validation strategy and temporal attribute.
 - `output/fold_metrics.csv`: per-split metrics plus explicit training and test windows for the validation strategy in use.
 - `output/milestone2_summary.csv`: best classifier per metric plus the overall milestone winner chosen by Kappa and AUC.
-- `output/feature_correlations.csv`: ranking of numeric features by correlation with bugginess, plus the feature actually selected for the what-if study.
-- `output/what_if_summary.csv`: scenario summaries for A, B+, B, C plus the paired B+ -> B impact row used to estimate potentially avoidable buggy entities.
+- `output/feature_correlations.csv`: ranking of numeric features by a correlation with bugginess, plus the feature actually selected for the what-if study.
+- `output/what_if_summary.csv`: scenario summaries for A, B+, B, C plus the paired B+ → B impact row used to estimate potentially avoidable buggy entities.
 - `output/charts/`: bar charts and box plots for the classifier comparison.
 
 ## Architecture
@@ -98,8 +98,8 @@ Accuracy phase:
 
 What-if phase:
 
-1. rank numeric features by correlation with the bug label
-2. identify the strongest overall correlation and the actionable what-if feature, preferably `NSmells`
+1. rank numeric features by a correlation with the bug label
+2. identify the strongest overall correlation, and the actionable what-if feature, preferably `NSmells`
 3. build:
    - `A`: original dataset
    - `B+`: instances where the selected feature is greater than zero
@@ -107,7 +107,7 @@ What-if phase:
    - `C`: instances where the selected feature is zero
 4. train the selected classifier on `A`
 5. compare predictions on `A`, `B+`, `B`, and `C`
-6. inspect the paired `B+ -> B` impact row to estimate potentially avoidable buggy methods
+6. inspect the paired `B+ -> B` impact row to estimate potentially avoidable buggy methods.
 
 ## Report Outline
 

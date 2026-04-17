@@ -1,7 +1,5 @@
 package com.milestone2.analysis;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,7 +21,7 @@ public class AnalysisSelection {
         this.classAttributeName = classAttributeName;
         this.positiveClassValue = positiveClassValue;
         this.sizeAttributeName = sizeAttributeName;
-        this.classifierIds = Collections.unmodifiableList(new ArrayList<>(classifierIds));
+        this.classifierIds = List.copyOf(classifierIds);
     }
 
     /**

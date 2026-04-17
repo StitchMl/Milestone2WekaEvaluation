@@ -5,7 +5,6 @@ import com.milestone2.fold.PerFoldResult;
 
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +21,7 @@ public class ClassifierEvaluationReport {
                                       List<PerFoldResult> foldResults) {
         this.definition = definition;
         this.aggregateMetrics = immutableMetricMap(aggregateMetrics);
-        this.foldResults = Collections.unmodifiableList(new ArrayList<>(foldResults));
+        this.foldResults = List.copyOf(foldResults);
     }
 
     /**

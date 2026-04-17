@@ -2,8 +2,6 @@ package com.milestone2.whatif;
 
 import com.milestone2.feature.FeatureCorrelation;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,7 +13,7 @@ public class WhatIfAnalysisReport {
 
     public WhatIfAnalysisReport(List<FeatureCorrelation> featureCorrelations,
                                 WhatIfScenarioReport scenarioReport) {
-        this.featureCorrelations = Collections.unmodifiableList(new ArrayList<>(featureCorrelations));
+        this.featureCorrelations = List.copyOf(featureCorrelations);
         this.scenarioReport = scenarioReport;
     }
 

@@ -2,8 +2,6 @@ package com.milestone2.classifier;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -14,7 +12,7 @@ public class ClassifierCatalog {
     private final List<ClassifierDefinition> definitions;
 
     private ClassifierCatalog(List<ClassifierDefinition> definitions) {
-        this.definitions = Collections.unmodifiableList(new ArrayList<>(definitions));
+        this.definitions = List.copyOf(definitions);
     }
 
     /**

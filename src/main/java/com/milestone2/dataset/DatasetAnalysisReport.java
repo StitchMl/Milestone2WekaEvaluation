@@ -3,8 +3,6 @@ package com.milestone2.dataset;
 import com.milestone2.whatif.WhatIfAnalysisReport;
 import com.milestone2.classifier.ClassifierEvaluationReport;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,7 +30,7 @@ public class DatasetAnalysisReport {
         this.datasetName = datasetName;
         this.classAttributeName = classAttributeName;
         this.positiveClassValue = positiveClassValue;
-        this.classifierReports = Collections.unmodifiableList(new ArrayList<>(classifierReports));
+        this.classifierReports = List.copyOf(classifierReports);
         this.whatIfReport = whatIfReport;
     }
 

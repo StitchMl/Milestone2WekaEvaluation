@@ -3,8 +3,6 @@ package com.milestone2.summary;
 import com.milestone2.classifier.OverallClassifierWinner;
 import com.milestone2.metric.MetricWinner;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -16,7 +14,7 @@ public class Milestone2Summary {
 
     public Milestone2Summary(List<MetricWinner> metricWinners,
                              OverallClassifierWinner overallWinner) {
-        this.metricWinners = Collections.unmodifiableList(new ArrayList<>(metricWinners));
+        this.metricWinners = List.copyOf(metricWinners);
         this.overallWinner = overallWinner;
     }
 

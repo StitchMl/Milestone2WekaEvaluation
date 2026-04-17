@@ -2,8 +2,6 @@ package com.milestone2.whatif;
 
 import com.milestone2.prediction.ScenarioPredictionSummary;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,7 +19,7 @@ public class WhatIfScenarioReport {
                                 WhatIfImpactSummary impactSummary) {
         this.featureSelection = featureSelection;
         this.classifierSelection = classifierSelection;
-        this.scenarioSummaries = Collections.unmodifiableList(new ArrayList<>(scenarioSummaries));
+        this.scenarioSummaries = List.copyOf(scenarioSummaries);
         this.impactSummary = impactSummary;
     }
 
