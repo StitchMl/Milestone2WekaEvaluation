@@ -44,6 +44,14 @@ public class Milestone2SummaryWriter implements AutoCloseable {
         recordFactory = new Milestone2SummaryRecordFactory();
     }
 
+    /**
+     * Writes the per-metric winners and the overall winner for one dataset analysis report.
+     *
+     * @param config  immutable analysis configuration
+     * @param report  dataset analysis report
+     * @param summary milestone summary to serialize
+     * @throws IOException when the CSV output cannot be written
+     */
     public void write(AnalysisConfig config,
                       DatasetAnalysisReport report,
                       Milestone2Summary summary) throws IOException {
@@ -56,6 +64,11 @@ public class Milestone2SummaryWriter implements AutoCloseable {
         printer.flush();
     }
 
+    /**
+     * Closes the underlying CSV printer.
+     *
+     * @throws IOException when closing the writer fails
+     */
     @Override
     public void close() throws IOException {
         printer.close();

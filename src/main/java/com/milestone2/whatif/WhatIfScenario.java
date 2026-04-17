@@ -15,6 +15,11 @@ public enum WhatIfScenario {
         this.displayName = displayName;
     }
 
+    /**
+     * Returns the stable label used in CSV exports and reports for the scenario.
+     *
+     * @return scenario display name
+     */
     public String getDisplayName() {
         return displayName;
     }

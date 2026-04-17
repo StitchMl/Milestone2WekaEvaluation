@@ -20,10 +20,20 @@ public class Milestone2Summary {
         this.overallWinner = overallWinner;
     }
 
+    /**
+     * Returns the winners selected independently for each metric.
+     *
+     * @return immutable metric winners list
+     */
     public List<MetricWinner> getMetricWinners() {
         return metricWinners;
     }
 
+    /**
+     * Returns the overall milestone winner selected with the Kappa/AUC rule.
+     *
+     * @return overall winner, or {@code null} when unavailable
+     */
     public OverallClassifierWinner getOverallWinner() {
         return overallWinner;
     }

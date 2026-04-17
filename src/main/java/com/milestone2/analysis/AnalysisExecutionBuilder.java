@@ -15,6 +15,12 @@ public class AnalysisExecutionBuilder {
     private String temporalAttributeName = Config.DEFAULT_TEMPORAL_ATTRIBUTE;
     private int minimumTrainingPeriods = Config.DEFAULT_MINIMUM_TRAINING_PERIODS;
 
+    /**
+     * Applies one execution-related CLI argument.
+     *
+     * @param argument parsed CLI argument
+     * @return {@code true} when the argument belongs to this builder, {@code false} otherwise
+     */
     public boolean apply(CliArgument argument) {
         switch (argument.getKey()) {
             case "runs":
@@ -48,6 +54,12 @@ public class AnalysisExecutionBuilder {
         }
     }
 
+    /**
+     * Creates the immutable execution settings for the current run.
+     *
+     * @param runId generated run identifier
+     * @return execution settings snapshot
+     */
     public AnalysisExecution build(String runId) {
         return new AnalysisExecution(
                 runId,

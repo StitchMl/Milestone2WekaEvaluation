@@ -26,6 +26,11 @@ public class AnalysisApplication {
         this.analysisRunner = analysisRunner;
     }
 
+    /**
+     * Parses CLI arguments, validates startup prerequisites and executes the full analysis workflow.
+     *
+     * @param args CLI arguments in {@code --key=value} form
+     */
     public void run(String[] args) {
         try {
             AnalysisConfig config = AnalysisConfig.fromArgs(args);

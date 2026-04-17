@@ -9,6 +9,12 @@ import java.util.Comparator;
  * Selects the milestone winner using Kappa first and AUC as tie-breaker.
  */
 public class OverallClassifierWinnerSelector {
+    /**
+     * Selects the best overall classifier for the dataset according to the milestone ranking rule.
+     *
+     * @param report dataset analysis report
+     * @return overall classifier winner, or {@code null} when no classifier reports are available
+     */
     public OverallClassifierWinner select(DatasetAnalysisReport report) {
         ClassifierEvaluationReport bestReport = report.getClassifierReports().stream()
                 .max(Comparator
@@ -32,6 +38,13 @@ public class OverallClassifierWinnerSelector {
         );
     }
 
+    /**
+     * Reads one aggregate metric from the classifier report.
+     *
+     * @param classifierReport classifier report
+     * @param metric           metric to extract
+     * @return aggregate metric value
+     */
     private double metric(ClassifierEvaluationReport classifierReport, MetricDefinition metric) {
         return classifierReport.getAggregateMetrics().get(metric);
     }

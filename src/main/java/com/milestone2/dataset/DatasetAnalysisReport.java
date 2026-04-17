@@ -36,29 +36,58 @@ public class DatasetAnalysisReport {
         this.whatIfReport = whatIfReport;
     }
 
+    /**
+     * Returns the analyzed dataset name as reported by the loader.
+     *
+     * @return dataset name
+     */
     public String getDatasetName() {
         return datasetName;
     }
 
+    /**
+     * Returns the class attribute used during evaluation.
+     *
+     * @return class attribute name
+     */
     public String getClassAttributeName() {
         return classAttributeName;
     }
 
+    /**
+     * Returns the positive class label used to compute binary metrics.
+     *
+     * @return positive class label
+     */
     public String getPositiveClassValue() {
         return positiveClassValue;
     }
 
+    /**
+     * Returns the classifier reports generated for this dataset.
+     *
+     * @return immutable classifier reports list
+     */
     public List<ClassifierEvaluationReport> getClassifierReports() {
         return classifierReports;
     }
 
+    /**
+     * Returns the optional what-if analysis report associated with the dataset.
+     *
+     * @return what-if report, or {@code null} when the workflow is disabled or skipped
+     */
     public WhatIfAnalysisReport getWhatIfReport() {
         return whatIfReport;
     }
 
+    /**
+     * Indicates whether a what-if report is attached to this dataset analysis.
+     *
+     * @return {@code true} when a what-if report is available
+     */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean hasWhatIfReport() {
         return whatIfReport != null;
     }
 }
-

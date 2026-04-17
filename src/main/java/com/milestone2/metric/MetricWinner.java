@@ -18,14 +18,29 @@ public class MetricWinner {
         this.metricValue = metricValue;
     }
 
+    /**
+     * Returns the metric for which the classifier won.
+     *
+     * @return winning metric
+     */
     public MetricDefinition getMetric() {
         return metric;
     }
 
+    /**
+     * Returns the classifier that achieved the best value for the metric.
+     *
+     * @return winning classifier definition
+     */
     public ClassifierDefinition getClassifierDefinition() {
         return classifierDefinition;
     }
 
+    /**
+     * Returns the winning aggregate value for the metric.
+     *
+     * @return winning metric value
+     */
     public double getMetricValue() {
         return metricValue;
     }

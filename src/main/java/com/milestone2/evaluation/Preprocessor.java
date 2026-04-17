@@ -22,6 +22,14 @@ import java.util.List;
 public class Preprocessor {
     private static final Logger log = LoggerFactory.getLogger(Preprocessor.class);
 
+    /**
+     * Builds the fold-local preprocessing pipeline to wrap around the classifier being evaluated.
+     *
+     * @param baseClassifier classifier to place at the end of the pipeline
+     * @param config         immutable analysis configuration
+     * @return configured filtered classifier
+     * @throws Exception when the filter chain cannot be built
+     */
     public FilteredClassifier buildPipeline(Classifier baseClassifier, AnalysisConfig config) throws Exception {
         FilteredClassifier pipeline = new FilteredClassifier();
         pipeline.setFilter(buildFilterChain(config));
@@ -29,6 +37,14 @@ public class Preprocessor {
         return pipeline;
     }
 
+    /**
+     * Creates the ordered filter chain that removes unsupported attributes, imputes values, normalizes features and
+     * optionally applies SMOTE.
+     *
+     * @param config immutable analysis configuration
+     * @return configured multi-filter chain
+     * @throws Exception when a filter cannot be configured
+     */
     private Filter buildFilterChain(AnalysisConfig config) throws Exception {
         List<Filter> filters = new ArrayList<>();
 
@@ -49,5 +65,4 @@ public class Preprocessor {
         return filterChain;
     }
 }
-
 

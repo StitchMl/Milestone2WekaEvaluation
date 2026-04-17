@@ -31,6 +31,18 @@ public class FoldEvaluationService {
         this.npOfB20Calculator = npOfB20Calculator;
     }
 
+    /**
+     * Trains the classifier on one split, evaluates it on the test partition and computes the full metric bundle.
+     *
+     * @param definition    classifier definition to evaluate
+     * @param config        immutable analysis configuration
+     * @param preprocessor  preprocessing pipeline builder
+     * @param train         training subset
+     * @param test          test subset
+     * @param context       split metadata
+     * @return per-fold evaluation result
+     * @throws Exception when classifier training or prediction fails
+     */
     public PerFoldResult evaluate(ClassifierDefinition definition,
                                   AnalysisConfig config,
                                   Preprocessor preprocessor,

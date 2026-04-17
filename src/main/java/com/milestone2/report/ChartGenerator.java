@@ -35,6 +35,12 @@ public class ChartGenerator {
         this.foldDistributionDatasetFactory = foldDistributionDatasetFactory;
     }
 
+    /**
+     * Generates the aggregate bar chart and the per-fold box plot for one dataset report.
+     *
+     * @param report dataset analysis report
+     * @throws IOException when a chart image cannot be written
+     */
     public void generate(DatasetAnalysisReport report) throws IOException {
         log.info("Generating charts for dataset '{}'", report.getDatasetName());
 
@@ -58,9 +64,14 @@ public class ChartGenerator {
         ChartUtils.saveChartAsPNG(chartsDir.resolve(baseName + "_box.png").toFile(), boxChart, 900, 600);
     }
 
+    /**
+     * Removes the dataset extension to obtain the base filename for generated charts.
+     *
+     * @param datasetName dataset name
+     * @return chart base filename
+     */
     private String sanitizeDatasetName(String datasetName) {
         return datasetName.replaceFirst("(?i)\\.(csv|arff)$", "");
     }
 }
-
 

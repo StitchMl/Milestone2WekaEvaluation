@@ -7,6 +7,12 @@ import java.util.List;
  * Parses comma-separated classifier identifiers while preserving declaration order.
  */
 public class ClassifierIdParser {
+    /**
+     * Parses the raw comma-separated list of classifier identifiers.
+     *
+     * @param raw raw CLI value
+     * @return ordered classifier identifiers without blank entries
+     */
     public List<String> parse(String raw) {
         List<String> ids = new ArrayList<>();
         if (raw == null || raw.isBlank()) {

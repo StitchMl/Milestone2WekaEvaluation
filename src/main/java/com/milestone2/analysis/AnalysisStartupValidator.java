@@ -20,6 +20,13 @@ public class AnalysisStartupValidator {
         this.classifierCatalogValidator = classifierCatalogValidator;
     }
 
+    /**
+     * Validates filesystem prerequisites and confirms that every configured classifier can be instantiated.
+     *
+     * @param config             immutable analysis configuration
+     * @param classifierCatalog  loaded classifier catalog
+     * @throws Exception when startup validation fails
+     */
     public void validate(AnalysisConfig config, ClassifierCatalog classifierCatalog) throws Exception {
         analysisPathValidator.validate(config.getPaths());
         classifierCatalogValidator.validate(classifierCatalog, config.getExecution().getSeed());

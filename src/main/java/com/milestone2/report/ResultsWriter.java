@@ -30,6 +30,17 @@ public class ResultsWriter implements AutoCloseable {
         printer = new CSVPrinter(out, CSVFormat.DEFAULT.builder().setHeader(HEADER).get());
     }
 
+    /**
+     * Writes one aggregate result row for a classifier evaluated on a dataset.
+     *
+     * @param config          immutable analysis configuration
+     * @param datasetName     analyzed dataset name
+     * @param classAttribute  class attribute name
+     * @param positiveClass   positive class label
+     * @param definition      classifier definition
+     * @param metrics         aggregate metric values to serialize
+     * @throws IOException when the CSV output cannot be written
+     */
     public void write(AnalysisConfig config,
                       String datasetName,
                       String classAttribute,
@@ -57,6 +68,11 @@ public class ResultsWriter implements AutoCloseable {
         printer.flush();
     }
 
+    /**
+     * Builds the CSV header used for aggregate result exports.
+     *
+     * @return CSV header
+     */
     private static String[] buildHeader() {
         List<String> header = new ArrayList<>();
         header.add("RunId");
@@ -76,9 +92,13 @@ public class ResultsWriter implements AutoCloseable {
         return header.toArray(new String[0]);
     }
 
+    /**
+     * Closes the underlying CSV printer.
+     *
+     * @throws IOException when closing the writer fails
+     */
     @Override
     public void close() throws IOException {
         printer.close();
     }
 }
-

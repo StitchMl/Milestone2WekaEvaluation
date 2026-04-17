@@ -30,6 +30,17 @@ public class FoldResultsWriter implements AutoCloseable {
         printer = new CSVPrinter(out, CSVFormat.DEFAULT.builder().setHeader(HEADER).get());
     }
 
+    /**
+     * Writes one CSV row per evaluated fold enriched with execution and classifier metadata.
+     *
+     * @param config          immutable analysis configuration
+     * @param datasetName     analyzed dataset name
+     * @param classAttribute  class attribute name
+     * @param positiveClass   positive class label
+     * @param definition      classifier definition
+     * @param foldResults     fold results to serialize
+     * @throws IOException when the CSV output cannot be written
+     */
     public void write(AnalysisConfig config,
                       String datasetName,
                       String classAttribute,
@@ -66,6 +77,11 @@ public class FoldResultsWriter implements AutoCloseable {
         printer.flush();
     }
 
+    /**
+     * Builds the CSV header used for per-fold exports, including one column per supported metric.
+     *
+     * @return CSV header
+     */
     private static String[] buildHeader() {
         List<String> header = new ArrayList<>();
         header.add("RunId");
@@ -91,6 +107,11 @@ public class FoldResultsWriter implements AutoCloseable {
         return header.toArray(new String[0]);
     }
 
+    /**
+     * Closes the underlying CSV printer.
+     *
+     * @throws IOException when closing the writer fails
+     */
     @Override
     public void close() throws IOException {
         printer.close();

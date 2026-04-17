@@ -29,15 +29,32 @@ public class Metrics {
         values = Collections.unmodifiableMap(map);
     }
 
+    /**
+     * Returns the stored value for the requested metric.
+     *
+     * @param metric metric to read
+     * @return metric value
+     */
     public double get(MetricDefinition metric) {
         return values.get(metric);
     }
 
+    /**
+     * Returns a debug-friendly textual representation of the metric bundle.
+     *
+     * @return string representation of the metrics
+     */
     @Override
     public String toString() {
         return "Metrics{" + "values=" + values + '}';
     }
 
+    /**
+     * Compares this metric bundle with another object using the stored metric map.
+     *
+     * @param o object to compare with
+     * @return {@code true} when both objects contain the same metric values
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -47,6 +64,11 @@ public class Metrics {
         return Objects.equals(values, metrics.values);
     }
 
+    /**
+     * Computes the hash code consistent with {@link #equals(Object)}.
+     *
+     * @return metrics hash code
+     */
     @Override
     public int hashCode() {
         return Objects.hash(values);

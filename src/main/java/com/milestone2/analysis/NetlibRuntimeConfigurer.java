@@ -15,6 +15,9 @@ public final class NetlibRuntimeConfigurer {
     private NetlibRuntimeConfigurer() {
     }
 
+    /**
+     * Pins BLAS, LAPACK and ARPACK resolution to the pure-Java F2J implementations.
+     */
     public static void configurePureJava() {
         System.setProperty(BLAS_PROPERTY, F2J_BLAS);
         System.setProperty(LAPACK_PROPERTY, F2J_LAPACK);

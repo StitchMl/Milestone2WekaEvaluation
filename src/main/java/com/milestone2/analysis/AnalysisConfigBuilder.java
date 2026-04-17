@@ -18,6 +18,11 @@ public class AnalysisConfigBuilder {
     private final AnalysisExecutionBuilder executionBuilder = new AnalysisExecutionBuilder();
     private final WhatIfOptionsBuilder whatIfOptionsBuilder = new WhatIfOptionsBuilder();
 
+    /**
+     * Applies one parsed CLI argument to the first builder that recognizes it.
+     *
+     * @param argument parsed CLI argument
+     */
     public void apply(CliArgument argument) {
         if (pathsBuilder.apply(argument)
                 || selectionBuilder.apply(argument)
@@ -28,6 +33,11 @@ public class AnalysisConfigBuilder {
         throw new IllegalArgumentException("Unknown argument: --" + argument.getKey());
     }
 
+    /**
+     * Materializes the final immutable configuration, injecting the generated run identifier.
+     *
+     * @return fully populated analysis configuration
+     */
     public AnalysisConfig build() {
         return new AnalysisConfig(
                 pathsBuilder.build(),
@@ -37,4 +47,3 @@ public class AnalysisConfigBuilder {
         );
     }
 }
-

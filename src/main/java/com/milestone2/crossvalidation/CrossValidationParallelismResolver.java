@@ -18,6 +18,12 @@ public class CrossValidationParallelismResolver {
         this.availableProcessorsSupplier = availableProcessorsSupplier;
     }
 
+    /**
+     * Resolves the effective worker count by combining user preference, CPU availability and fold count.
+     *
+     * @param execution execution settings
+     * @return parallel fold worker count
+     */
     public int resolve(AnalysisExecution execution) {
         int requestedParallelism = execution.getMaxParallelism();
         int automaticParallelism = Math.max(1, availableProcessorsSupplier.getAsInt() - 1);

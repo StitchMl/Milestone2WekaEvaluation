@@ -14,17 +14,31 @@ public class WhatIfFeatureSelection {
         this.reason = reason;
     }
 
+    /**
+     * Returns the full correlation entry associated with the selected feature.
+     *
+     * @return selected feature correlation
+     */
     @SuppressWarnings("unused")
     public FeatureCorrelation getCorrelation() {
         return correlation;
     }
 
+    /**
+     * Returns the name of the selected feature.
+     *
+     * @return selected feature name
+     */
     public String getFeatureName() {
         return correlation.getFeatureName();
     }
 
+    /**
+     * Returns the explanation of how the feature was selected.
+     *
+     * @return selection reason
+     */
     public String getReason() {
         return reason;
     }
 }
-

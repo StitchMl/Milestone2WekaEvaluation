@@ -11,6 +11,15 @@ import java.util.List;
  * Builds CSV rows for the what-if summary writer.
  */
 public class WhatIfSummaryRecordFactory {
+    /**
+     * Builds one CSV record describing a scenario summary row.
+     *
+     * @param config         immutable analysis configuration
+     * @param report         dataset analysis report
+     * @param scenarioReport what-if scenario report
+     * @param summary        scenario summary to serialize
+     * @return CSV record values
+     */
     public List<Object> buildScenarioRecord(AnalysisConfig config,
                                             DatasetAnalysisReport report,
                                             WhatIfScenarioReport scenarioReport,
@@ -29,6 +38,14 @@ public class WhatIfSummaryRecordFactory {
         return record;
     }
 
+    /**
+     * Builds one CSV record describing the paired B+/B impact summary.
+     *
+     * @param config         immutable analysis configuration
+     * @param report         dataset analysis report
+     * @param scenarioReport what-if scenario report
+     * @return CSV record values
+     */
     public List<Object> buildImpactRecord(AnalysisConfig config,
                                           DatasetAnalysisReport report,
                                           WhatIfScenarioReport scenarioReport) {
@@ -47,6 +64,14 @@ public class WhatIfSummaryRecordFactory {
         return record;
     }
 
+    /**
+     * Builds the metadata prefix shared by every what-if summary CSV row.
+     *
+     * @param config         immutable analysis configuration
+     * @param report         dataset analysis report
+     * @param scenarioReport what-if scenario report
+     * @return base CSV record values
+     */
     private List<Object> commonRecord(AnalysisConfig config,
                                       DatasetAnalysisReport report,
                                       WhatIfScenarioReport scenarioReport) {

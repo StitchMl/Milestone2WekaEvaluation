@@ -36,11 +36,25 @@ public class CrossValidationExecutor implements ValidationExecutor {
         this.parallelismResolver = parallelismResolver;
     }
 
+    /**
+     * Returns the validation strategy handled by this executor.
+     *
+     * @return {@link ValidationStrategy#CROSS_VALIDATION}
+     */
     @Override
     public ValidationStrategy supportedStrategy() {
         return ValidationStrategy.CROSS_VALIDATION;
     }
 
+    /**
+     * Executes repeated stratified cross-validation and evaluates each fold in parallel.
+     *
+     * @param data     dataset to evaluate
+     * @param config   immutable analysis configuration
+     * @param producer fold evaluator callback
+     * @return collected per-fold results
+     * @throws Exception when fold submission, evaluation or collection fails
+     */
     @Override
     public List<PerFoldResult> execute(Instances data,
                                        AnalysisConfig config,
@@ -67,6 +81,15 @@ public class CrossValidationExecutor implements ValidationExecutor {
         return results;
     }
 
+    /**
+     * Creates and submits every fold evaluation task for one repeated cross-validation run.
+     *
+     * @param data              source dataset
+     * @param config            immutable analysis configuration
+     * @param producer          fold evaluator callback
+     * @param completionService completion queue used to collect results
+     * @param run               repeated-run index
+     */
     @SuppressWarnings("UnnecessaryLocalVariable")
     private void submitRunTasks(Instances data,
                                 AnalysisConfig config,
@@ -92,6 +115,14 @@ public class CrossValidationExecutor implements ValidationExecutor {
         }
     }
 
+    /**
+     * Waits for all folds of one run to complete and appends their results.
+     *
+     * @param folds             number of folds to collect
+     * @param completionService completion queue used to retrieve results
+     * @param results           destination list for collected fold results
+     * @throws Exception when any fold evaluation fails
+     */
     private void collectRunResults(int folds,
                                    CompletionService<PerFoldResult> completionService,
                                    List<PerFoldResult> results) throws Exception {
@@ -100,6 +131,12 @@ public class CrossValidationExecutor implements ValidationExecutor {
         }
     }
 
+    /**
+     * Gracefully shuts down the fold worker pool and forces termination after a timeout.
+     *
+     * @param executorService executor to shut down
+     * @throws InterruptedException when awaiting termination is interrupted
+     */
     private void shutdownExecutor(ExecutorService executorService) throws InterruptedException {
         executorService.shutdown();
         if (!executorService.awaitTermination(1, TimeUnit.MINUTES)) {
@@ -108,4 +145,3 @@ public class CrossValidationExecutor implements ValidationExecutor {
         }
     }
 }
-

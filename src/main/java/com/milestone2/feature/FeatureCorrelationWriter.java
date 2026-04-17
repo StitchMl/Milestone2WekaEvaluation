@@ -43,6 +43,13 @@ public class FeatureCorrelationWriter implements AutoCloseable {
         printer = new CSVPrinter(out, CSVFormat.DEFAULT.builder().setHeader(HEADER).get());
     }
 
+    /**
+     * Writes the feature correlation ranking for the dataset when a what-if report is available.
+     *
+     * @param config immutable analysis configuration
+     * @param report dataset analysis report
+     * @throws IOException when the CSV output cannot be written
+     */
     public void write(AnalysisConfig config, DatasetAnalysisReport report) throws IOException {
         if (!report.hasWhatIfReport()) {
             return;
@@ -80,6 +87,11 @@ public class FeatureCorrelationWriter implements AutoCloseable {
         printer.flush();
     }
 
+    /**
+     * Closes the underlying CSV printer.
+     *
+     * @throws IOException when closing the writer fails
+     */
     @Override
     public void close() throws IOException {
         printer.close();

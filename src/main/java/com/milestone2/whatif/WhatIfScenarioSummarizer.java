@@ -9,6 +9,13 @@ import java.util.List;
  * Aggregates raw what-if predictions into scenario and impact summaries.
  */
 public class WhatIfScenarioSummarizer {
+    /**
+     * Summarizes the raw predictions produced for one scenario dataset.
+     *
+     * @param scenario    scenario identifier
+     * @param predictions raw prediction records
+     * @return aggregated scenario summary
+     */
     public ScenarioPredictionSummary summarize(WhatIfScenario scenario, List<PredictionRecord> predictions) {
         int actualBuggyCount = 0;
         int predictedBuggyCount = 0;
@@ -36,6 +43,13 @@ public class WhatIfScenarioSummarizer {
         );
     }
 
+    /**
+     * Compares paired B+ and B predictions to quantify the impact of zeroing the selected feature.
+     *
+     * @param bPlusPredictions predictions obtained on dataset B+
+     * @param bPredictions     predictions obtained on dataset B
+     * @return paired impact summary
+     */
     public WhatIfImpactSummary summarizeImpact(List<PredictionRecord> bPlusPredictions,
                                                List<PredictionRecord> bPredictions) {
         int pairedInstances = Math.min(bPlusPredictions.size(), bPredictions.size());

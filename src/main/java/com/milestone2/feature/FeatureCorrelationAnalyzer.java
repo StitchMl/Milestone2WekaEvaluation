@@ -27,6 +27,13 @@ public class FeatureCorrelationAnalyzer {
         this.correlationCalculator = correlationCalculator;
     }
 
+    /**
+     * Computes ranked correlations for every numeric non-class attribute in the dataset.
+     *
+     * @param data   dataset to analyze
+     * @param config immutable analysis configuration
+     * @return feature correlations sorted by descending absolute correlation
+     */
     public List<FeatureCorrelation> analyze(Instances data, AnalysisConfig config) {
         int positiveClassIndex = positiveClassResolver.resolvePositiveClassIndex(data.classAttribute(), config);
         List<FeatureCorrelation> correlations = new ArrayList<>();
@@ -44,6 +51,14 @@ public class FeatureCorrelationAnalyzer {
         return correlations;
     }
 
+    /**
+     * Computes the point-biserial style correlation statistics for one numeric feature.
+     *
+     * @param attribute           numeric feature to analyze
+     * @param data                dataset containing the feature
+     * @param positiveClassIndex  positive class index in the nominal class attribute
+     * @return computed feature correlation summary
+     */
     private FeatureCorrelation computeCorrelation(Attribute attribute,
                                                   Instances data,
                                                   int positiveClassIndex) {
@@ -87,4 +102,3 @@ public class FeatureCorrelationAnalyzer {
         );
     }
 }
-

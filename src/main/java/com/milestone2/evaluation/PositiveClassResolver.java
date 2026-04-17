@@ -14,10 +14,24 @@ public class PositiveClassResolver {
             "buggy", "yes", "true", "positive", "defective", "1"
     );
 
+    /**
+     * Resolves the positive class label from the configured class attribute.
+     *
+     * @param classAttribute nominal class attribute
+     * @param config         immutable analysis configuration
+     * @return positive class label
+     */
     public String resolvePositiveClassValue(Attribute classAttribute, AnalysisConfig config) {
         return classAttribute.value(resolvePositiveClassIndex(classAttribute, config));
     }
 
+    /**
+     * Resolves the index of the positive class, honoring explicit configuration before trying known labels.
+     *
+     * @param classAttribute nominal class attribute
+     * @param config         immutable analysis configuration
+     * @return positive class index
+     */
     public int resolvePositiveClassIndex(Attribute classAttribute, AnalysisConfig config) {
         String configuredPositiveClass = config.getSelection().getPositiveClassValue();
         if (configuredPositiveClass != null) {
@@ -48,5 +62,4 @@ public class PositiveClassResolver {
         );
     }
 }
-
 

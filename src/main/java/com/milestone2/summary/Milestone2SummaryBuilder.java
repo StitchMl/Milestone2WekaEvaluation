@@ -21,6 +21,12 @@ public class Milestone2SummaryBuilder {
         this.overallWinnerSelector = overallWinnerSelector;
     }
 
+    /**
+     * Builds the milestone summary derived from the dataset evaluation report.
+     *
+     * @param report dataset analysis report
+     * @return milestone summary
+     */
     public Milestone2Summary build(DatasetAnalysisReport report) {
         return new Milestone2Summary(
                 metricWinnerSelector.select(report),

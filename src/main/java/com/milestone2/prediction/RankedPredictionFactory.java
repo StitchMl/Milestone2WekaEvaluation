@@ -13,6 +13,15 @@ import java.util.List;
  * Builds probability-ranked predictions enriched with size and positivity information.
  */
 public class RankedPredictionFactory {
+    /**
+     * Builds ranked predictions aligned with the test instances and sorts them by descending probability.
+     *
+     * @param test                test dataset aligned with the prediction list
+     * @param predictions         recorded Weka predictions
+     * @param positiveClassIndex  positive class index
+     * @param sizeAttribute       attribute used as inspection cost
+     * @return ranked predictions sorted by descending probability
+     */
     public List<RankedPrediction> create(Instances test,
                                          List<Prediction> predictions,
                                          int positiveClassIndex,

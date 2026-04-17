@@ -20,6 +20,12 @@ public class AnalysisSelectionBuilder {
         this.classifierIdParser = classifierIdParser;
     }
 
+    /**
+     * Applies one CLI argument that influences data interpretation or classifier selection.
+     *
+     * @param argument parsed CLI argument
+     * @return {@code true} when the argument belongs to this builder, {@code false} otherwise
+     */
     public boolean apply(CliArgument argument) {
         switch (argument.getKey()) {
             case "granularity":
@@ -44,6 +50,11 @@ public class AnalysisSelectionBuilder {
         }
     }
 
+    /**
+     * Creates the immutable selection settings gathered from CLI arguments.
+     *
+     * @return selection settings snapshot
+     */
     public AnalysisSelection build() {
         return new AnalysisSelection(
                 granularity,
@@ -54,8 +65,13 @@ public class AnalysisSelectionBuilder {
         );
     }
 
+    /**
+     * Converts blank CLI values to {@code null} so downstream components can apply defaults.
+     *
+     * @param raw raw CLI value
+     * @return trimmed semantic value, or {@code null} when blank
+     */
     private String emptyToNull(String raw) {
         return raw == null || raw.isBlank() ? null : raw;
     }
 }
-

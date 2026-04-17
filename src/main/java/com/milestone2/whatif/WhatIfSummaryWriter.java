@@ -50,6 +50,13 @@ public class WhatIfSummaryWriter implements AutoCloseable {
         recordFactory = new WhatIfSummaryRecordFactory();
     }
 
+    /**
+     * Writes scenario-level and impact-level what-if rows for the dataset when scenario results are available.
+     *
+     * @param config immutable analysis configuration
+     * @param report dataset analysis report
+     * @throws IOException when the CSV output cannot be written
+     */
     public void write(AnalysisConfig config, DatasetAnalysisReport report) throws IOException {
         if (!report.hasWhatIfReport() || !report.getWhatIfReport().hasScenarioReport()) {
             return;
@@ -63,6 +70,11 @@ public class WhatIfSummaryWriter implements AutoCloseable {
         printer.flush();
     }
 
+    /**
+     * Closes the underlying CSV printer.
+     *
+     * @throws IOException when closing the writer fails
+     */
     @Override
     public void close() throws IOException {
         printer.close();

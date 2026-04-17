@@ -18,6 +18,13 @@ public class WhatIfOutputs implements AutoCloseable {
         this.whatIfSummaryWriter = whatIfSummaryWriter;
     }
 
+    /**
+     * Opens the CSV writers used by the optional what-if workflow.
+     *
+     * @param paths analysis output paths
+     * @return opened what-if output bundle
+     * @throws IOException when a writer cannot be created
+     */
     public static WhatIfOutputs open(AnalysisPaths paths) throws IOException {
         return new WhatIfOutputs(
                 new FeatureCorrelationWriter(paths.getFeatureCorrelationsCsv()),
@@ -25,14 +32,29 @@ public class WhatIfOutputs implements AutoCloseable {
         );
     }
 
+    /**
+     * Returns the writer used to export feature correlations.
+     *
+     * @return feature correlation writer
+     */
     public FeatureCorrelationWriter getFeatureCorrelationWriter() {
         return featureCorrelationWriter;
     }
 
+    /**
+     * Returns the writer used to export what-if scenario summaries.
+     *
+     * @return what-if summary writer
+     */
     public WhatIfSummaryWriter getWhatIfSummaryWriter() {
         return whatIfSummaryWriter;
     }
 
+    /**
+     * Closes both writers, preserving the first failure and suppressing any additional ones.
+     *
+     * @throws IOException when one or more writers fail to close
+     */
     @Override
     public void close() throws IOException {
         IOException failure = null;
@@ -43,6 +65,13 @@ public class WhatIfOutputs implements AutoCloseable {
         }
     }
 
+    /**
+     * Closes one resource while accumulating failures for deferred propagation.
+     *
+     * @param closeable resource to close
+     * @param failure   previously captured failure, if any
+     * @return updated failure accumulator
+     */
     private IOException close(AutoCloseable closeable, IOException failure) {
         try {
             closeable.close();

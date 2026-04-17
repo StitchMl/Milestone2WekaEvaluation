@@ -26,22 +26,47 @@ public class AnalysisSelection {
         this.classifierIds = Collections.unmodifiableList(new ArrayList<>(classifierIds));
     }
 
+    /**
+     * Returns the repository granularity represented by the input dataset.
+     *
+     * @return analysis granularity
+     */
     public AnalysisGranularity getGranularity() {
         return granularity;
     }
 
+    /**
+     * Returns the configured class attribute name, or {@code null} when the last attribute should be used.
+     *
+     * @return class attribute name
+     */
     public String getClassAttributeName() {
         return classAttributeName;
     }
 
+    /**
+     * Returns the positive class label requested by the user, when explicitly provided.
+     *
+     * @return configured positive class label, or {@code null}
+     */
     public String getPositiveClassValue() {
         return positiveClassValue;
     }
 
+    /**
+     * Returns the attribute used as inspection cost or entity size in ranking metrics.
+     *
+     * @return size attribute name
+     */
     public String getSizeAttributeName() {
         return sizeAttributeName;
     }
 
+    /**
+     * Returns the classifier identifiers explicitly requested from the catalog.
+     *
+     * @return ordered classifier identifiers, possibly empty
+     */
     public List<String> getClassifierIds() {
         return classifierIds;
     }

@@ -31,11 +31,25 @@ public class WalkForwardValidationExecutor implements ValidationExecutor {
         this.temporalDatasetPartitioner = temporalDatasetPartitioner;
     }
 
+    /**
+     * Returns the validation strategy handled by this executor.
+     *
+     * @return {@link ValidationStrategy#WALK_FORWARD}
+     */
     @Override
     public ValidationStrategy supportedStrategy() {
         return ValidationStrategy.WALK_FORWARD;
     }
 
+    /**
+     * Executes walk-forward validation over temporal buckets and evaluates every generated window in order.
+     *
+     * @param data     dataset to evaluate
+     * @param config   immutable analysis configuration
+     * @param producer fold evaluator callback
+     * @return collected walk-forward results
+     * @throws Exception when temporal partitioning or split evaluation fails
+     */
     @Override
     public List<PerFoldResult> execute(Instances data,
                                        AnalysisConfig config,
@@ -68,6 +82,13 @@ public class WalkForwardValidationExecutor implements ValidationExecutor {
         return results;
     }
 
+    /**
+     * Verifies that the dataset exposes enough temporal periods for the requested minimum training window.
+     *
+     * @param data                   dataset being evaluated
+     * @param minimumTrainingPeriods configured minimum training periods
+     * @param availablePeriods       number of temporal buckets found in the dataset
+     */
     private void validateMinimumTrainingPeriods(Instances data,
                                                 int minimumTrainingPeriods,
                                                 int availablePeriods) {
@@ -83,6 +104,13 @@ public class WalkForwardValidationExecutor implements ValidationExecutor {
         }
     }
 
+    /**
+     * Builds every walk-forward window by progressively extending the training history.
+     *
+     * @param buckets                 ordered temporal buckets
+     * @param minimumTrainingPeriods  minimum number of periods required before testing
+     * @return ordered walk-forward windows
+     */
     private List<WalkForwardWindow> buildWindows(List<TemporalBucket> buckets, int minimumTrainingPeriods) {
         List<WalkForwardWindow> windows = new ArrayList<>(buckets.size() - minimumTrainingPeriods);
         for (int testBucketIndex = minimumTrainingPeriods; testBucketIndex < buckets.size(); testBucketIndex++) {
@@ -91,6 +119,14 @@ public class WalkForwardValidationExecutor implements ValidationExecutor {
         return windows;
     }
 
+    /**
+     * Builds one walk-forward window made of all buckets up to the test period and the next future bucket.
+     *
+     * @param buckets                ordered temporal buckets
+     * @param minimumTrainingPeriods configured minimum training periods
+     * @param testBucketIndex        index of the bucket used for testing
+     * @return walk-forward window
+     */
     private WalkForwardWindow buildWindow(List<TemporalBucket> buckets,
                                           int minimumTrainingPeriods,
                                           int testBucketIndex) {
@@ -110,12 +146,25 @@ public class WalkForwardValidationExecutor implements ValidationExecutor {
         );
     }
 
+    /**
+     * Appends a deep copy of all instances from one bucket into the target dataset.
+     *
+     * @param target destination dataset
+     * @param source source bucket instances
+     */
     private void appendBucket(Instances target, Instances source) {
         for (Instance instance : source) {
             target.add((Instance) instance.copy());
         }
     }
 
+    /**
+     * Builds the textual label that summarizes the first and last period included in the training window.
+     *
+     * @param buckets                ordered temporal buckets
+     * @param lastTrainingBucketIndex last bucket index included in training
+     * @return training window label
+     */
     private String trainingWindowLabel(List<TemporalBucket> buckets, int lastTrainingBucketIndex) {
         String first = buckets.get(0).getLabel();
         String last = buckets.get(lastTrainingBucketIndex).getLabel();

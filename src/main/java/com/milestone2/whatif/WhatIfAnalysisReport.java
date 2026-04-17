@@ -19,14 +19,29 @@ public class WhatIfAnalysisReport {
         this.scenarioReport = scenarioReport;
     }
 
+    /**
+     * Returns the ranked feature-correlation study produced for the dataset.
+     *
+     * @return immutable feature correlations list
+     */
     public List<FeatureCorrelation> getFeatureCorrelations() {
         return featureCorrelations;
     }
 
+    /**
+     * Returns the optional scenario report produced by the what-if workflow.
+     *
+     * @return what-if scenario report, or {@code null} when scenario generation was skipped
+     */
     public WhatIfScenarioReport getScenarioReport() {
         return scenarioReport;
     }
 
+    /**
+     * Indicates whether a scenario report is available.
+     *
+     * @return {@code true} when what-if scenarios were evaluated
+     */
     public boolean hasScenarioReport() {
         return scenarioReport != null;
     }

@@ -30,6 +30,14 @@ public class DatasetReportPublisher {
         this.milestone2SummaryBuilder = milestone2SummaryBuilder;
     }
 
+    /**
+     * Publishes one dataset report to all configured CSV outputs, generated charts and summary logs.
+     *
+     * @param config  immutable analysis configuration
+     * @param report  dataset analysis report
+     * @param outputs opened output writers bundle
+     * @throws IOException when any output cannot be written
+     */
     public void publish(AnalysisConfig config,
                         DatasetAnalysisReport report,
                         AnalysisOutputs outputs) throws IOException {

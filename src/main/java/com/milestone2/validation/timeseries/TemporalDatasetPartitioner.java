@@ -67,6 +67,13 @@ public class TemporalDatasetPartitioner {
         return buckets;
     }
 
+    /**
+     * Resolves the configured temporal attribute from the dataset and validates its presence.
+     *
+     * @param data                  dataset to partition
+     * @param temporalAttributeName temporal attribute name from configuration
+     * @return resolved temporal attribute
+     */
     private Attribute resolveTemporalAttribute(Instances data, String temporalAttributeName) {
         if (temporalAttributeName == null || temporalAttributeName.isBlank()) {
             throw new IllegalArgumentException("Walk-forward validation requires a temporal attribute name");
@@ -82,6 +89,13 @@ public class TemporalDatasetPartitioner {
         return attribute;
     }
 
+    /**
+     * Converts one instance value of the temporal attribute into the stable bucket label used by the partitioner.
+     *
+     * @param instance          instance being processed
+     * @param temporalAttribute temporal attribute
+     * @return bucket label for the instance
+     */
     private String toLabel(Instance instance, Attribute temporalAttribute) {
         if (temporalAttribute.isDate()) {
             return temporalAttribute.formatDate(instance.value(temporalAttribute));

@@ -20,14 +20,31 @@ public enum MetricDefinition {
         this.percentageBased = percentageBased;
     }
 
+    /**
+     * Returns the human-readable metric label used in reports and charts.
+     *
+     * @return metric display name
+     */
     public String getDisplayName() {
         return displayName;
     }
 
+    /**
+     * Extracts the metric value from the metric bundle.
+     *
+     * @param metrics metric bundle
+     * @return extracted metric value
+     */
     public double extract(Metrics metrics) {
         return metrics.get(this);
     }
 
+    /**
+     * Normalizes the metric for chart rendering, converting percentage-based values into the [0,1] range.
+     *
+     * @param value raw metric value
+     * @return normalized chart value
+     */
     public double normalizeForChart(double value) {
         return percentageBased ? value / 100.0 : value;
     }

@@ -10,6 +10,12 @@ import java.util.List;
 public class BudgetedDetectionRateCalculator {
     private static final double INSPECTION_BUDGET_RATIO = 0.20;
 
+    /**
+     * Computes how many positive entities are found before exhausting the inspection budget.
+     *
+     * @param rankedPredictions predictions sorted by descending inspection priority
+     * @return fraction of positives found within the budget
+     */
     public double compute(List<RankedPrediction> rankedPredictions) {
         int totalSize = rankedPredictions.stream().mapToInt(RankedPrediction::getSize).sum();
         long totalPositives = rankedPredictions.stream().filter(RankedPrediction::isPositive).count();
@@ -35,5 +41,4 @@ public class BudgetedDetectionRateCalculator {
         return (double) foundPositives / totalPositives;
     }
 }
-
 

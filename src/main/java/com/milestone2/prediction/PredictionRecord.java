@@ -14,14 +14,29 @@ public class PredictionRecord {
         this.positiveProbability = positiveProbability;
     }
 
+    /**
+     * Indicates whether the instance truly belongs to the positive class.
+     *
+     * @return {@code true} when the instance is actually positive
+     */
     public boolean isActualPositive() {
         return actualPositive;
     }
 
+    /**
+     * Indicates whether the model predicted the positive class for the instance.
+     *
+     * @return {@code true} when the prediction is positive
+     */
     public boolean isPredictedPositive() {
         return predictedPositive;
     }
 
+    /**
+     * Returns the predicted probability assigned to the positive class.
+     *
+     * @return positive-class probability
+     */
     public double getPositiveProbability() {
         return positiveProbability;
     }

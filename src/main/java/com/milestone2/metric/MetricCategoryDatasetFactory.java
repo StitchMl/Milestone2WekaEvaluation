@@ -9,6 +9,12 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * Builds the aggregate metrics dataset used by the bar chart.
  */
 public class MetricCategoryDatasetFactory {
+    /**
+     * Builds the dataset consumed by the aggregate metrics bar chart.
+     *
+     * @param report dataset analysis report
+     * @return normalized category dataset for chart generation
+     */
     public CategoryDataset create(DatasetAnalysisReport report) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (ClassifierEvaluationReport classifierReport : report.getClassifierReports()) {

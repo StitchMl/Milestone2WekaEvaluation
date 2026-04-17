@@ -14,10 +14,20 @@ public class WhatIfClassifierSelection {
         this.reason = reason;
     }
 
+    /**
+     * Returns the classifier selected for scenario prediction.
+     *
+     * @return selected classifier definition
+     */
     public ClassifierDefinition getDefinition() {
         return definition;
     }
 
+    /**
+     * Returns the explanation of how the classifier was selected.
+     *
+     * @return selection reason
+     */
     public String getReason() {
         return reason;
     }

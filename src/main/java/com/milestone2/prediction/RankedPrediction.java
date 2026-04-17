@@ -14,14 +14,29 @@ public class RankedPrediction {
         this.positive = positive;
     }
 
+    /**
+     * Returns the ranking score, typically the predicted probability of being buggy.
+     *
+     * @return ranking probability
+     */
     public double getProbability() {
         return probability;
     }
 
+    /**
+     * Returns the inspection cost associated with the prediction.
+     *
+     * @return entity size or inspection cost
+     */
     public int getSize() {
         return size;
     }
 
+    /**
+     * Indicates whether the ranked entity is actually positive.
+     *
+     * @return {@code true} when the entity is positive
+     */
     public boolean isPositive() {
         return positive;
     }

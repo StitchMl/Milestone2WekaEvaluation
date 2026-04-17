@@ -23,10 +23,24 @@ public class ClassifierIdResolver {
         this.classifierIdParser = classifierIdParser;
     }
 
+    /**
+     * Resolves the classifier identifiers that must be loaded, preferring the explicit CLI selection when present.
+     *
+     * @param properties  loaded classifier catalog
+     * @param selectedIds classifier identifiers requested by the user
+     * @return ordered classifier identifiers to load
+     */
     public List<String> resolve(Properties properties, List<String> selectedIds) {
         return selectedIds.isEmpty() ? configuredIds(properties) : selectedIds;
     }
 
+    /**
+     * Extracts classifier identifiers from the catalog, first from the explicit {@code classifiers} key and then
+     * from the declared classifier entries.
+     *
+     * @param properties loaded classifier catalog
+     * @return configured classifier identifiers
+     */
     private List<String> configuredIds(Properties properties) {
         String configured = properties.getProperty(CLASSIFIERS_KEY, "");
         if (!configured.isBlank()) {

@@ -17,6 +17,14 @@ public class TunedClassifierFactory {
     private TunedClassifierFactory() {
     }
 
+    /**
+     * Instantiates and configures the classifier described by the catalog definition.
+     *
+     * @param definition classifier declaration
+     * @param seed       deterministic seed propagated to randomizable classifiers
+     * @return configured classifier instance
+     * @throws Exception when the classifier class or options are invalid
+     */
     public static Classifier createClassifier(ClassifierDefinition definition, long seed) throws Exception {
         NetlibRuntimeConfigurer.configurePureJava();
 

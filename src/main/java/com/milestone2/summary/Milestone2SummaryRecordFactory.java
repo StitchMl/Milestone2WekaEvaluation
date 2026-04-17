@@ -12,6 +12,14 @@ import java.util.List;
  * Builds CSV rows for the milestone summary export.
  */
 public class Milestone2SummaryRecordFactory {
+    /**
+     * Builds one CSV record describing the winner for a specific metric.
+     *
+     * @param config immutable analysis configuration
+     * @param report dataset analysis report
+     * @param winner metric winner to serialize
+     * @return CSV record values
+     */
     public List<Object> metricWinnerRecord(AnalysisConfig config,
                                            DatasetAnalysisReport report,
                                            MetricWinner winner) {
@@ -28,6 +36,14 @@ public class Milestone2SummaryRecordFactory {
         return record;
     }
 
+    /**
+     * Builds one CSV record describing the overall milestone winner.
+     *
+     * @param config immutable analysis configuration
+     * @param report dataset analysis report
+     * @param winner overall classifier winner
+     * @return CSV record values
+     */
     public List<Object> overallWinnerRecord(AnalysisConfig config,
                                             DatasetAnalysisReport report,
                                             OverallClassifierWinner winner) {
@@ -44,6 +60,13 @@ public class Milestone2SummaryRecordFactory {
         return record;
     }
 
+    /**
+     * Builds the metadata prefix shared by every milestone summary CSV row.
+     *
+     * @param config immutable analysis configuration
+     * @param report dataset analysis report
+     * @return base CSV record values
+     */
     private List<Object> baseRecord(AnalysisConfig config, DatasetAnalysisReport report) {
         List<Object> record = new ArrayList<>();
         record.add(config.getExecution().getRunId());

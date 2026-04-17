@@ -21,22 +21,48 @@ public class AnalysisConfig {
         this.whatIfOptions = whatIfOptions;
     }
 
+    /**
+     * Builds a validated configuration from CLI arguments.
+     *
+     * @param args CLI arguments in {@code --key=value} form
+     * @return immutable analysis configuration
+     */
     public static AnalysisConfig fromArgs(String[] args) {
         return new AnalysisArgumentsParser().parse(args);
     }
 
+    /**
+     * Returns the filesystem paths used by the current analysis run.
+     *
+     * @return analysis paths
+     */
     public AnalysisPaths getPaths() {
         return paths;
     }
 
+    /**
+     * Returns the user-facing selection options that drive the analysis.
+     *
+     * @return analysis selection settings
+     */
     public AnalysisSelection getSelection() {
         return selection;
     }
 
+    /**
+     * Returns the execution parameters that control validation and runtime behavior.
+     *
+     * @return execution settings
+     */
     public AnalysisExecution getExecution() {
         return execution;
     }
 
+    /**
+     * Returns the optional what-if configuration associated with the run.
+     *
+     * @return what-if options
+     */
     public WhatIfOptions getWhatIfOptions() {
         return whatIfOptions;
     }

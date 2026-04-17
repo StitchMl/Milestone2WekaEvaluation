@@ -13,6 +13,12 @@ import weka.core.Instances;
 public class DatasetValidationService {
     private static final Logger log = LoggerFactory.getLogger(DatasetValidationService.class);
 
+    /**
+     * Validates structural dataset constraints before model evaluation starts.
+     *
+     * @param data   dataset to validate
+     * @param config immutable analysis configuration
+     */
     public void validate(Instances data, AnalysisConfig config) {
         if (data.classIndex() < 0) {
             throw new IllegalArgumentException("Dataset '" + data.relationName() + "' has no class attribute configured");
@@ -25,6 +31,12 @@ public class DatasetValidationService {
         validateStrategySpecificConstraints(data, config);
     }
 
+    /**
+     * Applies validation rules that depend on the selected validation strategy.
+     *
+     * @param data   dataset to validate
+     * @param config immutable analysis configuration
+     */
     private void validateStrategySpecificConstraints(Instances data, AnalysisConfig config) {
         if (config.getExecution().getValidationStrategy() != ValidationStrategy.CROSS_VALIDATION) {
             if (data.numInstances() < 2) {
@@ -49,6 +61,12 @@ public class DatasetValidationService {
         warnIfMinorityClassIsSmallerThanFolds(data, folds);
     }
 
+    /**
+     * Logs a warning when the smallest class has fewer instances than the requested folds.
+     *
+     * @param data  dataset being validated
+     * @param folds configured fold count
+     */
     private void warnIfMinorityClassIsSmallerThanFolds(Instances data, int folds) {
         int[] classCounts = new int[data.numClasses()];
         for (Instance instance : data) {

@@ -60,26 +60,56 @@ public class FoldContext {
                 trainingInstances, testInstances);
     }
 
+    /**
+     * Returns the repeated-run index associated with the split.
+     *
+     * @return run index, or {@code 0} for walk-forward validation
+     */
     public int getRunIndex() {
         return runIndex;
     }
 
+    /**
+     * Returns the fold or window index inside the validation strategy.
+     *
+     * @return fold index
+     */
     public int getFoldIndex() {
         return foldIndex;
     }
 
+    /**
+     * Returns the label of the accumulated training window, when available.
+     *
+     * @return training window label, or {@code null} for cross-validation
+     */
     public String getTrainingWindowLabel() {
         return trainingWindowLabel;
     }
 
+    /**
+     * Returns the label of the test window, when available.
+     *
+     * @return test window label, or {@code null} for cross-validation
+     */
     public String getTestWindowLabel() {
         return testWindowLabel;
     }
 
+    /**
+     * Returns how many instances belong to the training split.
+     *
+     * @return training instance count
+     */
     public int getTrainingInstances() {
         return trainingInstances;
     }
 
+    /**
+     * Returns how many instances belong to the test split.
+     *
+     * @return test instance count
+     */
     public int getTestInstances() {
         return testInstances;
     }

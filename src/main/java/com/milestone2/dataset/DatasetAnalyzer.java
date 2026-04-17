@@ -47,6 +47,15 @@ public class DatasetAnalyzer {
         this.whatIfAnalyzer = whatIfAnalyzer;
     }
 
+    /**
+     * Loads one dataset, evaluates all selected classifiers and optionally runs the what-if workflow.
+     *
+     * @param datasetFile        dataset file path
+     * @param config             immutable analysis configuration
+     * @param classifierCatalog  classifiers selected for the run
+     * @return full dataset analysis report
+     * @throws Exception when loading, evaluation or what-if analysis fails
+     */
     public DatasetAnalysisReport analyze(Path datasetFile,
                                          AnalysisConfig config,
                                          ClassifierCatalog classifierCatalog) throws Exception {
@@ -75,6 +84,15 @@ public class DatasetAnalyzer {
         );
     }
 
+    /**
+     * Evaluates one classifier on the dataset and builds the corresponding report.
+     *
+     * @param definition classifier definition to evaluate
+     * @param dataset    dataset to evaluate
+     * @param config     immutable analysis configuration
+     * @return classifier evaluation report
+     * @throws Exception when evaluation fails
+     */
     private ClassifierEvaluationReport evaluateClassifier(ClassifierDefinition definition,
                                                           Instances dataset,
                                                           AnalysisConfig config) throws Exception {

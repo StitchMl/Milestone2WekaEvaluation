@@ -25,18 +25,38 @@ public class WhatIfScenarioReport {
         this.impactSummary = impactSummary;
     }
 
+    /**
+     * Returns the feature selected for dataset manipulation.
+     *
+     * @return selected feature
+     */
     public WhatIfFeatureSelection getFeatureSelection() {
         return featureSelection;
     }
 
+    /**
+     * Returns the classifier selected to generate the scenario predictions.
+     *
+     * @return selected classifier
+     */
     public WhatIfClassifierSelection getClassifierSelection() {
         return classifierSelection;
     }
 
+    /**
+     * Returns the per-scenario prediction summaries.
+     *
+     * @return immutable scenario summaries list
+     */
     public List<ScenarioPredictionSummary> getScenarioSummaries() {
         return scenarioSummaries;
     }
 
+    /**
+     * Returns the paired B+/B impact summary.
+     *
+     * @return impact summary
+     */
     public WhatIfImpactSummary getImpactSummary() {
         return impactSummary;
     }

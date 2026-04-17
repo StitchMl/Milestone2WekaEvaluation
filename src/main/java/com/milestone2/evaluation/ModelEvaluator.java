@@ -50,6 +50,16 @@ public class ModelEvaluator {
         this.foldEvaluationService = foldEvaluationService;
     }
 
+    /**
+     * Validates the dataset, executes the configured validation strategy and returns the collected fold results.
+     *
+     * @param definition    classifier definition to evaluate
+     * @param data          dataset to evaluate
+     * @param config        immutable analysis configuration
+     * @param preprocessor  preprocessing pipeline builder
+     * @return per-fold evaluation results
+     * @throws Exception when validation or fold evaluation fails
+     */
     public List<PerFoldResult> evaluateWithFolds(ClassifierDefinition definition,
                                                  Instances data,
                                                  AnalysisConfig config,
@@ -78,14 +88,33 @@ public class ModelEvaluator {
         return results;
     }
 
+    /**
+     * Aggregates fold metrics into dataset-level averages.
+     *
+     * @param results fold-level results
+     * @return aggregate metrics map
+     */
     public Map<MetricDefinition, Double> aggregate(List<PerFoldResult> results) {
         return metricAggregator.aggregate(results);
     }
 
+    /**
+     * Resolves the positive class label that should be used for binary evaluation metrics.
+     *
+     * @param data   dataset being evaluated
+     * @param config immutable analysis configuration
+     * @return positive class label
+     */
     public String resolvePositiveClassValue(Instances data, AnalysisConfig config) {
         return positiveClassResolver.resolvePositiveClassValue(data.classAttribute(), config);
     }
 
+    /**
+     * Emits a strategy-specific log message before validation starts.
+     *
+     * @param execution      execution settings
+     * @param classifierName classifier display name
+     */
     private void logValidationStart(AnalysisExecution execution, String classifierName) {
         if (execution.getValidationStrategy() == ValidationStrategy.CROSS_VALIDATION) {
             log.info("=== Starting {}x{}-fold cross-validation for {} ===",
@@ -100,4 +129,3 @@ public class ModelEvaluator {
                 execution.getTemporalAttributeName());
     }
 }
-

@@ -30,6 +30,15 @@ public class NPofB20Calculator {
         this.detectionRateCalculator = detectionRateCalculator;
     }
 
+    /**
+     * Computes NPofB20 from recorded predictions and the configured size attribute.
+     *
+     * @param evaluation          Weka evaluation containing recorded predictions
+     * @param test                test dataset aligned with the recorded predictions
+     * @param positiveClassIndex  positive class index
+     * @param sizeAttributeName   name of the attribute used as inspection cost
+     * @return NPofB20 value, or {@link Double#NaN} when the size attribute is missing
+     */
     public double compute(Evaluation evaluation,
                           Instances test,
                           int positiveClassIndex,
@@ -48,5 +57,4 @@ public class NPofB20Calculator {
         return detectionRateCalculator.compute(rankedPredictions);
     }
 }
-
 

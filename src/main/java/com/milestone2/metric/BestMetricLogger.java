@@ -16,6 +16,11 @@ public class BestMetricLogger {
     private final MetricWinnerSelector metricWinnerSelector = new MetricWinnerSelector();
     private final OverallClassifierWinnerSelector overallWinnerSelector = new OverallClassifierWinnerSelector();
 
+    /**
+     * Logs the best classifier for each metric and the overall milestone winner for the dataset.
+     *
+     * @param report dataset analysis report
+     */
     public void log(DatasetAnalysisReport report) {
         if (report.getClassifierReports().isEmpty()) {
             return;

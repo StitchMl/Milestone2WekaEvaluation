@@ -31,6 +31,18 @@ public class WhatIfPredictionService {
         this.scenarioSummarizer = scenarioSummarizer;
     }
 
+    /**
+     * Trains the selected classifier on dataset A and generates predictions for all what-if datasets.
+     *
+     * @param originalDataset      original dataset used for training
+     * @param datasetSet           derived what-if datasets
+     * @param featureSelection     selected feature information
+     * @param classifierSelection  selected classifier information
+     * @param config               immutable analysis configuration
+     * @param preprocessor         preprocessing pipeline builder
+     * @return full what-if scenario report
+     * @throws Exception when classifier training or prediction fails
+     */
     public WhatIfScenarioReport evaluate(Instances originalDataset,
                                          WhatIfDatasetSet datasetSet,
                                          WhatIfFeatureSelection featureSelection,
@@ -63,6 +75,15 @@ public class WhatIfPredictionService {
         );
     }
 
+    /**
+     * Produces prediction records for every instance of one scenario dataset.
+     *
+     * @param dataset             dataset to score
+     * @param pipeline            trained filtered classifier
+     * @param positiveClassIndex  positive class index
+     * @return raw prediction records
+     * @throws Exception when prediction fails for any instance
+     */
     private List<PredictionRecord> predict(Instances dataset,
                                            FilteredClassifier pipeline,
                                            int positiveClassIndex) throws Exception {

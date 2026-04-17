@@ -13,6 +13,12 @@ import java.util.stream.Collectors;
  * Builds the per-fold distribution dataset used by the box plot chart.
  */
 public class FoldDistributionDatasetFactory {
+    /**
+     * Builds the box-plot dataset containing normalized per-fold metric values for every classifier.
+     *
+     * @param report dataset analysis report
+     * @return box-and-whisker dataset for chart generation
+     */
     public BoxAndWhiskerCategoryDataset create(DatasetAnalysisReport report) {
         DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
         for (ClassifierEvaluationReport classifierReport : report.getClassifierReports()) {

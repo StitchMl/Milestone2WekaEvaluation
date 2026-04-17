@@ -19,18 +19,38 @@ public class OverallClassifierWinner {
         this.reason = reason;
     }
 
+    /**
+     * Returns the classifier selected as overall milestone winner.
+     *
+     * @return winning classifier definition
+     */
     public ClassifierDefinition getClassifierDefinition() {
         return classifierDefinition;
     }
 
+    /**
+     * Returns the aggregate Kappa achieved by the winning classifier.
+     *
+     * @return winning Kappa value
+     */
     public double getKappa() {
         return kappa;
     }
 
+    /**
+     * Returns the aggregate AUC used as tie-breaker for the winning classifier.
+     *
+     * @return winning AUC value
+     */
     public double getAuc() {
         return auc;
     }
 
+    /**
+     * Returns the textual explanation of the winner selection rule.
+     *
+     * @return winner selection reason
+     */
     public String getReason() {
         return reason;
     }

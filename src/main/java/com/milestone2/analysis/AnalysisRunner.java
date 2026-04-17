@@ -37,6 +37,14 @@ public class AnalysisRunner {
         this.bestMetricLogger = bestMetricLogger;
     }
 
+    /**
+     * Discovers datasets, analyzes each one and publishes the resulting reports.
+     *
+     * @param config             immutable analysis configuration
+     * @param classifierCatalog  classifiers selected for the run
+     * @param outputs            opened output writers bundle
+     * @throws Exception when dataset discovery, analysis or publishing fails
+     */
     public void run(AnalysisConfig config,
                     ClassifierCatalog classifierCatalog,
                     AnalysisOutputs outputs) throws Exception {

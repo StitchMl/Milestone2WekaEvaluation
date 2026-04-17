@@ -43,6 +43,16 @@ public class WhatIfAnalyzer {
         this.predictionService = predictionService;
     }
 
+    /**
+     * Runs the complete what-if workflow for one dataset, from correlation study to scenario prediction summaries.
+     *
+     * @param data               dataset to analyze
+     * @param config             immutable analysis configuration
+     * @param classifierReports  evaluated classifier reports
+     * @param preprocessor       preprocessing pipeline builder
+     * @return what-if analysis report, or {@code null} when the workflow is disabled
+     * @throws Exception when feature selection or scenario evaluation fails
+     */
     public WhatIfAnalysisReport analyze(Instances data,
                                         AnalysisConfig config,
                                         List<ClassifierEvaluationReport> classifierReports,
