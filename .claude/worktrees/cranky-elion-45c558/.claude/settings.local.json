@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn compile *)",
+      "Bash(./mvnw compile *)",
+      "Bash(./mvnw test *)",
+      "Bash(dir \"C:\\\\Users\\\\matte\\\\IdeaProjects\\\\Milestone2WekaEvaluation\\\\.claude\\\\worktrees\\\\cranky-elion-45c558\")",
+      "Bash(git -C \"/c/Users/matte/IdeaProjects/Milestone2WekaEvaluation/.claude/worktrees/cranky-elion-45c558\" status)",
+      "Bash(git -C \"/c/Users/matte/IdeaProjects/Milestone2WekaEvaluation/.claude/worktrees/cranky-elion-45c558\" rev-parse --show-toplevel)",
+      "Bash(git -C \"/c/Users/matte/IdeaProjects/Milestone2WekaEvaluation\" worktree list)"
+    ]
+  }
+}
