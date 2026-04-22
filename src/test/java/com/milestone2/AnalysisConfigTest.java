@@ -3,6 +3,7 @@ package com.milestone2;
 import com.milestone2.analysis.AnalysisConfig;
 import com.milestone2.analysis.Config;
 import com.milestone2.analysis.AnalysisGranularity;
+import com.milestone2.evaluation.BalancingStrategy;
 import com.milestone2.validation.ValidationStrategy;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,7 @@ class AnalysisConfigTest {
                 "--folds=4",
                 "--seed=123",
                 "--threads=2",
-                "--smote=false",
+                "--balancing=none",
                 "--validation=cross-validation",
                 "--temporal-attribute=VersionId",
                 "--min-train-periods=2",
@@ -55,7 +56,7 @@ class AnalysisConfigTest {
         assertEquals(4, config.getExecution().getFolds());
         assertEquals(123L, config.getExecution().getSeed());
         assertEquals(2, config.getExecution().getMaxParallelism());
-        assertFalse(config.getExecution().isApplySmote());
+        assertEquals(BalancingStrategy.NONE, config.getExecution().getBalancingStrategy());
         assertEquals(ValidationStrategy.CROSS_VALIDATION, config.getExecution().getValidationStrategy());
         assertEquals("VersionId", config.getExecution().getTemporalAttributeName());
         assertEquals(2, config.getExecution().getMinimumTrainingPeriods());
@@ -69,7 +70,7 @@ class AnalysisConfigTest {
         AnalysisConfig config = AnalysisConfig.fromArgs(new String[0]);
 
         assertEquals(Config.DEFAULT_MAX_PARALLELISM, config.getExecution().getMaxParallelism());
-        assertFalse(config.getExecution().isApplySmote());
+        assertEquals(BalancingStrategy.NONE, config.getExecution().getBalancingStrategy());
         assertEquals(ValidationStrategy.WALK_FORWARD, config.getExecution().getValidationStrategy());
         assertEquals(Config.DEFAULT_TEMPORAL_ATTRIBUTE, config.getExecution().getTemporalAttributeName());
         assertEquals(Config.DEFAULT_MINIMUM_TRAINING_PERIODS, config.getExecution().getMinimumTrainingPeriods());

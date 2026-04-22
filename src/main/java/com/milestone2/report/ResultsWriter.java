@@ -61,6 +61,7 @@ public class ResultsWriter implements AutoCloseable {
         record.add(positiveClass);
         record.add(selection.getSizeAttributeName());
         record.add(execution.getSeed());
+        record.add(execution.getBalancingStrategy().getCliValue());
         for (MetricDefinition metric : MetricDefinition.values()) {
             record.add(metrics.get(metric));
         }
@@ -86,6 +87,7 @@ public class ResultsWriter implements AutoCloseable {
         header.add("PositiveClass");
         header.add("SizeAttribute");
         header.add("Seed");
+        header.add("Balancing");
         for (MetricDefinition metric : MetricDefinition.values()) {
             header.add(metric.getDisplayName());
         }

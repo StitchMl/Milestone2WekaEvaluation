@@ -7,7 +7,9 @@ import weka.classifiers.Classifier;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.filters.Filter;
 import weka.filters.MultiFilter;
+import weka.filters.supervised.instance.Resample;
 import weka.filters.supervised.instance.SMOTE;
+import weka.filters.supervised.instance.SpreadSubsample;
 import weka.filters.unsupervised.attribute.NominalToBinary;
 import weka.filters.unsupervised.attribute.RemoveType;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
@@ -55,8 +57,22 @@ public class Preprocessor {
         filters.add(new ReplaceMissingValues());
         filters.add(new Standardize());
 
-        if (config.getExecution().isApplySmote()) {
-            filters.add(new SMOTE());
+        switch (config.getExecution().getBalancingStrategy()) {
+            case SMOTE:
+                filters.add(new SMOTE());
+                break;
+            case UNDERSAMPLING:
+                SpreadSubsample sub = new SpreadSubsample();
+                sub.setOptions(new String[]{"-M", "1.0"});
+                filters.add(sub);
+                break;
+            case OVERSAMPLING:
+                Resample resample = new Resample();
+                resample.setOptions(new String[]{"-B", "1.0", "-Z", "100"});
+                filters.add(resample);
+                break;
+            default:
+                break;
         }
 
         MultiFilter filterChain = new MultiFilter();

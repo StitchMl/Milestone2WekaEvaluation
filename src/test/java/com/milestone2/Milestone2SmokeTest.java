@@ -28,7 +28,7 @@ class Milestone2SmokeTest {
                 "--class-attribute=bug",
                 "--positive-class=yes",
                 "--seed=123",
-                "--smote=false"
+                "--balancing=none"
         });
 
         try {

@@ -1,5 +1,6 @@
 package com.milestone2.analysis;
 
+import com.milestone2.evaluation.BalancingStrategy;
 import com.milestone2.validation.ValidationStrategy;
 
 /**
@@ -11,7 +12,7 @@ public class AnalysisExecution {
     private final int folds;
     private final long seed;
     private final int maxParallelism;
-    private final boolean applySmote;
+    private final BalancingStrategy balancingStrategy;
     private final ValidationStrategy validationStrategy;
     private final String temporalAttributeName;
     private final int minimumTrainingPeriods;
@@ -21,7 +22,7 @@ public class AnalysisExecution {
                              int folds,
                              long seed,
                              int maxParallelism,
-                             boolean applySmote,
+                             BalancingStrategy balancingStrategy,
                              ValidationStrategy validationStrategy,
                              String temporalAttributeName,
                              int minimumTrainingPeriods) {
@@ -30,7 +31,7 @@ public class AnalysisExecution {
         this.folds = folds;
         this.seed = seed;
         this.maxParallelism = maxParallelism;
-        this.applySmote = applySmote;
+        this.balancingStrategy = balancingStrategy;
         this.validationStrategy = validationStrategy;
         this.temporalAttributeName = temporalAttributeName;
         this.minimumTrainingPeriods = minimumTrainingPeriods;
@@ -82,12 +83,12 @@ public class AnalysisExecution {
     }
 
     /**
-     * Returns whether SMOTE must be enabled inside the preprocessing pipeline.
+     * Returns the balancing strategy to apply inside the preprocessing pipeline.
      *
-     * @return {@code true} when SMOTE should be applied
+     * @return balancing strategy
      */
-    public boolean isApplySmote() {
-        return applySmote;
+    public BalancingStrategy getBalancingStrategy() {
+        return balancingStrategy;
     }
 
     /**

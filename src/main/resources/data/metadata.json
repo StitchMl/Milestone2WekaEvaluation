@@ -1,8 +1,8 @@
 {
   "rawDataset" : "output\\avro_dataset_class.csv",
   "identifierColumns" : [ "Project", "Path", "Method", "Class", "ReleaseId" ],
-  "featureColumns" : [ "LOC", "StmtCount", "Cyclomatic", "Cognitive", "DistinctOperators", "DistinctOperands", "TotalOperators", "TotalOperands", "Vocabulary", "Length", "Volume", "Difficulty", "Effort", "MaxNestingDepth", "isLongMethod", "isGodClass", "isFeatureEnvy", "isDuplicatedCode", "CodeSmells", "NSmells", "Touches", "TotalTouches", "IssueTouches", "TotalIssueTouches", "Authors", "TotalAuthors", "AddedLines", "DeletedLines", "Churn", "TotalChurn", "prevCodeSmells", "AgeInReleases", "prevBuggy" ],
-  "actionableColumns" : [ "CodeSmells", "NSmells", "isLongMethod", "isGodClass", "isFeatureEnvy", "isDuplicatedCode" ],
+  "featureColumns" : [ "LOC", "StmtCount", "Cyclomatic", "Cognitive", "DistinctOperators", "DistinctOperands", "TotalOperators", "TotalOperands", "Vocabulary", "Length", "Volume", "Difficulty", "Effort", "MaxNestingDepth", "isLongMethod", "isGodClass", "isFeatureEnvy", "isDuplicatedCode", "CodeSmells", "NSmells", "SmellDensity", "Touches", "TotalTouches", "IssueTouches", "TotalIssueTouches", "Authors", "TotalAuthors", "AddedLines", "DeletedLines", "Churn", "TotalChurn", "prevCodeSmells", "AgeInReleases", "prevBuggy" ],
+  "actionableColumns" : [ "CodeSmells", "NSmells", "SmellDensity", "isLongMethod", "isGodClass", "isFeatureEnvy", "isDuplicatedCode" ],
   "labelColumn" : "Buggy",
   "derivedDatasets" : {
     "A" : {

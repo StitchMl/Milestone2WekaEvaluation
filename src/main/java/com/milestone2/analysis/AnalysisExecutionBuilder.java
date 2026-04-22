@@ -1,5 +1,6 @@
 package com.milestone2.analysis;
 
+import com.milestone2.evaluation.BalancingStrategy;
 import com.milestone2.validation.ValidationStrategy;
 
 /**
@@ -10,7 +11,7 @@ public class AnalysisExecutionBuilder {
     private int folds = Config.DEFAULT_FOLDS;
     private long seed = Config.DEFAULT_SEED;
     private int maxParallelism = Config.DEFAULT_MAX_PARALLELISM;
-    private boolean applySmote = Config.DEFAULT_APPLY_SMOTE;
+    private BalancingStrategy balancingStrategy = Config.DEFAULT_BALANCING_STRATEGY;
     private ValidationStrategy validationStrategy = Config.DEFAULT_VALIDATION_STRATEGY;
     private String temporalAttributeName = Config.DEFAULT_TEMPORAL_ATTRIBUTE;
     private int minimumTrainingPeriods = Config.DEFAULT_MINIMUM_TRAINING_PERIODS;
@@ -35,8 +36,8 @@ public class AnalysisExecutionBuilder {
             case "threads":
                 maxParallelism = Integer.parseInt(argument.getValue());
                 return true;
-            case "smote":
-                applySmote = Boolean.parseBoolean(argument.getValue());
+            case "balancing":
+                balancingStrategy = BalancingStrategy.from(argument.getValue());
                 return true;
             case "validation":
                 validationStrategy = ValidationStrategy.from(argument.getValue());
@@ -67,7 +68,7 @@ public class AnalysisExecutionBuilder {
                 folds,
                 seed,
                 maxParallelism,
-                applySmote,
+                balancingStrategy,
                 validationStrategy,
                 temporalAttributeName,
                 minimumTrainingPeriods
