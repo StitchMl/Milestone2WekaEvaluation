@@ -1,6 +1,7 @@
 package com.milestone2.analysis;
 
 import com.milestone2.evaluation.BalancingStrategy;
+import com.milestone2.evaluation.FeatureSelectionStrategy;
 import com.milestone2.validation.ValidationStrategy;
 
 /**
@@ -12,6 +13,7 @@ public class AnalysisExecutionBuilder {
  private long seed = Config.DEFAULT_SEED;
  private int maxParallelism = Config.DEFAULT_MAX_PARALLELISM;
  private BalancingStrategy balancingStrategy = Config.DEFAULT_BALANCING_STRATEGY;
+ private FeatureSelectionStrategy featureSelectionStrategy = Config.DEFAULT_FEATURE_SELECTION_STRATEGY;
  private ValidationStrategy validationStrategy = Config.DEFAULT_VALIDATION_STRATEGY;
  private String temporalAttributeName = Config.DEFAULT_TEMPORAL_ATTRIBUTE;
  private int minimumTrainingPeriods = Config.DEFAULT_MINIMUM_TRAINING_PERIODS;
@@ -38,6 +40,9 @@ public class AnalysisExecutionBuilder {
  return true;
  case "balancing":
  balancingStrategy = BalancingStrategy.from(argument.getValue());
+ return true;
+ case "feature-selection":
+ featureSelectionStrategy = FeatureSelectionStrategy.from(argument.getValue());
  return true;
  case "validation":
  validationStrategy = ValidationStrategy.from(argument.getValue());
@@ -69,6 +74,7 @@ public class AnalysisExecutionBuilder {
  seed,
  maxParallelism,
  balancingStrategy,
+ featureSelectionStrategy,
  validationStrategy,
  temporalAttributeName,
  minimumTrainingPeriods

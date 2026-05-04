@@ -7,7 +7,8 @@ import java.util.Locale;
  */
 public enum ValidationStrategy {
  WALK_FORWARD("walk-forward"),
- CROSS_VALIDATION("cross-validation");
+ CROSS_VALIDATION("cross-validation"),
+ ORDERED_HOLDOUT("ordered-holdout");
 
  private final String cliValue;
 

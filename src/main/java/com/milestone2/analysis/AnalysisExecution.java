@@ -1,6 +1,7 @@
 package com.milestone2.analysis;
 
 import com.milestone2.evaluation.BalancingStrategy;
+import com.milestone2.evaluation.FeatureSelectionStrategy;
 import com.milestone2.validation.ValidationStrategy;
 
 /**
@@ -13,6 +14,7 @@ public class AnalysisExecution {
  private final long seed;
  private final int maxParallelism;
  private final BalancingStrategy balancingStrategy;
+ private final FeatureSelectionStrategy featureSelectionStrategy;
  private final ValidationStrategy validationStrategy;
  private final String temporalAttributeName;
  private final int minimumTrainingPeriods;
@@ -23,6 +25,7 @@ public class AnalysisExecution {
  long seed,
  int maxParallelism,
  BalancingStrategy balancingStrategy,
+ FeatureSelectionStrategy featureSelectionStrategy,
  ValidationStrategy validationStrategy,
  String temporalAttributeName,
  int minimumTrainingPeriods) {
@@ -32,6 +35,7 @@ public class AnalysisExecution {
  this.seed = seed;
  this.maxParallelism = maxParallelism;
  this.balancingStrategy = balancingStrategy;
+ this.featureSelectionStrategy = featureSelectionStrategy;
  this.validationStrategy = validationStrategy;
  this.temporalAttributeName = temporalAttributeName;
  this.minimumTrainingPeriods = minimumTrainingPeriods;
@@ -89,6 +93,15 @@ public class AnalysisExecution {
  */
  public BalancingStrategy getBalancingStrategy() {
  return balancingStrategy;
+ }
+
+ /**
+ * Returns the feature-selection strategy applied before balancing inside each training fold.
+ *
+ * @return feature-selection strategy
+ */
+ public FeatureSelectionStrategy getFeatureSelectionStrategy() {
+ return featureSelectionStrategy;
  }
 
  /**

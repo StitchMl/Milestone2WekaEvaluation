@@ -9,15 +9,20 @@ import com.milestone2.validation.timeseries.WalkForwardValidationExecutor;
 public class ValidationExecutorSelector {
  private final ValidationExecutor crossValidationExecutor;
  private final ValidationExecutor walkForwardValidationExecutor;
+ private final ValidationExecutor orderedHoldoutValidationExecutor;
 
  public ValidationExecutorSelector() {
- this(new CrossValidationExecutor(), new WalkForwardValidationExecutor());
+ this(new CrossValidationExecutor(),
+ new WalkForwardValidationExecutor(),
+ new OrderedHoldoutValidationExecutor());
  }
 
  ValidationExecutorSelector(ValidationExecutor crossValidationExecutor,
- ValidationExecutor walkForwardValidationExecutor) {
+ ValidationExecutor walkForwardValidationExecutor,
+ ValidationExecutor orderedHoldoutValidationExecutor) {
  this.crossValidationExecutor = crossValidationExecutor;
  this.walkForwardValidationExecutor = walkForwardValidationExecutor;
+ this.orderedHoldoutValidationExecutor = orderedHoldoutValidationExecutor;
  }
 
  /**
@@ -32,6 +37,8 @@ public class ValidationExecutorSelector {
  return crossValidationExecutor;
  case WALK_FORWARD:
  return walkForwardValidationExecutor;
+ case ORDERED_HOLDOUT:
+ return orderedHoldoutValidationExecutor;
  default:
  throw new IllegalArgumentException("Unsupported validation strategy: " + strategy);
  }

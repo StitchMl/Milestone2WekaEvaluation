@@ -71,7 +71,7 @@ class AnalysisConfigTest {
 
  assertEquals(Config.DEFAULT_MAX_PARALLELISM, config.getExecution().getMaxParallelism());
  assertEquals(BalancingStrategy.NONE, config.getExecution().getBalancingStrategy());
- assertEquals(ValidationStrategy.WALK_FORWARD, config.getExecution().getValidationStrategy());
+ assertEquals(ValidationStrategy.CROSS_VALIDATION, config.getExecution().getValidationStrategy());
  assertEquals(Config.DEFAULT_TEMPORAL_ATTRIBUTE, config.getExecution().getTemporalAttributeName());
  assertEquals(Config.DEFAULT_MINIMUM_TRAINING_PERIODS, config.getExecution().getMinimumTrainingPeriods());
  assertTrue(config.getWhatIfOptions().isEnabled());

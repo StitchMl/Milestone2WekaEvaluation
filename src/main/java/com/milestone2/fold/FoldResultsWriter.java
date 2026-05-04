@@ -64,6 +64,7 @@ public class FoldResultsWriter implements AutoCloseable {
  record.add(selection.getSizeAttributeName());
  record.add(execution.getSeed());
  record.add(execution.getBalancingStrategy().getCliValue());
+ record.add(execution.getFeatureSelectionStrategy().getCliValue());
  record.add(result.getRun());
  record.add(result.getFold());
  record.add(result.getTrainingWindowLabel());
@@ -97,6 +98,7 @@ public class FoldResultsWriter implements AutoCloseable {
  header.add("SizeAttribute");
  header.add("Seed");
  header.add("Balancing");
+ header.add("FeatureSelection");
  header.add("Run");
  header.add("Fold");
  header.add("TrainingWindow");

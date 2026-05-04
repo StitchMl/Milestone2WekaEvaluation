@@ -1,6 +1,7 @@
 package com.milestone2.analysis;
 
 import com.milestone2.evaluation.BalancingStrategy;
+import com.milestone2.evaluation.FeatureSelectionStrategy;
 import com.milestone2.validation.ValidationStrategy;
 
 /**
@@ -26,14 +27,15 @@ public class Config {
  public static final String DEFAULT_TEMPORAL_ATTRIBUTE = "ReleaseId";
 
  // Default execution settings
- public static final int DEFAULT_RUNS = 1;
+ public static final int DEFAULT_RUNS = 10;
  public static final int DEFAULT_FOLDS = 10;
  public static final long DEFAULT_SEED = 42L;
  public static final int DEFAULT_MAX_PARALLELISM = 0;
  public static final BalancingStrategy DEFAULT_BALANCING_STRATEGY = BalancingStrategy.NONE;
  public static final boolean DEFAULT_WHAT_IF_ENABLED = true;
  public static final int DEFAULT_MINIMUM_TRAINING_PERIODS = 1;
- public static final ValidationStrategy DEFAULT_VALIDATION_STRATEGY = ValidationStrategy.WALK_FORWARD;
+ public static final ValidationStrategy DEFAULT_VALIDATION_STRATEGY = ValidationStrategy.CROSS_VALIDATION;
+ public static final FeatureSelectionStrategy DEFAULT_FEATURE_SELECTION_STRATEGY = FeatureSelectionStrategy.NONE;
  public static final AnalysisGranularity DEFAULT_GRANULARITY = AnalysisGranularity.CLASS;
 }
 

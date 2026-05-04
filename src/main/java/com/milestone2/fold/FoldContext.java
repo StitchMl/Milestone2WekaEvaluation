@@ -61,6 +61,17 @@ public class FoldContext {
  }
 
  /**
+ * Builds context metadata for an ordered 80/20 temporal holdout split.
+ *
+ * @param trainingInstances number of rows in the training split (first 80 %)
+ * @param testInstances number of rows in the test split (last 20 %)
+ * @return fold context for ordered holdout validation
+ */
+ public static FoldContext orderedHoldout(int trainingInstances, int testInstances) {
+ return new FoldContext(0, 0, "first80%", "last20%", trainingInstances, testInstances);
+ }
+
+ /**
  * Returns the repeated-run index associated with the split.
  *
  * @return run index, or {@code 0} for walk-forward validation
