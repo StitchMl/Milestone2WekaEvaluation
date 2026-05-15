@@ -1,6 +1,7 @@
 package com.milestone2.whatif;
 
 import com.milestone2.analysis.AnalysisPaths;
+import com.milestone2.analysis.OutputCloseSupport;
 import com.milestone2.feature.FeatureCorrelationWriter;
 
 import java.io.IOException;
@@ -9,6 +10,8 @@ import java.io.IOException;
  * Opens and closes the optional CSV writers used by the what-if workflow.
  */
 public class WhatIfOutputs implements AutoCloseable {
+ private static final String CLOSE_MESSAGE = "Failed while closing what-if outputs";
+
  private final FeatureCorrelationWriter featureCorrelationWriter;
  private final WhatIfSummaryWriter whatIfSummaryWriter;
 
@@ -58,34 +61,10 @@ public class WhatIfOutputs implements AutoCloseable {
  @Override
  public void close() throws IOException {
  IOException failure = null;
- failure = close(featureCorrelationWriter, failure);
- failure = close(whatIfSummaryWriter, failure);
+ failure = OutputCloseSupport.closeQuietly(featureCorrelationWriter, failure, CLOSE_MESSAGE);
+ failure = OutputCloseSupport.closeQuietly(whatIfSummaryWriter, failure, CLOSE_MESSAGE);
  if (failure != null) {
  throw failure;
  }
  }
-
- /**
- * Closes one resource while accumulating failures for deferred propagation.
- *
- * @param closeable resource to close
- * @param failure previously captured failure, if any
- * @return updated failure accumulator
- */
- private IOException close(AutoCloseable closeable, IOException failure) {
- try {
- closeable.close();
- return failure;
- } catch (Exception exception) {
- if (failure == null && exception instanceof IOException) {
- return (IOException) exception;
- }
- if (failure == null) {
- return new IOException("Failed while closing what-if outputs", exception);
- }
- failure.addSuppressed(exception);
- return failure;
- }
- }
 }
-

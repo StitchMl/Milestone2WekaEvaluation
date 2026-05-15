@@ -11,6 +11,8 @@ import java.io.IOException;
  * Opens and closes the CSV writers used by one analysis execution.
  */
 public class AnalysisOutputs implements AutoCloseable {
+ private static final String CLOSE_MESSAGE = "Failed while closing analysis outputs";
+
  private final ResultsWriter resultsWriter;
  private final FoldResultsWriter foldResultsWriter;
  private final Milestone2SummaryWriter milestone2SummaryWriter;
@@ -100,39 +102,12 @@ public class AnalysisOutputs implements AutoCloseable {
  @Override
  public void close() throws IOException {
  IOException failure = null;
- failure = close(resultsWriter, failure);
- failure = close(foldResultsWriter, failure);
- failure = close(milestone2SummaryWriter, failure);
- failure = close(whatIfOutputs, failure);
+ failure = OutputCloseSupport.closeQuietly(resultsWriter, failure, CLOSE_MESSAGE);
+ failure = OutputCloseSupport.closeQuietly(foldResultsWriter, failure, CLOSE_MESSAGE);
+ failure = OutputCloseSupport.closeQuietly(milestone2SummaryWriter, failure, CLOSE_MESSAGE);
+ failure = OutputCloseSupport.closeQuietly(whatIfOutputs, failure, CLOSE_MESSAGE);
  if (failure != null) {
  throw failure;
  }
  }
-
- /**
- * Closes one output resource while accumulating failures instead of aborting immediately.
- *
- * @param closeable resource to close, possibly {@code null}
- * @param failure previously captured failure, if any
- * @return updated failure accumulator
- */
- private IOException close(AutoCloseable closeable, IOException failure) {
- if (closeable == null) {
- return failure;
- }
- try {
- closeable.close();
- return failure;
- } catch (Exception exception) {
- if (failure == null && exception instanceof IOException) {
- return (IOException) exception;
- }
- if (failure == null) {
- return new IOException("Failed while closing analysis outputs", exception);
- }
- failure.addSuppressed(exception);
- return failure;
- }
- }
 }
-

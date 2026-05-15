@@ -1,11 +1,10 @@
 package com.milestone2.fold;
 
 import com.milestone2.analysis.AnalysisConfig;
-import com.milestone2.analysis.AnalysisExecution;
-import com.milestone2.analysis.AnalysisSelection;
 import com.milestone2.classifier.ClassifierDefinition;
 import com.milestone2.metric.MetricDefinition;
 import com.milestone2.metric.Metrics;
+import com.milestone2.report.CsvResultsSupport;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
@@ -47,24 +46,10 @@ public class FoldResultsWriter implements AutoCloseable {
  String positiveClass,
  ClassifierDefinition definition,
  List<PerFoldResult> foldResults) throws IOException {
- AnalysisExecution execution = config.getExecution();
- AnalysisSelection selection = config.getSelection();
  for (PerFoldResult result : foldResults) {
  Metrics metrics = result.getMetrics();
  List<Object> row = new ArrayList<>();
- row.add(execution.getRunId());
- row.add(selection.getGranularity());
- row.add(datasetName);
- row.add(execution.getValidationStrategy().getCliValue());
- row.add(execution.getTemporalAttributeName());
- row.add(definition.getDisplayName());
- row.add(definition.getClassName());
- row.add(classAttribute);
- row.add(positiveClass);
- row.add(selection.getSizeAttributeName());
- row.add(execution.getSeed());
- row.add(execution.getBalancingStrategy().getCliValue());
- row.add(execution.getFeatureSelectionStrategy().getCliValue());
+ CsvResultsSupport.addBaseFields(row, config, datasetName, classAttribute, positiveClass, definition);
  row.add(result.getRun());
  row.add(result.getFold());
  row.add(result.getTrainingWindowLabel());
@@ -86,19 +71,7 @@ public class FoldResultsWriter implements AutoCloseable {
  */
  private static String[] buildHeader() {
  List<String> header = new ArrayList<>();
- header.add("RunId");
- header.add("Granularity");
- header.add("Dataset");
- header.add("ValidationStrategy");
- header.add("TemporalAttribute");
- header.add("Classifier");
- header.add("ClassifierClass");
- header.add("ClassAttribute");
- header.add("PositiveClass");
- header.add("SizeAttribute");
- header.add("Seed");
- header.add("Balancing");
- header.add("FeatureSelection");
+ CsvResultsSupport.addBaseColumns(header);
  header.add("Run");
  header.add("Fold");
  header.add("TrainingWindow");

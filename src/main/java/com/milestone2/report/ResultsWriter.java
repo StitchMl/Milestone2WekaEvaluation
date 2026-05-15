@@ -1,8 +1,6 @@
 package com.milestone2.report;
 
 import com.milestone2.analysis.AnalysisConfig;
-import com.milestone2.analysis.AnalysisExecution;
-import com.milestone2.analysis.AnalysisSelection;
 import com.milestone2.classifier.ClassifierDefinition;
 import com.milestone2.metric.MetricDefinition;
 import org.apache.commons.csv.CSVFormat;
@@ -47,22 +45,8 @@ public class ResultsWriter implements AutoCloseable {
  String positiveClass,
  ClassifierDefinition definition,
  Map<MetricDefinition, Double> metrics) throws IOException {
- AnalysisExecution execution = config.getExecution();
- AnalysisSelection selection = config.getSelection();
  List<Object> row = new ArrayList<>();
- row.add(execution.getRunId());
- row.add(selection.getGranularity());
- row.add(datasetName);
- row.add(execution.getValidationStrategy().getCliValue());
- row.add(execution.getTemporalAttributeName());
- row.add(definition.getDisplayName());
- row.add(definition.getClassName());
- row.add(classAttribute);
- row.add(positiveClass);
- row.add(selection.getSizeAttributeName());
- row.add(execution.getSeed());
- row.add(execution.getBalancingStrategy().getCliValue());
- row.add(execution.getFeatureSelectionStrategy().getCliValue());
+ CsvResultsSupport.addBaseFields(row, config, datasetName, classAttribute, positiveClass, definition);
  for (MetricDefinition metric : MetricDefinition.values()) {
  row.add(metrics.get(metric));
  }
@@ -77,19 +61,7 @@ public class ResultsWriter implements AutoCloseable {
  */
  private static String[] buildHeader() {
  List<String> header = new ArrayList<>();
- header.add("RunId");
- header.add("Granularity");
- header.add("Dataset");
- header.add("ValidationStrategy");
- header.add("TemporalAttribute");
- header.add("Classifier");
- header.add("ClassifierClass");
- header.add("ClassAttribute");
- header.add("PositiveClass");
- header.add("SizeAttribute");
- header.add("Seed");
- header.add("Balancing");
- header.add("FeatureSelection");
+ CsvResultsSupport.addBaseColumns(header);
  for (MetricDefinition metric : MetricDefinition.values()) {
  header.add(metric.getDisplayName());
  }
