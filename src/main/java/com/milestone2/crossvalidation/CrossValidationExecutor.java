@@ -91,7 +91,10 @@ public class CrossValidationExecutor implements ValidationExecutor {
  * @param completionService completion queue used to collect results
  * @param run repeated-run index
  */
- @SuppressWarnings("UnnecessaryLocalVariable")
+ // S2245: Random is used only to shuffle the dataset for reproducible cross-validation splits,
+ // not for any security- or cryptography-sensitive purpose. SecureRandom would add overhead
+ // with no benefit in this ML context.
+ @SuppressWarnings({"UnnecessaryLocalVariable", "java:S2245"})
  private void submitRunTasks(Instances data,
  AnalysisConfig config,
  FoldResultProducer producer,
