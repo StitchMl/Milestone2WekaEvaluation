@@ -5,6 +5,7 @@ import com.milestone2.analysis.AnalysisExecution;
 import com.milestone2.analysis.AnalysisSelection;
 import com.milestone2.classifier.ClassifierDefinition;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,11 +18,7 @@ import java.util.List;
  */
 public final class CsvResultsSupport {
 
- /**
- * Ordered names of the execution-metadata columns that every result
- * export begins with.
- */
- public static final String[] BASE_COLUMNS = {
+ private static final String[] BASE_COLUMNS = {
  "RunId",
  "Granularity",
  "Dataset",
@@ -47,9 +44,7 @@ public final class CsvResultsSupport {
  * @param header mutable header list to extend
  */
  public static void addBaseColumns(List<String> header) {
- for (String col : BASE_COLUMNS) {
- header.add(col);
- }
+ Collections.addAll(header, BASE_COLUMNS);
  }
 
  /**
