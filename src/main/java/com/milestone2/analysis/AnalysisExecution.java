@@ -13,32 +13,23 @@ public class AnalysisExecution {
  private final int folds;
  private final long seed;
  private final int maxParallelism;
- private final BalancingStrategy balancingStrategy;
- private final FeatureSelectionStrategy featureSelectionStrategy;
- private final ValidationStrategy validationStrategy;
- private final String temporalAttributeName;
- private final int minimumTrainingPeriods;
+ private final PreprocessingConfig preprocessing;
+ private final ValidationConfig validation;
 
  public AnalysisExecution(String runId,
  int runs,
  int folds,
  long seed,
  int maxParallelism,
- BalancingStrategy balancingStrategy,
- FeatureSelectionStrategy featureSelectionStrategy,
- ValidationStrategy validationStrategy,
- String temporalAttributeName,
- int minimumTrainingPeriods) {
+ PreprocessingConfig preprocessing,
+ ValidationConfig validation) {
  this.runId = runId;
  this.runs = runs;
  this.folds = folds;
  this.seed = seed;
  this.maxParallelism = maxParallelism;
- this.balancingStrategy = balancingStrategy;
- this.featureSelectionStrategy = featureSelectionStrategy;
- this.validationStrategy = validationStrategy;
- this.temporalAttributeName = temporalAttributeName;
- this.minimumTrainingPeriods = minimumTrainingPeriods;
+ this.preprocessing = preprocessing;
+ this.validation = validation;
  }
 
  /**
@@ -92,7 +83,7 @@ public class AnalysisExecution {
  * @return balancing strategy
  */
  public BalancingStrategy getBalancingStrategy() {
- return balancingStrategy;
+ return preprocessing.getBalancingStrategy();
  }
 
  /**
@@ -101,7 +92,7 @@ public class AnalysisExecution {
  * @return feature-selection strategy
  */
  public FeatureSelectionStrategy getFeatureSelectionStrategy() {
- return featureSelectionStrategy;
+ return preprocessing.getFeatureSelectionStrategy();
  }
 
  /**
@@ -110,7 +101,7 @@ public class AnalysisExecution {
  * @return validation strategy
  */
  public ValidationStrategy getValidationStrategy() {
- return validationStrategy;
+ return validation.getValidationStrategy();
  }
 
  /**
@@ -119,7 +110,7 @@ public class AnalysisExecution {
  * @return temporal attribute name
  */
  public String getTemporalAttributeName() {
- return temporalAttributeName;
+ return validation.getTemporalAttributeName();
  }
 
  /**
@@ -128,7 +119,6 @@ public class AnalysisExecution {
  * @return minimum training periods for walk-forward validation
  */
  public int getMinimumTrainingPeriods() {
- return minimumTrainingPeriods;
+ return validation.getMinimumTrainingPeriods();
  }
 }
-

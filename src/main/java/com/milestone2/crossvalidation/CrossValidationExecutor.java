@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -125,7 +126,7 @@ public class CrossValidationExecutor implements ValidationExecutor {
  */
  private void collectRunResults(int folds,
  CompletionService<PerFoldResult> completionService,
- List<PerFoldResult> results) throws Exception {
+ List<PerFoldResult> results) throws InterruptedException, ExecutionException {
  for (int i = 0; i < folds; i++) {
  results.add(completionService.take().get());
  }

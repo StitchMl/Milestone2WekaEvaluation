@@ -64,25 +64,25 @@ public class FeatureCorrelationWriter implements AutoCloseable {
  }
 
  for (FeatureCorrelation correlation : whatIfReport.getFeatureCorrelations()) {
- List<Object> record = new ArrayList<>();
- record.add(config.getExecution().getRunId());
- record.add(config.getSelection().getGranularity());
- record.add(report.getDatasetName());
- record.add(config.getExecution().getValidationStrategy().getCliValue());
- record.add(config.getExecution().getTemporalAttributeName());
- record.add(report.getClassAttributeName());
- record.add(report.getPositiveClassValue());
- record.add(correlation.getFeatureName());
- record.add(correlation.getCorrelation());
- record.add(correlation.getAbsoluteCorrelation());
- record.add(correlation.getNonMissingValueCount());
- record.add(correlation.getZeroValueCount());
- record.add(correlation.getPositiveValueCount());
- record.add(correlation.getFeatureName().equalsIgnoreCase(selectedFeature));
- record.add(correlation.getFeatureName().equalsIgnoreCase(selectedFeature)
+ List<Object> row = new ArrayList<>();
+ row.add(config.getExecution().getRunId());
+ row.add(config.getSelection().getGranularity());
+ row.add(report.getDatasetName());
+ row.add(config.getExecution().getValidationStrategy().getCliValue());
+ row.add(config.getExecution().getTemporalAttributeName());
+ row.add(report.getClassAttributeName());
+ row.add(report.getPositiveClassValue());
+ row.add(correlation.getFeatureName());
+ row.add(correlation.getCorrelation());
+ row.add(correlation.getAbsoluteCorrelation());
+ row.add(correlation.getNonMissingValueCount());
+ row.add(correlation.getZeroValueCount());
+ row.add(correlation.getPositiveValueCount());
+ row.add(correlation.getFeatureName().equalsIgnoreCase(selectedFeature));
+ row.add(correlation.getFeatureName().equalsIgnoreCase(selectedFeature)
  ? selectionReason
  : null);
- printer.printRecord(record);
+ printer.printRecord(row);
  }
  printer.flush();
  }

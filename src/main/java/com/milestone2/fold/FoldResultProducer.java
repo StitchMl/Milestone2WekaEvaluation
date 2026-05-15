@@ -6,6 +6,7 @@ import weka.core.Instances;
  * Produces a fold result from one train/test split.
  */
 @FunctionalInterface
+@SuppressWarnings("java:S112") // Weka classifier API forces generic Exception; narrowing requires wrapping every lambda
 public interface FoldResultProducer {
  /**
  * Evaluates one train/test split and returns the resulting metrics with context metadata.
@@ -14,7 +15,7 @@ public interface FoldResultProducer {
  * @param test test subset
  * @param context split metadata
  * @return fold evaluation result
- * @throws Exception when split evaluation fails
+ * @throws Exception when Weka classifier training or evaluation fails
  */
  PerFoldResult produce(Instances train, Instances test, FoldContext context) throws Exception;
 }

@@ -1,5 +1,6 @@
 package com.milestone2.analysis;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -14,7 +15,7 @@ public class AnalysisRuntime {
  * @param config immutable analysis configuration
  * @throws Exception when runtime preparation fails
  */
- public void prepare(AnalysisConfig config) throws Exception {
+ public void prepare(AnalysisConfig config) throws IOException {
  NetlibRuntimeConfigurer.configurePureJava();
  configureLogging();
  Files.createDirectories(config.getPaths().getOutputDir());

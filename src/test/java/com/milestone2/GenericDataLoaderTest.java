@@ -9,7 +9,6 @@ import weka.core.Instances;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -100,23 +99,11 @@ class GenericDataLoaderTest {
  }
 
  private void deleteEventually(Path path) throws IOException {
- for (int attempt = 0; attempt < 5; attempt++) {
  try {
  Files.deleteIfExists(path);
- return;
- } catch (FileSystemException ex) {
- if (attempt == 4) {
+ } catch (IOException ignored) {
+ // File still locked by JVM (common on Windows); mark for deletion on JVM exit
  path.toFile().deleteOnExit();
- return;
- }
- System.gc();
- try {
- Thread.sleep(100);
- } catch (InterruptedException interrupted) {
- Thread.currentThread().interrupt();
- throw new IOException("Interrupted while cleaning test files", interrupted);
- }
- }
  }
  }
 }

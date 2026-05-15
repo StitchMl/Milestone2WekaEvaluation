@@ -51,30 +51,30 @@ public class FoldResultsWriter implements AutoCloseable {
  AnalysisSelection selection = config.getSelection();
  for (PerFoldResult result : foldResults) {
  Metrics metrics = result.getMetrics();
- List<Object> record = new ArrayList<>();
- record.add(execution.getRunId());
- record.add(selection.getGranularity());
- record.add(datasetName);
- record.add(execution.getValidationStrategy().getCliValue());
- record.add(execution.getTemporalAttributeName());
- record.add(definition.getDisplayName());
- record.add(definition.getClassName());
- record.add(classAttribute);
- record.add(positiveClass);
- record.add(selection.getSizeAttributeName());
- record.add(execution.getSeed());
- record.add(execution.getBalancingStrategy().getCliValue());
- record.add(execution.getFeatureSelectionStrategy().getCliValue());
- record.add(result.getRun());
- record.add(result.getFold());
- record.add(result.getTrainingWindowLabel());
- record.add(result.getTestWindowLabel());
- record.add(result.getTrainingInstances() < 0 ? null : result.getTrainingInstances());
- record.add(result.getTestInstances() < 0 ? null : result.getTestInstances());
+ List<Object> row = new ArrayList<>();
+ row.add(execution.getRunId());
+ row.add(selection.getGranularity());
+ row.add(datasetName);
+ row.add(execution.getValidationStrategy().getCliValue());
+ row.add(execution.getTemporalAttributeName());
+ row.add(definition.getDisplayName());
+ row.add(definition.getClassName());
+ row.add(classAttribute);
+ row.add(positiveClass);
+ row.add(selection.getSizeAttributeName());
+ row.add(execution.getSeed());
+ row.add(execution.getBalancingStrategy().getCliValue());
+ row.add(execution.getFeatureSelectionStrategy().getCliValue());
+ row.add(result.getRun());
+ row.add(result.getFold());
+ row.add(result.getTrainingWindowLabel());
+ row.add(result.getTestWindowLabel());
+ row.add(result.getTrainingInstances() < 0 ? null : result.getTrainingInstances());
+ row.add(result.getTestInstances() < 0 ? null : result.getTestInstances());
  for (MetricDefinition metric : MetricDefinition.values()) {
- record.add(metric.extract(metrics));
+ row.add(metric.extract(metrics));
  }
- printer.printRecord(record);
+ printer.printRecord(row);
  }
  printer.flush();
  }

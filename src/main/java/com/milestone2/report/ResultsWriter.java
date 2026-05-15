@@ -49,24 +49,24 @@ public class ResultsWriter implements AutoCloseable {
  Map<MetricDefinition, Double> metrics) throws IOException {
  AnalysisExecution execution = config.getExecution();
  AnalysisSelection selection = config.getSelection();
- List<Object> record = new ArrayList<>();
- record.add(execution.getRunId());
- record.add(selection.getGranularity());
- record.add(datasetName);
- record.add(execution.getValidationStrategy().getCliValue());
- record.add(execution.getTemporalAttributeName());
- record.add(definition.getDisplayName());
- record.add(definition.getClassName());
- record.add(classAttribute);
- record.add(positiveClass);
- record.add(selection.getSizeAttributeName());
- record.add(execution.getSeed());
- record.add(execution.getBalancingStrategy().getCliValue());
- record.add(execution.getFeatureSelectionStrategy().getCliValue());
+ List<Object> row = new ArrayList<>();
+ row.add(execution.getRunId());
+ row.add(selection.getGranularity());
+ row.add(datasetName);
+ row.add(execution.getValidationStrategy().getCliValue());
+ row.add(execution.getTemporalAttributeName());
+ row.add(definition.getDisplayName());
+ row.add(definition.getClassName());
+ row.add(classAttribute);
+ row.add(positiveClass);
+ row.add(selection.getSizeAttributeName());
+ row.add(execution.getSeed());
+ row.add(execution.getBalancingStrategy().getCliValue());
+ row.add(execution.getFeatureSelectionStrategy().getCliValue());
  for (MetricDefinition metric : MetricDefinition.values()) {
- record.add(metrics.get(metric));
+ row.add(metrics.get(metric));
  }
- printer.printRecord(record);
+ printer.printRecord(row);
  printer.flush();
  }
 

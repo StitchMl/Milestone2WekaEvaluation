@@ -23,17 +23,17 @@ public class Milestone2SummaryRecordFactory {
  public List<Object> metricWinnerRecord(AnalysisConfig config,
  DatasetAnalysisReport report,
  MetricWinner winner) {
- List<Object> record = baseRecord(config, report);
- record.add("METRIC_WINNER");
- record.add(winner.getMetric().getDisplayName());
- record.add(winner.getClassifierDefinition().getDisplayName());
- record.add(winner.getClassifierDefinition().getId());
- record.add(winner.getClassifierDefinition().getClassName());
- record.add(winner.getMetricValue());
- record.add(null);
- record.add(null);
- record.add("best classifier for metric " + winner.getMetric().getDisplayName());
- return record;
+ List<Object> row = baseRecord(config, report);
+ row.add("METRIC_WINNER");
+ row.add(winner.getMetric().getDisplayName());
+ row.add(winner.getClassifierDefinition().getDisplayName());
+ row.add(winner.getClassifierDefinition().getId());
+ row.add(winner.getClassifierDefinition().getClassName());
+ row.add(winner.getMetricValue());
+ row.add(null);
+ row.add(null);
+ row.add("best classifier for metric " + winner.getMetric().getDisplayName());
+ return row;
  }
 
  /**
@@ -47,17 +47,17 @@ public class Milestone2SummaryRecordFactory {
  public List<Object> overallWinnerRecord(AnalysisConfig config,
  DatasetAnalysisReport report,
  OverallClassifierWinner winner) {
- List<Object> record = baseRecord(config, report);
- record.add("OVERALL_WINNER");
- record.add("Kappa/AUC");
- record.add(winner.getClassifierDefinition().getDisplayName());
- record.add(winner.getClassifierDefinition().getId());
- record.add(winner.getClassifierDefinition().getClassName());
- record.add(null);
- record.add(winner.getKappa());
- record.add(winner.getAuc());
- record.add(winner.getReason());
- return record;
+ List<Object> row = baseRecord(config, report);
+ row.add("OVERALL_WINNER");
+ row.add("Kappa/AUC");
+ row.add(winner.getClassifierDefinition().getDisplayName());
+ row.add(winner.getClassifierDefinition().getId());
+ row.add(winner.getClassifierDefinition().getClassName());
+ row.add(null);
+ row.add(winner.getKappa());
+ row.add(winner.getAuc());
+ row.add(winner.getReason());
+ return row;
  }
 
  /**
@@ -68,15 +68,15 @@ public class Milestone2SummaryRecordFactory {
  * @return base CSV record values
  */
  private List<Object> baseRecord(AnalysisConfig config, DatasetAnalysisReport report) {
- List<Object> record = new ArrayList<>();
- record.add(config.getExecution().getRunId());
- record.add(config.getSelection().getGranularity());
- record.add(report.getDatasetName());
- record.add(config.getExecution().getValidationStrategy().getCliValue());
- record.add(config.getExecution().getTemporalAttributeName());
- record.add(report.getClassAttributeName());
- record.add(report.getPositiveClassValue());
- return record;
+ List<Object> row = new ArrayList<>();
+ row.add(config.getExecution().getRunId());
+ row.add(config.getSelection().getGranularity());
+ row.add(report.getDatasetName());
+ row.add(config.getExecution().getValidationStrategy().getCliValue());
+ row.add(config.getExecution().getTemporalAttributeName());
+ row.add(report.getClassAttributeName());
+ row.add(report.getPositiveClassValue());
+ return row;
  }
 }
 

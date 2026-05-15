@@ -116,16 +116,21 @@ public class ModelEvaluator {
  * @param classifierName classifier display name
  */
  private void logValidationStart(AnalysisExecution execution, String classifierName) {
- if (execution.getValidationStrategy() == ValidationStrategy.CROSS_VALIDATION) {
+ switch (execution.getValidationStrategy()) {
+ case CROSS_VALIDATION:
  log.info("=== Starting {}x{}-fold cross-validation for {} ===",
  execution.getRuns(),
  execution.getFolds(),
  classifierName);
- return;
- }
-
+ break;
+ case ORDERED_HOLDOUT:
+ log.info("=== Starting ordered 80/20 holdout for {} ===", classifierName);
+ break;
+ default:
  log.info("=== Starting walk-forward validation for {} using temporal attribute '{}' ===",
  classifierName,
  execution.getTemporalAttributeName());
+ break;
+ }
  }
 }

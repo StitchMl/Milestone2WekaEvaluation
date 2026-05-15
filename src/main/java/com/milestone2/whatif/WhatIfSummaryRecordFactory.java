@@ -24,18 +24,18 @@ public class WhatIfSummaryRecordFactory {
  DatasetAnalysisReport report,
  WhatIfScenarioReport scenarioReport,
  ScenarioPredictionSummary summary) {
- List<Object> record = commonRecord(config, report, scenarioReport);
- record.add("SCENARIO");
- record.add(summary.getScenario().getDisplayName());
- record.add(summary.getInstanceCount());
- record.add(summary.getActualBuggyCount());
- record.add(summary.getPredictedBuggyCount());
- record.add(summary.getAveragePositiveProbability());
- record.add(null);
- record.add(null);
- record.add(null);
- record.add(null);
- return record;
+ List<Object> row = commonRecord(config, report, scenarioReport);
+ row.add("SCENARIO");
+ row.add(summary.getScenario().getDisplayName());
+ row.add(summary.getInstanceCount());
+ row.add(summary.getActualBuggyCount());
+ row.add(summary.getPredictedBuggyCount());
+ row.add(summary.getAveragePositiveProbability());
+ row.add(null);
+ row.add(null);
+ row.add(null);
+ row.add(null);
+ return row;
  }
 
  /**
@@ -50,18 +50,18 @@ public class WhatIfSummaryRecordFactory {
  DatasetAnalysisReport report,
  WhatIfScenarioReport scenarioReport) {
  WhatIfImpactSummary impact = scenarioReport.getImpactSummary();
- List<Object> record = commonRecord(config, report, scenarioReport);
- record.add("IMPACT");
- record.add("B+->B");
- record.add(impact.getPairedInstanceCount());
- record.add(impact.getActualBuggyCount());
- record.add(null);
- record.add(null);
- record.add(impact.getPredictedRelievedCount());
- record.add(impact.getAvoidableBuggyCount());
- record.add(impact.getAvoidableBuggyShare());
- record.add(impact.getAveragePositiveProbabilityReduction());
- return record;
+ List<Object> row = commonRecord(config, report, scenarioReport);
+ row.add("IMPACT");
+ row.add("B+->B");
+ row.add(impact.getPairedInstanceCount());
+ row.add(impact.getActualBuggyCount());
+ row.add(null);
+ row.add(null);
+ row.add(impact.getPredictedRelievedCount());
+ row.add(impact.getAvoidableBuggyCount());
+ row.add(impact.getAvoidableBuggyShare());
+ row.add(impact.getAveragePositiveProbabilityReduction());
+ return row;
  }
 
  /**
@@ -75,20 +75,20 @@ public class WhatIfSummaryRecordFactory {
  private List<Object> commonRecord(AnalysisConfig config,
  DatasetAnalysisReport report,
  WhatIfScenarioReport scenarioReport) {
- List<Object> record = new ArrayList<>();
- record.add(config.getExecution().getRunId());
- record.add(config.getSelection().getGranularity());
- record.add(report.getDatasetName());
- record.add(config.getExecution().getValidationStrategy().getCliValue());
- record.add(config.getExecution().getTemporalAttributeName());
- record.add(report.getClassAttributeName());
- record.add(report.getPositiveClassValue());
- record.add(scenarioReport.getFeatureSelection().getFeatureName());
- record.add(scenarioReport.getFeatureSelection().getReason());
- record.add(scenarioReport.getClassifierSelection().getDefinition().getDisplayName());
- record.add(scenarioReport.getClassifierSelection().getDefinition().getId());
- record.add(scenarioReport.getClassifierSelection().getReason());
- return record;
+ List<Object> row = new ArrayList<>();
+ row.add(config.getExecution().getRunId());
+ row.add(config.getSelection().getGranularity());
+ row.add(report.getDatasetName());
+ row.add(config.getExecution().getValidationStrategy().getCliValue());
+ row.add(config.getExecution().getTemporalAttributeName());
+ row.add(report.getClassAttributeName());
+ row.add(report.getPositiveClassValue());
+ row.add(scenarioReport.getFeatureSelection().getFeatureName());
+ row.add(scenarioReport.getFeatureSelection().getReason());
+ row.add(scenarioReport.getClassifierSelection().getDefinition().getDisplayName());
+ row.add(scenarioReport.getClassifierSelection().getDefinition().getId());
+ row.add(scenarioReport.getClassifierSelection().getReason());
+ return row;
  }
 }
 

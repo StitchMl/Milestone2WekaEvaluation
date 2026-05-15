@@ -73,11 +73,8 @@ public class AnalysisExecutionBuilder {
  folds,
  seed,
  maxParallelism,
- balancingStrategy,
- featureSelectionStrategy,
- validationStrategy,
- temporalAttributeName,
- minimumTrainingPeriods
+ new PreprocessingConfig(balancingStrategy, featureSelectionStrategy),
+ new ValidationConfig(validationStrategy, temporalAttributeName, minimumTrainingPeriods)
  );
  }
 }

@@ -17,37 +17,15 @@ public class AnalysisPaths {
  private final Path classifierConfigPath;
 
  public AnalysisPaths(Path dataDir, Path outputDir, Path classifierConfigPath) {
- this(
- dataDir.normalize(),
- outputDir.normalize(),
- outputDir.resolve(Config.RESULTS_CSV).normalize(),
- outputDir.resolve(Config.FOLD_CSV).normalize(),
- outputDir.resolve(Config.MILESTONE2_SUMMARY_CSV).normalize(),
- outputDir.resolve(Config.FEATURE_CORRELATIONS_CSV).normalize(),
- outputDir.resolve(Config.WHAT_IF_SUMMARY_CSV).normalize(),
- outputDir.resolve(Config.CHARTS_DIR).normalize(),
- classifierConfigPath.normalize()
- );
- }
-
- AnalysisPaths(Path dataDir,
- Path outputDir,
- Path resultsCsv,
- Path foldCsv,
- Path milestone2SummaryCsv,
- Path featureCorrelationsCsv,
- Path whatIfSummaryCsv,
- Path chartsDir,
- Path classifierConfigPath) {
- this.dataDir = dataDir;
- this.outputDir = outputDir;
- this.resultsCsv = resultsCsv;
- this.foldCsv = foldCsv;
- this.milestone2SummaryCsv = milestone2SummaryCsv;
- this.featureCorrelationsCsv = featureCorrelationsCsv;
- this.whatIfSummaryCsv = whatIfSummaryCsv;
- this.chartsDir = chartsDir;
- this.classifierConfigPath = classifierConfigPath;
+ this.dataDir = dataDir.normalize();
+ this.outputDir = outputDir.normalize();
+ this.resultsCsv = outputDir.resolve(Config.RESULTS_CSV).normalize();
+ this.foldCsv = outputDir.resolve(Config.FOLD_CSV).normalize();
+ this.milestone2SummaryCsv = outputDir.resolve(Config.MILESTONE2_SUMMARY_CSV).normalize();
+ this.featureCorrelationsCsv = outputDir.resolve(Config.FEATURE_CORRELATIONS_CSV).normalize();
+ this.whatIfSummaryCsv = outputDir.resolve(Config.WHAT_IF_SUMMARY_CSV).normalize();
+ this.chartsDir = outputDir.resolve(Config.CHARTS_DIR).normalize();
+ this.classifierConfigPath = classifierConfigPath.normalize();
  }
 
  /**

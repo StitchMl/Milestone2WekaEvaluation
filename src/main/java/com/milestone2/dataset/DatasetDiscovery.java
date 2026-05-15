@@ -1,5 +1,6 @@
 package com.milestone2.dataset;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -19,7 +20,7 @@ public class DatasetDiscovery {
  * @return ordered dataset paths
  * @throws Exception when the directory cannot be read
  */
- public List<Path> list(Path dataDir) throws Exception {
+ public List<Path> list(Path dataDir) throws IOException {
  try (Stream<Path> stream = Files.list(dataDir)) {
  return stream
  .filter(Files::isRegularFile)

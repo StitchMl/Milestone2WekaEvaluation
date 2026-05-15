@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Executes one concrete validation strategy and returns fold-level metrics.
  */
+@SuppressWarnings("java:S112") // Weka classifier API forces generic Exception in execute(); cannot narrow without wrapping
 public interface ValidationExecutor {
 
  /**
