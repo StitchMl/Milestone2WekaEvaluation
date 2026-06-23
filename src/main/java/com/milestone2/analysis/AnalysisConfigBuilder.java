@@ -3,6 +3,7 @@ package com.milestone2.analysis;
 import com.milestone2.classifier.ClassifierIdParser;
 import com.milestone2.whatif.WhatIfOptionsBuilder;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -42,7 +43,7 @@ public class AnalysisConfigBuilder {
  return new AnalysisConfig(
  pathsBuilder.build(),
  selectionBuilder.build(),
- executionBuilder.build(RUN_ID_FORMAT.format(ZonedDateTime.now())),
+ executionBuilder.build(RUN_ID_FORMAT.format(ZonedDateTime.now(ZoneId.systemDefault()))),
  whatIfOptionsBuilder.build()
  );
  }
