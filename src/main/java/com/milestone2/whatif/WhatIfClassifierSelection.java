@@ -1,15 +1,15 @@
 package com.milestone2.whatif;
 
-import com.milestone2.classifier.ClassifierDefinition;
+import com.milestone2.classifier.Definition;
 
 /**
  * Selected classifier for the what-if prediction scenarios.
  */
 public class WhatIfClassifierSelection {
- private final ClassifierDefinition definition;
+ private final Definition definition;
  private final String reason;
 
- public WhatIfClassifierSelection(ClassifierDefinition definition, String reason) {
+ public WhatIfClassifierSelection(Definition definition, String reason) {
  this.definition = definition;
  this.reason = reason;
  }
@@ -19,7 +19,7 @@ public class WhatIfClassifierSelection {
  *
  * @return selected classifier definition
  */
- public ClassifierDefinition getDefinition() {
+ public Definition getDefinition() {
  return definition;
  }
 

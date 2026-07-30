@@ -1,6 +1,6 @@
 package com.milestone2.whatif;
 
-import com.milestone2.prediction.ScenarioPredictionSummary;
+import com.milestone2.prediction.ScenarioSummary;
 
 import java.util.List;
 
@@ -10,12 +10,12 @@ import java.util.List;
 public class WhatIfScenarioReport {
  private final WhatIfFeatureSelection featureSelection;
  private final WhatIfClassifierSelection classifierSelection;
- private final List<ScenarioPredictionSummary> scenarioSummaries;
+ private final List<ScenarioSummary> scenarioSummaries;
  private final WhatIfImpactSummary impactSummary;
 
  public WhatIfScenarioReport(WhatIfFeatureSelection featureSelection,
  WhatIfClassifierSelection classifierSelection,
- List<ScenarioPredictionSummary> scenarioSummaries,
+ List<ScenarioSummary> scenarioSummaries,
  WhatIfImpactSummary impactSummary) {
  this.featureSelection = featureSelection;
  this.classifierSelection = classifierSelection;
@@ -46,7 +46,7 @@ public class WhatIfScenarioReport {
  *
  * @return immutable scenario summaries list
  */
- public List<ScenarioPredictionSummary> getScenarioSummaries() {
+ public List<ScenarioSummary> getScenarioSummaries() {
  return scenarioSummaries;
  }
 

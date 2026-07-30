@@ -1,6 +1,6 @@
 package com.milestone2;
 
-import com.milestone2.feature.FeatureCorrelation;
+import com.milestone2.featureAnalysis.Correlation;
 import com.milestone2.whatif.WhatIfDatasetBuilder;
 import com.milestone2.whatif.WhatIfDatasetSet;
 import com.milestone2.whatif.WhatIfFeatureSelection;
@@ -30,7 +30,7 @@ class WhatIfDatasetBuilderTest {
  WhatIfDatasetSet datasets = new WhatIfDatasetBuilder().build(
  data,
  new WhatIfFeatureSelection(
- new FeatureCorrelation("NSmells", 1.0, 4, 2, 2),
+ new Correlation("NSmells", 1.0, 4, 2, 2),
  "test"
  )
  );

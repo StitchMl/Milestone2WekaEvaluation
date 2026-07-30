@@ -1,10 +1,10 @@
 package com.milestone2;
 
-import com.milestone2.analysis.AnalysisConfig;
-import com.milestone2.analysis.Config;
-import com.milestone2.analysis.AnalysisGranularity;
+import com.milestone2.startupUtility.RunConfig;
+import com.milestone2.startupUtility.Defaults;
+import com.milestone2.startupUtility.Granularity;
 import com.milestone2.evaluation.BalancingStrategy;
-import com.milestone2.validation.ValidationStrategy;
+import com.milestone2.validationStrategy.ValidationStrategy;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
@@ -18,7 +18,7 @@ class AnalysisConfigTest {
 
  @Test
  void fromArgsParsesGranularityAndClassifierSelection() {
- AnalysisConfig config = AnalysisConfig.fromArgs(new String[]{
+ RunConfig config = RunConfig.fromArgs(new String[]{
  "--data-dir=data/custom",
  "--output-dir=build/out",
  "--granularity=method",
@@ -47,7 +47,7 @@ class AnalysisConfigTest {
  assertEquals(Paths.get("build/out/feature_correlations.csv"), config.getPaths().getFeatureCorrelationsCsv());
  assertEquals(Paths.get("build/out/what_if_summary.csv"), config.getPaths().getWhatIfSummaryCsv());
  assertEquals(Paths.get("build/out/charts"), config.getPaths().getChartsDir());
- assertEquals(AnalysisGranularity.METHOD, config.getSelection().getGranularity());
+ assertEquals(Granularity.METHOD, config.getSelection().getGranularity());
  assertEquals("bug", config.getSelection().getClassAttributeName());
  assertEquals("yes", config.getSelection().getPositiveClassValue());
  assertEquals("LOC_METHOD", config.getSelection().getSizeAttributeName());
@@ -67,19 +67,19 @@ class AnalysisConfigTest {
 
  @Test
  void fromArgsUsesMilestoneDefaults() {
- AnalysisConfig config = AnalysisConfig.fromArgs(new String[0]);
+ RunConfig config = RunConfig.fromArgs(new String[0]);
 
- assertEquals(Config.DEFAULT_MAX_PARALLELISM, config.getExecution().getMaxParallelism());
+ assertEquals(Defaults.DEFAULT_MAX_PARALLELISM, config.getExecution().getMaxParallelism());
  assertEquals(BalancingStrategy.NONE, config.getExecution().getBalancingStrategy());
  assertEquals(ValidationStrategy.CROSS_VALIDATION, config.getExecution().getValidationStrategy());
- assertEquals(Config.DEFAULT_TEMPORAL_ATTRIBUTE, config.getExecution().getTemporalAttributeName());
- assertEquals(Config.DEFAULT_MINIMUM_TRAINING_PERIODS, config.getExecution().getMinimumTrainingPeriods());
+ assertEquals(Defaults.DEFAULT_TEMPORAL_ATTRIBUTE, config.getExecution().getTemporalAttributeName());
+ assertEquals(Defaults.DEFAULT_MINIMUM_TRAINING_PERIODS, config.getExecution().getMinimumTrainingPeriods());
  assertTrue(config.getWhatIfOptions().isEnabled());
  }
 
  @Test
  void fromArgsCanDisableWhatIfExplicitly() {
- AnalysisConfig config = AnalysisConfig.fromArgs(new String[]{"--whatif=false"});
+ RunConfig config = RunConfig.fromArgs(new String[]{"--whatif=false"});
 
  assertFalse(config.getWhatIfOptions().isEnabled());
  }

@@ -3,8 +3,8 @@ package com.milestone2.whatif;
 import com.milestone2.evaluation.PositiveClassResolver;
 import com.milestone2.prediction.PredictionRecord;
 import com.milestone2.evaluation.Preprocessor;
-import com.milestone2.classifier.TunedClassifierFactory;
-import com.milestone2.analysis.AnalysisConfig;
+import com.milestone2.classifier.ClassifierFactory;
+import com.milestone2.startupUtility.RunConfig;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Instance;
@@ -47,9 +47,9 @@ public class WhatIfPredictionService {
  WhatIfDatasetSet datasetSet,
  WhatIfFeatureSelection featureSelection,
  WhatIfClassifierSelection classifierSelection,
- AnalysisConfig config,
+ RunConfig config,
  Preprocessor preprocessor) throws Exception {
- Classifier classifier = TunedClassifierFactory.createClassifier(
+ Classifier classifier = ClassifierFactory.createClassifier(
  classifierSelection.getDefinition(),
  config.getExecution().getSeed()
  );

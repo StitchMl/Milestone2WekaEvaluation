@@ -1,7 +1,7 @@
 package com.milestone2.whatif;
 
-import com.milestone2.analysis.Config;
-import com.milestone2.feature.FeatureCorrelation;
+import com.milestone2.startupUtility.Defaults;
+import com.milestone2.featureAnalysis.Correlation;
 import weka.core.Attribute;
 import weka.core.Instances;
 
@@ -21,20 +21,20 @@ public class WhatIfFeatureSelector {
  */
  public WhatIfFeatureSelection select(Instances data,
  WhatIfOptions options,
- List<FeatureCorrelation> correlations) {
+ List<Correlation> correlations) {
  if (options.getFeatureName() != null) {
  return explicitSelection(data, correlations, options.getFeatureName());
  }
 
- FeatureCorrelation preferred = findCorrelation(correlations, Config.DEFAULT_WHAT_IF_FEATURE);
+ Correlation preferred = findCorrelation(correlations, Defaults.DEFAULT_WHAT_IF_FEATURE);
  if (preferred != null && preferred.isZeroable()) {
  return new WhatIfFeatureSelection(
  preferred,
- "preferred exam feature '" + Config.DEFAULT_WHAT_IF_FEATURE + "'"
+ "preferred exam feature '" + Defaults.DEFAULT_WHAT_IF_FEATURE + "'"
  );
  }
 
- for (FeatureCorrelation correlation : correlations) {
+ for (Correlation correlation : correlations) {
  if (correlation.isZeroable()) {
  return new WhatIfFeatureSelection(
  correlation,
@@ -55,7 +55,7 @@ public class WhatIfFeatureSelector {
  * @return selected feature information
  */
  private WhatIfFeatureSelection explicitSelection(Instances data,
- List<FeatureCorrelation> correlations,
+ List<Correlation> correlations,
  String featureName) {
  Attribute attribute = findAttribute(data, featureName);
  if (attribute == null) {
@@ -65,7 +65,7 @@ public class WhatIfFeatureSelector {
  throw new IllegalArgumentException("What-if feature '" + featureName + "' must be numeric");
  }
 
- FeatureCorrelation correlation = findCorrelation(correlations, featureName);
+ Correlation correlation = findCorrelation(correlations, featureName);
  if (correlation == null) {
  throw new IllegalArgumentException("No correlation data available for feature '" + featureName + "'");
  }
@@ -101,8 +101,8 @@ public class WhatIfFeatureSelector {
  * @param featureName feature name to resolve
  * @return matching correlation entry, or {@code null} when absent
  */
- private FeatureCorrelation findCorrelation(List<FeatureCorrelation> correlations, String featureName) {
- for (FeatureCorrelation correlation : correlations) {
+ private Correlation findCorrelation(List<Correlation> correlations, String featureName) {
+ for (Correlation correlation : correlations) {
  if (correlation.getFeatureName().equalsIgnoreCase(featureName)) {
  return correlation;
  }

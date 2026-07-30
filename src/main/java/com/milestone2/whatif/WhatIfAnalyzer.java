@@ -1,10 +1,10 @@
 package com.milestone2.whatif;
 
 import com.milestone2.evaluation.Preprocessor;
-import com.milestone2.analysis.AnalysisConfig;
-import com.milestone2.classifier.ClassifierEvaluationReport;
-import com.milestone2.feature.FeatureCorrelation;
-import com.milestone2.feature.FeatureCorrelationAnalyzer;
+import com.milestone2.startupUtility.RunConfig;
+import com.milestone2.classifier.EvaluationReport;
+import com.milestone2.featureAnalysis.Correlation;
+import com.milestone2.featureAnalysis.CorrelationAnalyzer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weka.core.Instances;
@@ -17,21 +17,21 @@ import java.util.List;
 public class WhatIfAnalyzer {
  private static final Logger log = LoggerFactory.getLogger(WhatIfAnalyzer.class);
 
- private final FeatureCorrelationAnalyzer featureCorrelationAnalyzer;
+ private final CorrelationAnalyzer featureCorrelationAnalyzer;
  private final WhatIfFeatureSelector featureSelector;
  private final WhatIfClassifierSelector classifierSelector;
  private final WhatIfDatasetBuilder datasetBuilder;
  private final WhatIfPredictionService predictionService;
 
  public WhatIfAnalyzer() {
- this(new FeatureCorrelationAnalyzer(),
+ this(new CorrelationAnalyzer(),
  new WhatIfFeatureSelector(),
  new WhatIfClassifierSelector(),
  new WhatIfDatasetBuilder(),
  new WhatIfPredictionService());
  }
 
- WhatIfAnalyzer(FeatureCorrelationAnalyzer featureCorrelationAnalyzer,
+ WhatIfAnalyzer(CorrelationAnalyzer featureCorrelationAnalyzer,
  WhatIfFeatureSelector featureSelector,
  WhatIfClassifierSelector classifierSelector,
  WhatIfDatasetBuilder datasetBuilder,
@@ -54,14 +54,14 @@ public class WhatIfAnalyzer {
  * @throws Exception when feature selection or scenario evaluation fails
  */
  public WhatIfAnalysisReport analyze(Instances data,
- AnalysisConfig config,
- List<ClassifierEvaluationReport> classifierReports,
+ RunConfig config,
+ List<EvaluationReport> classifierReports,
  Preprocessor preprocessor) throws Exception {
  if (!config.getWhatIfOptions().isEnabled()) {
  return null;
  }
 
- List<FeatureCorrelation> correlations = featureCorrelationAnalyzer.analyze(data, config);
+ List<Correlation> correlations = featureCorrelationAnalyzer.analyze(data, config);
  WhatIfFeatureSelection featureSelection =
  featureSelector.select(data, config.getWhatIfOptions(), correlations);
  if (featureSelection == null) {

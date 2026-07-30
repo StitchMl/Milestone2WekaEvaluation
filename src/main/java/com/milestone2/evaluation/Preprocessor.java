@@ -1,6 +1,6 @@
 package com.milestone2.evaluation;
 
-import com.milestone2.analysis.AnalysisConfig;
+import com.milestone2.startupUtility.RunConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weka.attributeSelection.BestFirst;
@@ -37,7 +37,7 @@ public class Preprocessor {
  * @return configured filtered classifier
  * @throws Exception when the filter chain cannot be built
  */
- public FilteredClassifier buildPipeline(Classifier baseClassifier, AnalysisConfig config) throws Exception {
+ public FilteredClassifier buildPipeline(Classifier baseClassifier, RunConfig config) throws Exception {
  FilteredClassifier pipeline = new FilteredClassifier();
  pipeline.setFilter(buildFilterChain(config));
  pipeline.setClassifier(baseClassifier);
@@ -53,7 +53,7 @@ public class Preprocessor {
  * @return configured multi-filter chain
  * @throws Exception when a filter cannot be configured
  */
- private Filter buildFilterChain(AnalysisConfig config) throws Exception {
+ private Filter buildFilterChain(RunConfig config) throws Exception {
  List<Filter> filters = new ArrayList<>();
 
  RemoveType removeStringFilter = new RemoveType();

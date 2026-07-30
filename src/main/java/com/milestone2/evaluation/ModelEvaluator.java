@@ -1,16 +1,16 @@
 package com.milestone2.evaluation;
 
-import com.milestone2.analysis.AnalysisConfig;
-import com.milestone2.analysis.AnalysisExecution;
-import com.milestone2.classifier.ClassifierDefinition;
-import com.milestone2.dataset.DatasetValidationService;
-import com.milestone2.fold.FoldEvaluationService;
-import com.milestone2.fold.PerFoldResult;
+import com.milestone2.startupUtility.RunConfig;
+import com.milestone2.startupUtility.ExecutionSettings;
+import com.milestone2.classifier.Definition;
+import com.milestone2.dataset.ValidationService;
+import com.milestone2.foldMetadata.FoldEvaluator;
+import com.milestone2.foldMetadata.FoldResult;
 import com.milestone2.metric.MetricAggregator;
 import com.milestone2.metric.MetricDefinition;
-import com.milestone2.validation.ValidationExecutor;
-import com.milestone2.validation.ValidationExecutorSelector;
-import com.milestone2.validation.ValidationStrategy;
+import com.milestone2.validationStrategy.ValidationExecutor;
+import com.milestone2.validationStrategy.ExecutorSelector;
+import com.milestone2.validationStrategy.ValidationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weka.core.Instances;
@@ -25,24 +25,24 @@ public class ModelEvaluator {
  private static final Logger log = LoggerFactory.getLogger(ModelEvaluator.class);
 
  private final PositiveClassResolver positiveClassResolver;
- private final DatasetValidationService datasetValidationService;
+ private final ValidationService datasetValidationService;
  private final MetricAggregator metricAggregator;
- private final ValidationExecutorSelector validationExecutorSelector;
- private final FoldEvaluationService foldEvaluationService;
+ private final ExecutorSelector validationExecutorSelector;
+ private final FoldEvaluator foldEvaluationService;
 
  public ModelEvaluator() {
  this(new PositiveClassResolver(),
- new DatasetValidationService(),
+ new ValidationService(),
  new MetricAggregator(),
- new ValidationExecutorSelector(),
- new FoldEvaluationService());
+ new ExecutorSelector(),
+ new FoldEvaluator());
  }
 
  ModelEvaluator(PositiveClassResolver positiveClassResolver,
- DatasetValidationService datasetValidationService,
+ ValidationService datasetValidationService,
  MetricAggregator metricAggregator,
- ValidationExecutorSelector validationExecutorSelector,
- FoldEvaluationService foldEvaluationService) {
+ ExecutorSelector validationExecutorSelector,
+ FoldEvaluator foldEvaluationService) {
  this.positiveClassResolver = positiveClassResolver;
  this.datasetValidationService = datasetValidationService;
  this.metricAggregator = metricAggregator;
@@ -60,18 +60,18 @@ public class ModelEvaluator {
  * @return per-fold evaluation results
  * @throws Exception when validation or fold evaluation fails
  */
- public List<PerFoldResult> evaluateWithFolds(ClassifierDefinition definition,
+ public List<FoldResult> evaluateWithFolds(Definition definition,
  Instances data,
- AnalysisConfig config,
+ RunConfig config,
  Preprocessor preprocessor) throws Exception {
- AnalysisExecution execution = config.getExecution();
+ ExecutionSettings execution = config.getExecution();
  datasetValidationService.validate(data, config);
 
  logValidationStart(execution, definition.getDisplayName());
  ValidationExecutor validationExecutor =
  validationExecutorSelector.select(execution.getValidationStrategy());
 
- List<PerFoldResult> results = validationExecutor.execute(
+ List<FoldResult> results = validationExecutor.execute(
  data,
  config,
  (train, test, context) -> foldEvaluationService.evaluate(
@@ -94,7 +94,7 @@ public class ModelEvaluator {
  * @param results fold-level results
  * @return aggregate metrics map
  */
- public Map<MetricDefinition, Double> aggregate(List<PerFoldResult> results) {
+ public Map<MetricDefinition, Double> aggregate(List<FoldResult> results) {
  return metricAggregator.aggregate(results);
  }
 
@@ -105,7 +105,7 @@ public class ModelEvaluator {
  * @param config immutable analysis configuration
  * @return positive class label
  */
- public String resolvePositiveClassValue(Instances data, AnalysisConfig config) {
+ public String resolvePositiveClassValue(Instances data, RunConfig config) {
  return positiveClassResolver.resolvePositiveClassValue(data.classAttribute(), config);
  }
 
@@ -115,7 +115,7 @@ public class ModelEvaluator {
  * @param execution execution settings
  * @param classifierName classifier display name
  */
- private void logValidationStart(AnalysisExecution execution, String classifierName) {
+ private void logValidationStart(ExecutionSettings execution, String classifierName) {
  switch (execution.getValidationStrategy()) {
  case CROSS_VALIDATION:
  log.info("=== Starting {}x{}-fold cross-validation for {} ===",

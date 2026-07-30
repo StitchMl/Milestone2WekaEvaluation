@@ -1,8 +1,8 @@
 package com.milestone2;
 
-import com.milestone2.analysis.AnalysisConfig;
-import com.milestone2.analysis.Config;
-import com.milestone2.dataset.GenericDataLoader;
+import com.milestone2.startupUtility.RunConfig;
+import com.milestone2.startupUtility.Defaults;
+import com.milestone2.dataset.DataLoader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import weka.core.Instances;
@@ -37,7 +37,7 @@ class GenericDataLoaderTest {
  "metricA,LOC,bug%n1,10,yes%n2,20,no%n"
  );
 
- Instances data = new GenericDataLoader().load(csv, AnalysisConfig.fromArgs(new String[0]));
+ Instances data = new DataLoader().load(csv, RunConfig.fromArgs(new String[0]));
 
  assertEquals(2, data.numInstances());
  assertEquals(3, data.numAttributes());
@@ -58,7 +58,7 @@ class GenericDataLoaderTest {
  "2,20,no%n"
  );
 
- Instances data = new GenericDataLoader().load(arff, AnalysisConfig.fromArgs(new String[0]));
+ Instances data = new DataLoader().load(arff, RunConfig.fromArgs(new String[0]));
 
  assertEquals(2, data.numInstances());
  assertEquals(3, data.numAttributes());
@@ -68,9 +68,9 @@ class GenericDataLoaderTest {
 
  @Test
  void loadRejectsUnsupportedFormats() {
- assertThrows(IOException.class, () -> new GenericDataLoader().load(
+ assertThrows(IOException.class, () -> new DataLoader().load(
  Paths.get("demo.txt"),
- AnalysisConfig.fromArgs(new String[0])
+ RunConfig.fromArgs(new String[0])
  ));
  }
 
@@ -81,15 +81,15 @@ class GenericDataLoaderTest {
  "bug,metricA,LOC%nyes,1,10%nno,2,20%n"
  );
 
- AnalysisConfig config = AnalysisConfig.fromArgs(new String[]{"--class-attribute=bug"});
- Instances data = new GenericDataLoader().load(csv, config);
+ RunConfig config = RunConfig.fromArgs(new String[]{"--class-attribute=bug"});
+ Instances data = new DataLoader().load(csv, config);
 
  assertEquals(0, data.classIndex());
  assertEquals("bug", data.classAttribute().name());
  }
 
  private Path createDataFile(String extension, String content) throws IOException {
- Path dataDir = Paths.get(Config.DATA_DIR);
+ Path dataDir = Paths.get(Defaults.DATA_DIR);
  Files.createDirectories(dataDir);
 
  Path file = dataDir.resolve("test-" + UUID.randomUUID() + extension);

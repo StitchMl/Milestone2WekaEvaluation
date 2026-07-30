@@ -1,8 +1,8 @@
 package com.milestone2.whatif;
 
-import com.milestone2.prediction.ScenarioPredictionSummary;
-import com.milestone2.analysis.AnalysisConfig;
-import com.milestone2.dataset.DatasetAnalysisReport;
+import com.milestone2.prediction.ScenarioSummary;
+import com.milestone2.startupUtility.RunConfig;
+import com.milestone2.dataset.AnalysisReport;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
@@ -57,13 +57,13 @@ public class WhatIfSummaryWriter implements AutoCloseable {
  * @param report dataset analysis report
  * @throws IOException when the CSV output cannot be written
  */
- public void write(AnalysisConfig config, DatasetAnalysisReport report) throws IOException {
+ public void write(RunConfig config, AnalysisReport report) throws IOException {
  if (!report.hasWhatIfReport() || !report.getWhatIfReport().hasScenarioReport()) {
  return;
  }
 
  WhatIfScenarioReport scenarioReport = report.getWhatIfReport().getScenarioReport();
- for (ScenarioPredictionSummary summary : scenarioReport.getScenarioSummaries()) {
+ for (ScenarioSummary summary : scenarioReport.getScenarioSummaries()) {
  printer.printRecord(recordFactory.buildScenarioRecord(config, report, scenarioReport, summary));
  }
  printer.printRecord(recordFactory.buildImpactRecord(config, report, scenarioReport));

@@ -1,7 +1,7 @@
 package com.milestone2.whatif;
 
 import com.milestone2.prediction.PredictionRecord;
-import com.milestone2.prediction.ScenarioPredictionSummary;
+import com.milestone2.prediction.ScenarioSummary;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class WhatIfScenarioSummarizer {
  * @param predictions raw prediction records
  * @return aggregated scenario summary
  */
- public ScenarioPredictionSummary summarize(WhatIfScenario scenario, List<PredictionRecord> predictions) {
+ public ScenarioSummary summarize(WhatIfScenario scenario, List<PredictionRecord> predictions) {
  int actualBuggyCount = 0;
  int predictedBuggyCount = 0;
  double totalPositiveProbability = 0.0;
@@ -34,7 +34,7 @@ public class WhatIfScenarioSummarizer {
  double averagePositiveProbability = predictions.isEmpty()
  ? 0.0
  : totalPositiveProbability / predictions.size();
- return new ScenarioPredictionSummary(
+ return new ScenarioSummary(
  scenario,
  predictions.size(),
  actualBuggyCount,

@@ -1,15 +1,15 @@
 package com.milestone2.whatif;
 
-import com.milestone2.feature.FeatureCorrelation;
+import com.milestone2.featureAnalysis.Correlation;
 
 /**
  * Selected feature for the what-if scenario generation.
  */
 public class WhatIfFeatureSelection {
- private final FeatureCorrelation correlation;
+ private final Correlation correlation;
  private final String reason;
 
- public WhatIfFeatureSelection(FeatureCorrelation correlation, String reason) {
+ public WhatIfFeatureSelection(Correlation correlation, String reason) {
  this.correlation = correlation;
  this.reason = reason;
  }
@@ -20,7 +20,7 @@ public class WhatIfFeatureSelection {
  * @return selected feature correlation
  */
  @SuppressWarnings("unused")
- public FeatureCorrelation getCorrelation() {
+ public Correlation getCorrelation() {
  return correlation;
  }
 

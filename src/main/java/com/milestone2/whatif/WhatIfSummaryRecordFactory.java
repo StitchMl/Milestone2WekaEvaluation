@@ -1,8 +1,8 @@
 package com.milestone2.whatif;
 
-import com.milestone2.prediction.ScenarioPredictionSummary;
-import com.milestone2.analysis.AnalysisConfig;
-import com.milestone2.dataset.DatasetAnalysisReport;
+import com.milestone2.prediction.ScenarioSummary;
+import com.milestone2.startupUtility.RunConfig;
+import com.milestone2.dataset.AnalysisReport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +20,10 @@ public class WhatIfSummaryRecordFactory {
  * @param summary scenario summary to serialize
  * @return CSV record values
  */
- public List<Object> buildScenarioRecord(AnalysisConfig config,
- DatasetAnalysisReport report,
+ public List<Object> buildScenarioRecord(RunConfig config,
+ AnalysisReport report,
  WhatIfScenarioReport scenarioReport,
- ScenarioPredictionSummary summary) {
+ ScenarioSummary summary) {
  List<Object> row = commonRecord(config, report, scenarioReport);
  row.add("SCENARIO");
  row.add(summary.getScenario().getDisplayName());
@@ -46,8 +46,8 @@ public class WhatIfSummaryRecordFactory {
  * @param scenarioReport what-if scenario report
  * @return CSV record values
  */
- public List<Object> buildImpactRecord(AnalysisConfig config,
- DatasetAnalysisReport report,
+ public List<Object> buildImpactRecord(RunConfig config,
+ AnalysisReport report,
  WhatIfScenarioReport scenarioReport) {
  WhatIfImpactSummary impact = scenarioReport.getImpactSummary();
  List<Object> row = commonRecord(config, report, scenarioReport);
@@ -72,8 +72,8 @@ public class WhatIfSummaryRecordFactory {
  * @param scenarioReport what-if scenario report
  * @return base CSV record values
  */
- private List<Object> commonRecord(AnalysisConfig config,
- DatasetAnalysisReport report,
+ private List<Object> commonRecord(RunConfig config,
+ AnalysisReport report,
  WhatIfScenarioReport scenarioReport) {
  List<Object> row = new ArrayList<>();
  row.add(config.getExecution().getRunId());

@@ -1,6 +1,6 @@
 package com.milestone2;
 
-import com.milestone2.analysis.NetlibRuntimeConfigurer;
+import com.milestone2.startupUtility.NetlibConfigurer;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class NetlibRuntimeConfigurerTest {
  @Test
  void configurePureJavaPinsAllNetlibImplementationsToF2j() {
- NetlibRuntimeConfigurer.configurePureJava();
+ NetlibConfigurer.configurePureJava();
 
  assertEquals("com.github.fommil.netlib.F2jBLAS", System.getProperty("com.github.fommil.netlib.BLAS"));
  assertEquals("com.github.fommil.netlib.F2jLAPACK", System.getProperty("com.github.fommil.netlib.LAPACK"));

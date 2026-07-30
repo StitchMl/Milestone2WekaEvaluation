@@ -1,17 +1,17 @@
 package com.milestone2.metric;
 
-import com.milestone2.classifier.ClassifierDefinition;
+import com.milestone2.classifier.Definition;
 
 /**
  * Best classifier for one metric within a dataset analysis.
  */
 public class MetricWinner {
  private final MetricDefinition metric;
- private final ClassifierDefinition classifierDefinition;
+ private final Definition classifierDefinition;
  private final double metricValue;
 
  public MetricWinner(MetricDefinition metric,
- ClassifierDefinition classifierDefinition,
+ Definition classifierDefinition,
  double metricValue) {
  this.metric = metric;
  this.classifierDefinition = classifierDefinition;
@@ -32,7 +32,7 @@ public class MetricWinner {
  *
  * @return winning classifier definition
  */
- public ClassifierDefinition getClassifierDefinition() {
+ public Definition getClassifierDefinition() {
  return classifierDefinition;
  }
 

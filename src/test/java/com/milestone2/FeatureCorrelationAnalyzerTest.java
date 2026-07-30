@@ -1,8 +1,8 @@
 package com.milestone2;
 
-import com.milestone2.analysis.AnalysisConfig;
-import com.milestone2.feature.FeatureCorrelation;
-import com.milestone2.feature.FeatureCorrelationAnalyzer;
+import com.milestone2.startupUtility.RunConfig;
+import com.milestone2.featureAnalysis.Correlation;
+import com.milestone2.featureAnalysis.CorrelationAnalyzer;
 import org.junit.jupiter.api.Test;
 import weka.core.Instances;
 
@@ -28,8 +28,8 @@ class FeatureCorrelationAnalyzerTest {
  "3,10,yes%n"
  );
 
- List<FeatureCorrelation> correlations = new FeatureCorrelationAnalyzer()
- .analyze(data, AnalysisConfig.fromArgs(new String[]{"--positive-class=yes"}));
+ List<Correlation> correlations = new CorrelationAnalyzer()
+ .analyze(data, RunConfig.fromArgs(new String[]{"--positive-class=yes"}));
 
  assertEquals(2, correlations.size());
  assertEquals("NSmells", correlations.get(0).getFeatureName());

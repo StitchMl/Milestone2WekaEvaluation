@@ -1,8 +1,8 @@
 package com.milestone2;
 
-import com.milestone2.analysis.AnalysisConfig;
-import com.milestone2.dataset.GenericDataLoader;
-import com.milestone2.feature.FeatureCorrelation;
+import com.milestone2.startupUtility.RunConfig;
+import com.milestone2.dataset.DataLoader;
+import com.milestone2.featureAnalysis.Correlation;
 import com.milestone2.whatif.WhatIfDatasetBuilder;
 import com.milestone2.whatif.WhatIfDatasetSet;
 import com.milestone2.whatif.WhatIfFeatureSelection;
@@ -25,12 +25,12 @@ class MantiMetricsFixtureTest {
 
  @Test
  void realAvroDatasetLoadsWithExpectedClassAttribute() throws Exception {
- AnalysisConfig config = AnalysisConfig.fromArgs(new String[]{
+ RunConfig config = RunConfig.fromArgs(new String[]{
  "--class-attribute=Buggy",
  "--positive-class=yes"
  });
 
- Instances data = new GenericDataLoader().load(MAIN_DATASET, config);
+ Instances data = new DataLoader().load(MAIN_DATASET, config);
 
  assertEquals("Buggy", data.classAttribute().name());
  assertEquals(1073, data.numInstances());
@@ -38,8 +38,8 @@ class MantiMetricsFixtureTest {
 
  @Test
  void whatIfBuilderMatchesImportedAvroArtifactPartitionsForNSmells() throws Exception {
- AnalysisConfig config = AnalysisConfig.fromArgs(new String[]{"--class-attribute=Buggy"});
- GenericDataLoader loader = new GenericDataLoader();
+ RunConfig config = RunConfig.fromArgs(new String[]{"--class-attribute=Buggy"});
+ DataLoader loader = new DataLoader();
  Instances aDataset = loader.load(ARTIFACTS_DIR.resolve("A.csv"), config);
  Instances expectedBPlus = loader.load(ARTIFACTS_DIR.resolve("BPlus.csv"), config);
  Instances expectedB = loader.load(ARTIFACTS_DIR.resolve("B.csv"), config);
@@ -79,7 +79,7 @@ class MantiMetricsFixtureTest {
  }
 
  return new WhatIfFeatureSelection(
- new FeatureCorrelation(featureName, 0.0, nonMissingCount, zeroValueCount, positiveValueCount),
+ new Correlation(featureName, 0.0, nonMissingCount, zeroValueCount, positiveValueCount),
  "Imported fixture"
  );
  }

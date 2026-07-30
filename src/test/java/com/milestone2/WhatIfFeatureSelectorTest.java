@@ -1,7 +1,7 @@
 package com.milestone2;
 
-import com.milestone2.analysis.AnalysisConfig;
-import com.milestone2.feature.FeatureCorrelation;
+import com.milestone2.startupUtility.RunConfig;
+import com.milestone2.featureAnalysis.Correlation;
 import com.milestone2.whatif.WhatIfFeatureSelection;
 import com.milestone2.whatif.WhatIfFeatureSelector;
 import org.junit.jupiter.api.Test;
@@ -28,14 +28,14 @@ class WhatIfFeatureSelectorTest {
  "4,1,yes%n"
  );
 
- List<FeatureCorrelation> correlations = List.of(
- new FeatureCorrelation("Complexity", 0.99, 4, 0, 4),
- new FeatureCorrelation("NSmells", 0.50, 4, 2, 2)
+ List<Correlation> correlations = List.of(
+ new Correlation("Complexity", 0.99, 4, 0, 4),
+ new Correlation("NSmells", 0.50, 4, 2, 2)
  );
 
  WhatIfFeatureSelection selection = new WhatIfFeatureSelector().select(
  data,
- AnalysisConfig.fromArgs(new String[0]).getWhatIfOptions(),
+ RunConfig.fromArgs(new String[0]).getWhatIfOptions(),
  correlations
  );
 

@@ -1,6 +1,6 @@
 package com.milestone2.metric;
 
-import com.milestone2.fold.PerFoldResult;
+import com.milestone2.foldMetadata.FoldResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,11 +20,11 @@ public class MetricAggregator {
  * @param results fold-level evaluation results
  * @return aggregate metrics map
  */
- public Map<MetricDefinition, Double> aggregate(List<PerFoldResult> results) {
+ public Map<MetricDefinition, Double> aggregate(List<FoldResult> results) {
  Map<MetricDefinition, Double> sums = initializeNumericMap();
  Map<MetricDefinition, Integer> counts = initializeCounterMap();
 
- for (PerFoldResult result : results) {
+ for (FoldResult result : results) {
  Metrics metrics = result.getMetrics();
  for (MetricDefinition metric : MetricDefinition.values()) {
  addMetricValue(sums, counts, metric, metric.extract(metrics));

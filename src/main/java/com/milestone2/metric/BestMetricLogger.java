@@ -1,8 +1,8 @@
 package com.milestone2.metric;
 
-import com.milestone2.classifier.OverallClassifierWinner;
-import com.milestone2.classifier.OverallClassifierWinnerSelector;
-import com.milestone2.dataset.DatasetAnalysisReport;
+import com.milestone2.classifier.OverallWinner;
+import com.milestone2.classifier.OverallWinnerSelector;
+import com.milestone2.dataset.AnalysisReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,14 +14,14 @@ import java.util.Locale;
 public class BestMetricLogger {
  private static final Logger log = LoggerFactory.getLogger(BestMetricLogger.class);
  private final MetricWinnerSelector metricWinnerSelector = new MetricWinnerSelector();
- private final OverallClassifierWinnerSelector overallWinnerSelector = new OverallClassifierWinnerSelector();
+ private final OverallWinnerSelector overallWinnerSelector = new OverallWinnerSelector();
 
  /**
  * Logs the best classifier for each metric and the overall milestone winner for the dataset.
  *
  * @param report dataset analysis report
  */
- public void log(DatasetAnalysisReport report) {
+ public void log(AnalysisReport report) {
  if (report.getClassifierReports().isEmpty()) {
  return;
  }
@@ -34,7 +34,7 @@ public class BestMetricLogger {
  String.format(Locale.US, "%.4f", winner.getMetricValue()));
  }
 
- OverallClassifierWinner overallWinner = overallWinnerSelector.select(report);
+ OverallWinner overallWinner = overallWinnerSelector.select(report);
  if (overallWinner != null) {
  log.info("[{}] Overall milestone winner: {} (Kappa={}, AUC={})",
  report.getDatasetName(),

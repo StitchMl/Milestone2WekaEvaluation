@@ -1,6 +1,6 @@
 package com.milestone2.evaluation;
 
-import com.milestone2.analysis.AnalysisConfig;
+import com.milestone2.startupUtility.RunConfig;
 import weka.core.Attribute;
 
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public class PositiveClassResolver {
  * @param config immutable analysis configuration
  * @return positive class label
  */
- public String resolvePositiveClassValue(Attribute classAttribute, AnalysisConfig config) {
+ public String resolvePositiveClassValue(Attribute classAttribute, RunConfig config) {
  return classAttribute.value(resolvePositiveClassIndex(classAttribute, config));
  }
 
@@ -32,7 +32,7 @@ public class PositiveClassResolver {
  * @param config immutable analysis configuration
  * @return positive class index
  */
- public int resolvePositiveClassIndex(Attribute classAttribute, AnalysisConfig config) {
+ public int resolvePositiveClassIndex(Attribute classAttribute, RunConfig config) {
  String configuredPositiveClass = config.getSelection().getPositiveClassValue();
  if (configuredPositiveClass != null) {
  int configuredIndex = classAttribute.indexOfValue(configuredPositiveClass);

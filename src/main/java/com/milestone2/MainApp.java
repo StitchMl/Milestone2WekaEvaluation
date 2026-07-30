@@ -1,6 +1,6 @@
 package com.milestone2;
 
-import com.milestone2.analysis.AnalysisApplication;
+import com.milestone2.startupUtility.Application;
 
 /**
  * Application entry point.
@@ -12,7 +12,7 @@ public class MainApp {
  * @param args CLI arguments in {@code --key=value} form
  */
  public static void main(String[] args) {
- new AnalysisApplication().run(args);
+ new Application().run(args);
  }
 }
 

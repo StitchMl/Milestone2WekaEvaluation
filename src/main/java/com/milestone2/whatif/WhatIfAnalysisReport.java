@@ -1,6 +1,6 @@
 package com.milestone2.whatif;
 
-import com.milestone2.feature.FeatureCorrelation;
+import com.milestone2.featureAnalysis.Correlation;
 
 import java.util.List;
 
@@ -8,10 +8,10 @@ import java.util.List;
  * Correlation study plus the optional what-if scenario results.
  */
 public class WhatIfAnalysisReport {
- private final List<FeatureCorrelation> featureCorrelations;
+ private final List<Correlation> featureCorrelations;
  private final WhatIfScenarioReport scenarioReport;
 
- public WhatIfAnalysisReport(List<FeatureCorrelation> featureCorrelations,
+ public WhatIfAnalysisReport(List<Correlation> featureCorrelations,
  WhatIfScenarioReport scenarioReport) {
  this.featureCorrelations = List.copyOf(featureCorrelations);
  this.scenarioReport = scenarioReport;
@@ -22,7 +22,7 @@ public class WhatIfAnalysisReport {
  *
  * @return immutable feature correlations list
  */
- public List<FeatureCorrelation> getFeatureCorrelations() {
+ public List<Correlation> getFeatureCorrelations() {
  return featureCorrelations;
  }
 

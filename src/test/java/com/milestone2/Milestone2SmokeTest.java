@@ -1,7 +1,7 @@
 package com.milestone2;
 
-import com.milestone2.analysis.*;
-import com.milestone2.classifier.ClassifierCatalog;
+import com.milestone2.startupUtility.*;
+import com.milestone2.classifier.Catalog;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ class Milestone2SmokeTest {
  Path dataset = dataDir.resolve("demo.arff");
  Files.writeString(dataset, demoDataset(), StandardCharsets.UTF_8);
 
- AnalysisConfig config = AnalysisConfig.fromArgs(new String[]{
+ RunConfig config = RunConfig.fromArgs(new String[]{
  "--data-dir=" + dataDir,
  "--output-dir=" + outputDir,
  "--classifier-config=classifiers.properties",
@@ -33,17 +33,17 @@ class Milestone2SmokeTest {
  });
 
  try {
- AnalysisRuntime runtime = new AnalysisRuntime();
+ RuntimePreparer runtime = new RuntimePreparer();
  runtime.prepare(config);
 
- ClassifierCatalog classifierCatalog = ClassifierCatalog.load(
+ Catalog classifierCatalog = Catalog.load(
  config.getPaths().getClassifierConfigPath(),
  config.getSelection().getClassifierIds()
  );
- new AnalysisStartupValidator().validate(config, classifierCatalog);
+ new StartupValidator().validate(config, classifierCatalog);
 
- try (AnalysisOutputs outputs = AnalysisOutputs.open(config)) {
- new AnalysisRunner().run(config, classifierCatalog, outputs);
+ try (OutputWriters outputs = OutputWriters.open(config)) {
+ new Runner().run(config, classifierCatalog, outputs);
  }
 
  assertTrue(Files.exists(config.getPaths().getResultsCsv()));
@@ -85,7 +85,7 @@ class Milestone2SmokeTest {
  Path dataset = dataDir.resolve("demo.csv");
  Files.writeString(dataset, demoCsvDataset(), StandardCharsets.UTF_8);
 
- AnalysisConfig config = AnalysisConfig.fromArgs(new String[]{
+ RunConfig config = RunConfig.fromArgs(new String[]{
  "--data-dir=" + dataDir,
  "--output-dir=" + outputDir,
  "--classifier-config=classifiers.properties",
@@ -99,17 +99,17 @@ class Milestone2SmokeTest {
  });
 
  try {
- AnalysisRuntime runtime = new AnalysisRuntime();
+ RuntimePreparer runtime = new RuntimePreparer();
  runtime.prepare(config);
 
- ClassifierCatalog classifierCatalog = ClassifierCatalog.load(
+ Catalog classifierCatalog = Catalog.load(
  config.getPaths().getClassifierConfigPath(),
  config.getSelection().getClassifierIds()
  );
- new AnalysisStartupValidator().validate(config, classifierCatalog);
+ new StartupValidator().validate(config, classifierCatalog);
 
- try (AnalysisOutputs outputs = AnalysisOutputs.open(config)) {
- new AnalysisRunner().run(config, classifierCatalog, outputs);
+ try (OutputWriters outputs = OutputWriters.open(config)) {
+ new Runner().run(config, classifierCatalog, outputs);
  }
 
  assertTrue(Files.exists(config.getPaths().getResultsCsv()));

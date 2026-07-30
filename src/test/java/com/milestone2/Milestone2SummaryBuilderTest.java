@@ -1,12 +1,12 @@
 package com.milestone2;
 
-import com.milestone2.classifier.ClassifierDefinition;
-import com.milestone2.classifier.ClassifierEvaluationReport;
-import com.milestone2.dataset.DatasetAnalysisReport;
+import com.milestone2.classifier.Definition;
+import com.milestone2.classifier.EvaluationReport;
+import com.milestone2.dataset.AnalysisReport;
 import com.milestone2.metric.MetricDefinition;
 import com.milestone2.metric.MetricWinner;
-import com.milestone2.summary.Milestone2Summary;
-import com.milestone2.summary.Milestone2SummaryBuilder;
+import com.milestone2.summary.Summary;
+import com.milestone2.summary.SummaryBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.EnumMap;
@@ -19,7 +19,7 @@ class Milestone2SummaryBuilderTest {
 
  @Test
  void buildSelectsPerMetricWinnersAndOverallWinner() {
- DatasetAnalysisReport report = new DatasetAnalysisReport(
+ AnalysisReport report = new AnalysisReport(
  "demo.csv",
  "bug",
  "yes",
@@ -29,7 +29,7 @@ class Milestone2SummaryBuilderTest {
  )
  );
 
- Milestone2Summary summary = new Milestone2SummaryBuilder().build(report);
+ Summary summary = new SummaryBuilder().build(report);
 
  assertEquals(MetricDefinition.values().length, summary.getMetricWinners().size());
  assertEquals("RF", findMetricWinner(summary, MetricDefinition.ACCURACY).getClassifierDefinition().getId());
@@ -39,14 +39,14 @@ class Milestone2SummaryBuilderTest {
  }
 
  @SuppressWarnings("SameParameterValue")
- private MetricWinner findMetricWinner(Milestone2Summary summary, MetricDefinition metric) {
+ private MetricWinner findMetricWinner(Summary summary, MetricDefinition metric) {
  return summary.getMetricWinners().stream()
  .filter(winner -> winner.getMetric() == metric)
  .findFirst()
  .orElseThrow();
  }
 
- private ClassifierEvaluationReport classifierReport(String id,
+ private EvaluationReport classifierReport(String id,
  String displayName,
  double kappa,
  double auc,
@@ -58,8 +58,8 @@ class Milestone2SummaryBuilderTest {
  metrics.put(MetricDefinition.KAPPA, kappa);
  metrics.put(MetricDefinition.AUC, auc);
  metrics.put(MetricDefinition.ACCURACY, accuracy);
- return new ClassifierEvaluationReport(
- new ClassifierDefinition(id, displayName, "weka.classifiers.Dummy", ""),
+ return new EvaluationReport(
+ new Definition(id, displayName, "weka.classifiers.Dummy", ""),
  metrics,
  List.of()
  );

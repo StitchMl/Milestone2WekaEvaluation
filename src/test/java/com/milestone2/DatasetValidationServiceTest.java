@@ -1,7 +1,7 @@
 package com.milestone2;
 
-import com.milestone2.analysis.AnalysisConfig;
-import com.milestone2.dataset.DatasetValidationService;
+import com.milestone2.startupUtility.RunConfig;
+import com.milestone2.dataset.ValidationService;
 import org.junit.jupiter.api.Test;
 import weka.core.Instances;
 
@@ -23,13 +23,13 @@ class DatasetValidationServiceTest {
  "30,no"
  )));
  data.setClassIndex(data.attribute("bug").index());
- AnalysisConfig config = AnalysisConfig.fromArgs(new String[]{
+ RunConfig config = RunConfig.fromArgs(new String[]{
  "--validation=cross-validation",
  "--folds=4",
  "--whatif=false"
  });
 
- assertThrows(IllegalArgumentException.class, () -> new DatasetValidationService().validate(data, config));
+ assertThrows(IllegalArgumentException.class, () -> new ValidationService().validate(data, config));
  }
 
  @Test
@@ -45,14 +45,14 @@ class DatasetValidationServiceTest {
  "r3,30,no"
  )));
  data.setClassIndex(data.attribute("bug").index());
- AnalysisConfig config = AnalysisConfig.fromArgs(new String[]{
+ RunConfig config = RunConfig.fromArgs(new String[]{
  "--validation=walk-forward",
  "--temporal-attribute=ReleaseId",
  "--whatif=false",
  "--folds=10"
  });
 
- new DatasetValidationService().validate(data, config);
+ new ValidationService().validate(data, config);
  }
 }
 

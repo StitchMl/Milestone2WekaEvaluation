@@ -1,6 +1,6 @@
 package com.milestone2;
 
-import com.milestone2.classifier.ClassifierCatalog;
+import com.milestone2.classifier.Catalog;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -25,7 +25,7 @@ class ClassifierCatalogTest {
  ), StandardCharsets.UTF_8);
 
  try {
- ClassifierCatalog catalog = ClassifierCatalog.load(properties, List.of());
+ Catalog catalog = Catalog.load(properties, List.of());
 
  assertEquals(2, catalog.getDefinitions().size());
  assertEquals("RF", catalog.getDefinitions().get(0).getId());

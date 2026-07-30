@@ -1,7 +1,7 @@
 package com.milestone2;
 
-import com.milestone2.classifier.ClassifierCatalog;
-import com.milestone2.classifier.ClassifierCatalogValidator;
+import com.milestone2.classifier.Catalog;
+import com.milestone2.classifier.CatalogValidator;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -17,8 +17,8 @@ class ClassifierCatalogValidatorTest {
  Path propertiesPath = Paths.get("classifiers.properties");
 
  assertDoesNotThrow(() -> {
- ClassifierCatalog catalog = ClassifierCatalog.load(propertiesPath, List.of());
- new ClassifierCatalogValidator().validate(catalog, 42L);
+ Catalog catalog = Catalog.load(propertiesPath, List.of());
+ new CatalogValidator().validate(catalog, 42L);
  });
  }
 }

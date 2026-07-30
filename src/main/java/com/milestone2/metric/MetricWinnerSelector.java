@@ -1,8 +1,8 @@
 package com.milestone2.metric;
 
-import com.milestone2.dataset.DatasetAnalysisReport;
-import com.milestone2.classifier.ClassifierDefinition;
-import com.milestone2.classifier.ClassifierEvaluationReport;
+import com.milestone2.dataset.AnalysisReport;
+import com.milestone2.classifier.Definition;
+import com.milestone2.classifier.EvaluationReport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class MetricWinnerSelector {
  * @param report dataset analysis report
  * @return metric winners in metric declaration order
  */
- public List<MetricWinner> select(DatasetAnalysisReport report) {
+ public List<MetricWinner> select(AnalysisReport report) {
  List<MetricWinner> winners = new ArrayList<>();
  for (MetricDefinition metric : MetricDefinition.values()) {
  MetricWinner winner = select(metric, report);
@@ -35,11 +35,11 @@ public class MetricWinnerSelector {
  * @param report dataset analysis report
  * @return metric winner, or {@code null} when no valid value is available
  */
- public MetricWinner select(MetricDefinition metric, DatasetAnalysisReport report) {
- ClassifierDefinition bestClassifier = null;
+ public MetricWinner select(MetricDefinition metric, AnalysisReport report) {
+ Definition bestClassifier = null;
  double bestValue = Double.NEGATIVE_INFINITY;
 
- for (ClassifierEvaluationReport classifierReport : report.getClassifierReports()) {
+ for (EvaluationReport classifierReport : report.getClassifierReports()) {
  Double currentValue = classifierReport.getAggregateMetrics().get(metric);
  if (currentValue != null && !Double.isNaN(currentValue) && currentValue > bestValue) {
  bestValue = currentValue;

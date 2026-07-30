@@ -1,6 +1,6 @@
 package com.milestone2.whatif;
 
-import com.milestone2.classifier.ClassifierEvaluationReport;
+import com.milestone2.classifier.EvaluationReport;
 import com.milestone2.metric.MetricDefinition;
 
 import java.util.Comparator;
@@ -19,14 +19,14 @@ public class WhatIfClassifierSelector {
  * @return selected classifier and selection reason
  */
  public WhatIfClassifierSelection select(WhatIfOptions options,
- List<ClassifierEvaluationReport> classifierReports) {
+ List<EvaluationReport> classifierReports) {
  if (options.getClassifierId() != null) {
  return explicitSelection(options.getClassifierId(), classifierReports);
  }
 
- ClassifierEvaluationReport bestReport = classifierReports.stream()
+ EvaluationReport bestReport = classifierReports.stream()
  .max(Comparator
- .comparingDouble((ClassifierEvaluationReport report) ->
+ .comparingDouble((EvaluationReport report) ->
  metric(report.getAggregateMetrics(), MetricDefinition.KAPPA))
  .thenComparingDouble(report ->
  metric(report.getAggregateMetrics(), MetricDefinition.AUC))
@@ -47,8 +47,8 @@ public class WhatIfClassifierSelector {
  * @return explicit classifier selection
  */
  private WhatIfClassifierSelection explicitSelection(String classifierId,
- List<ClassifierEvaluationReport> classifierReports) {
- for (ClassifierEvaluationReport report : classifierReports) {
+ List<EvaluationReport> classifierReports) {
+ for (EvaluationReport report : classifierReports) {
  if (report.getDefinition().getId().equalsIgnoreCase(classifierId)) {
  return new WhatIfClassifierSelection(report.getDefinition(), "explicit CLI selection");
  }

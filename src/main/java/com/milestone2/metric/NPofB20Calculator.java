@@ -18,14 +18,14 @@ public class NPofB20Calculator {
  private static final Logger log = LoggerFactory.getLogger(NPofB20Calculator.class);
 
  private final RankedPredictionFactory rankedPredictionFactory;
- private final BudgetedDetectionRateCalculator detectionRateCalculator;
+ private final BudgetedDetectionRate detectionRateCalculator;
 
  public NPofB20Calculator() {
- this(new RankedPredictionFactory(), new BudgetedDetectionRateCalculator());
+ this(new RankedPredictionFactory(), new BudgetedDetectionRate());
  }
 
  NPofB20Calculator(RankedPredictionFactory rankedPredictionFactory,
- BudgetedDetectionRateCalculator detectionRateCalculator) {
+ BudgetedDetectionRate detectionRateCalculator) {
  this.rankedPredictionFactory = rankedPredictionFactory;
  this.detectionRateCalculator = detectionRateCalculator;
  }

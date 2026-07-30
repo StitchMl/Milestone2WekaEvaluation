@@ -20,7 +20,7 @@ public class RankedPredictionFactory {
  * @param predictions recorded Weka predictions
  * @param positiveClassIndex positive class index
  * @param sizeAttribute attribute used as inspection cost
- * @return ranked predictions sorted by descending probability
+ * @return ranked predictions sorted by descending bug density (probability/LOC)
  */
  public List<RankedPrediction> create(Instances test,
  List<Prediction> predictions,
@@ -35,7 +35,11 @@ public class RankedPredictionFactory {
  (int) prediction.actual() == positiveClassIndex
  ));
  }
- rankedPredictions.sort(Comparator.comparingDouble(RankedPrediction::getProbability).reversed());
+ // NPofB20 (Falessi normalization): rank by decreasing bug DENSITY = P(bug) / LOC,
+ // i.e. the entities giving the highest bug return per line of code inspected.
+ rankedPredictions.sort(Comparator
+ .comparingDouble((RankedPrediction rp) -> rp.getProbability() / Math.max(rp.getSize(), 1))
+ .reversed());
  return rankedPredictions;
  }
 }

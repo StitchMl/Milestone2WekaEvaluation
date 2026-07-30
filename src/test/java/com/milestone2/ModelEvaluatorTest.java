@@ -1,5 +1,5 @@
 package com.milestone2;
-import com.milestone2.fold.PerFoldResult;
+import com.milestone2.foldMetadata.FoldResult;
 
 import com.milestone2.metric.MetricAggregator;
 import com.milestone2.metric.MetricDefinition;
@@ -17,9 +17,9 @@ class ModelEvaluatorTest {
 
  @Test
  void aggregateComputesExpectedAveragesInStableOrder() {
- List<PerFoldResult> results = List.of(
- new PerFoldResult(0, 0, new Metrics(90.0, 0.80, 0.70, 0.75, 0.60, 0.85, 0.50)),
- new PerFoldResult(0, 1, new Metrics(70.0, 0.60, 0.50, 0.55, 0.40, 0.65, 0.30))
+ List<FoldResult> results = List.of(
+ new FoldResult(0, 0, new Metrics(90.0, 0.80, 0.70, 0.75, 0.60, 0.85, 0.50)),
+ new FoldResult(0, 1, new Metrics(70.0, 0.60, 0.50, 0.55, 0.40, 0.65, 0.30))
  );
 
  Map<MetricDefinition, Double> avg = metricAggregator.aggregate(results);

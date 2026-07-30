@@ -1,8 +1,8 @@
 package com.milestone2.whatif;
 
-import com.milestone2.analysis.AnalysisPaths;
-import com.milestone2.analysis.OutputCloseSupport;
-import com.milestone2.feature.FeatureCorrelationWriter;
+import com.milestone2.startupUtility.ResolvedPaths;
+import com.milestone2.startupUtility.WriterCloseSupport;
+import com.milestone2.featureAnalysis.CorrelationWriter;
 
 import java.io.IOException;
 
@@ -12,10 +12,10 @@ import java.io.IOException;
 public class WhatIfOutputs implements AutoCloseable {
  private static final String CLOSE_MESSAGE = "Failed while closing what-if outputs";
 
- private final FeatureCorrelationWriter featureCorrelationWriter;
+ private final CorrelationWriter featureCorrelationWriter;
  private final WhatIfSummaryWriter whatIfSummaryWriter;
 
- private WhatIfOutputs(FeatureCorrelationWriter featureCorrelationWriter,
+ private WhatIfOutputs(CorrelationWriter featureCorrelationWriter,
  WhatIfSummaryWriter whatIfSummaryWriter) {
  this.featureCorrelationWriter = featureCorrelationWriter;
  this.whatIfSummaryWriter = whatIfSummaryWriter;
@@ -28,9 +28,9 @@ public class WhatIfOutputs implements AutoCloseable {
  * @return opened what-if output bundle
  * @throws IOException when a writer cannot be created
  */
- public static WhatIfOutputs open(AnalysisPaths paths) throws IOException {
+ public static WhatIfOutputs open(ResolvedPaths paths) throws IOException {
  return new WhatIfOutputs(
- new FeatureCorrelationWriter(paths.getFeatureCorrelationsCsv()),
+ new CorrelationWriter(paths.getFeatureCorrelationsCsv()),
  new WhatIfSummaryWriter(paths.getWhatIfSummaryCsv())
  );
  }
@@ -40,7 +40,7 @@ public class WhatIfOutputs implements AutoCloseable {
  *
  * @return feature correlation writer
  */
- public FeatureCorrelationWriter getFeatureCorrelationWriter() {
+ public CorrelationWriter getFeatureCorrelationWriter() {
  return featureCorrelationWriter;
  }
 
@@ -61,8 +61,8 @@ public class WhatIfOutputs implements AutoCloseable {
  @Override
  public void close() throws IOException {
  IOException failure = null;
- failure = OutputCloseSupport.closeQuietly(featureCorrelationWriter, failure, CLOSE_MESSAGE);
- failure = OutputCloseSupport.closeQuietly(whatIfSummaryWriter, failure, CLOSE_MESSAGE);
+ failure = WriterCloseSupport.closeQuietly(featureCorrelationWriter, failure, CLOSE_MESSAGE);
+ failure = WriterCloseSupport.closeQuietly(whatIfSummaryWriter, failure, CLOSE_MESSAGE);
  if (failure != null) {
  throw failure;
  }

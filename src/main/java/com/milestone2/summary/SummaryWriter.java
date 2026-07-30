@@ -1,0 +1,77 @@
+package com.milestone2.summary;
+
+import com.milestone2.startupUtility.RunConfig;
+import com.milestone2.dataset.AnalysisReport;
+import com.milestone2.metric.MetricWinner;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+/**
+ * Writes the milestone winners per metric plus the overall winner.
+ */
+public class SummaryWriter implements AutoCloseable {
+ private static final String[] HEADER = {
+ "RunId",
+ "Granularity",
+ "Dataset",
+ "ValidationStrategy",
+ "TemporalAttribute",
+ "ClassAttribute",
+ "PositiveClass",
+ "RowType",
+ "Metric",
+ "Classifier",
+ "ClassifierId",
+ "ClassifierClass",
+ "MetricValue",
+ "Kappa",
+ "AUC",
+ "Reason"
+ };
+
+ private final CSVPrinter printer;
+ private final SummaryRecordFactory recordFactory;
+
+ public SummaryWriter(Path file) throws IOException {
+ Writer out = Files.newBufferedWriter(file, StandardCharsets.UTF_8);
+ printer = new CSVPrinter(out, CSVFormat.DEFAULT.builder().setHeader(HEADER).get());
+ recordFactory = new SummaryRecordFactory();
+ }
+
+ /**
+ * Writes the per-metric winners and the overall winner for one dataset analysis report.
+ *
+ * @param config immutable analysis configuration
+ * @param report dataset analysis report
+ * @param summary milestone summary to serialize
+ * @throws IOException when the CSV output cannot be written
+ */
+ public void write(RunConfig config,
+ AnalysisReport report,
+ Summary summary) throws IOException {
+ for (MetricWinner winner : summary.getMetricWinners()) {
+ printer.printRecord(recordFactory.metricWinnerRecord(config, report, winner));
+ }
+ if (summary.getOverallWinner() != null) {
+ printer.printRecord(recordFactory.overallWinnerRecord(config, report, summary.getOverallWinner()));
+ }
+ printer.flush();
+ }
+
+ /**
+ * Closes the underlying CSV printer.
+ *
+ * @throws IOException when closing the writer fails
+ */
+ @Override
+ public void close() throws IOException {
+ printer.close();
+ }
+}
+

@@ -1,13 +1,13 @@
 package com.milestone2.whatif;
 
-import com.milestone2.analysis.CliArgument;
-import com.milestone2.analysis.Config;
+import com.milestone2.startupUtility.CliArgument;
+import com.milestone2.startupUtility.Defaults;
 
 /**
  * Collects CLI values that control the optional what-if workflow.
  */
 public class WhatIfOptionsBuilder {
- private boolean enabled = Config.DEFAULT_WHAT_IF_ENABLED;
+ private boolean enabled = Defaults.DEFAULT_WHAT_IF_ENABLED;
  private String featureName;
  private String classifierId;
 
