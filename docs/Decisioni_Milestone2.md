@@ -89,11 +89,14 @@ Nessun classificatore aggiuntivo (Logistic/J48 scartati per attenersi alla speci
 ---
 
 ## 3. Piano operativo (task)
-- **M2-0** Review/gap-analysis del progetto *(questo documento)*.
-- **M2-1** Collegare gli ARFF di AVRO (principale + 15) e i parametri di dominio.
-- **M2-2** Confermare/ordinare i fattori FS e balancing (no-leakage) e i parametri (❓).
-- **M2-3** Validazione 10×10 CV + walk-forward.
-- **M2-4** Metriche complete + NPofB20; driver della matrice e tabella comparativa; sensibilità.
+- **M2-0** Review/gap-analysis del progetto *(questo documento)*. ✔️
+- **M2-1** Collegare gli ARFF di AVRO (principale + 15) e i parametri di dominio. ✔️
+- **M2-2** Confermare/ordinare i fattori FS e balancing (no-leakage) e i parametri. ✔️
+- **M2-3** Validazione 10×10 CV + walk-forward. ✔️
+- **M2-4** Metriche complete + NPofB20; driver della matrice e tabella comparativa; sensibilità. ✔️
+- **M2-5** Valutazione risultati (§6) e stesura report M2 *(in corso)*.
+
+**Stato gap:** G1–G6 chiusi (config classificatori applicata, NPofB20 corretta per densità, wiring sui 16 ARFF, doppia validazione). G7 (sensibilità 16 varianti) eseguita in CV. G8 (what-if M3) rinviato.
 
 ## 4. Punti aperti — RISOLTI (NotebookLM)
 1. **IBk k = 1** (default Weka, tipico del corso; nessun confronto di k richiesto).
@@ -101,3 +104,76 @@ Nessun classificatore aggiuntivo (Logistic/J48 scartati per attenersi alla speci
 3. **Walk-forward**: `--min-train-periods=1`, training **cumulativo** (1..n−1), test sulla release n, prima predizione sulla release 2.
 4. **RF/NB**: default Weka (RF 100 alberi; NB senza kernel).
 5. **NPofB20**: effort = LOC, soglia 20% delle LOC totali, ranking per **densità P(bug)/LOC** decrescente (normalizzazione di Falessi).
+
+---
+
+## 5. Esecuzione della matrice e risultati
+
+**Eseguito il 2026-07-30.** Matrice completa di **16 configurazioni** sulla variante principale `pct34_total_gh0_churn0` = validazione{CV 10×10, walk-forward} × FS{nessuna, CFS wrapper} × balancing{nessuno, SMOTE, undersampling, oversampling}; più **sensibilità** con la config baseline (CV, no-FS, no-balancing) su tutti i 16 ARFF. Seed unico = 42. Output completo in `output/report/m2_matrix.csv` e `output/report/m2_sensitivity.csv`.
+
+### 5.1 Leaderboard per Kappa — cross-validation 10×10 (ottimistica)
+| Config | Classificatore | Kappa | AUC | NPofB20 |
+|---|---|---|---|---|
+| none + SMOTE | Random Forest | **0.880** | 0.982 | 0.893 |
+| none + none | Random Forest | 0.871 | 0.982 | 0.895 |
+| none + oversampling | Random Forest | 0.870 | 0.982 | 0.888 |
+| none + none | IBk | 0.798 | 0.901 | 0.828 |
+| CFS + SMOTE | Naïve Bayes | 0.514 | 0.834 | 0.752 |
+
+### 5.2 Leaderboard per Kappa — walk-forward (realistica)
+| Config | Classificatore | Kappa | AUC | NPofB20 |
+|---|---|---|---|---|
+| none + oversampling | Random Forest | **0.673** | 0.856 | 0.574 |
+| none + oversampling | IBk | 0.667 | 0.772 | 0.526 |
+| none + none | IBk | 0.664 | 0.770 | 0.536 |
+| none + SMOTE | Random Forest | 0.656 | 0.856 | 0.582 |
+| none + none | Random Forest | 0.578 | 0.866 | **0.594** |
+
+### 5.3 Sensibilità (16 ARFF, baseline CV) — Kappa medio
+| Classificatore | Kappa medio | min–max | AUC medio | NPofB20 medio | pct20 | pct34 |
+|---|---|---|---|---|---|---|
+| Random Forest | 0.892 | 0.871–0.930 | 0.982 | 0.875 | 0.914 | 0.871 |
+| IBk (k=1) | 0.814 | 0.752–0.868 | 0.910 | 0.822 | 0.852 | 0.775 |
+| Naïve Bayes | 0.550 | 0.362–0.749 | 0.886 | 0.675 | 0.677 | 0.424 |
+
+### 5.4 Configurazione finale selezionata — ✅
+**Decisione:** **Random Forest, nessuna feature selection, oversampling, valutata in walk-forward** (Kappa 0.673, NPofB20 0.574).
+**Motivazione (NotebookLM):** la metrica prioritaria è **NPofB20** (effort-aware) valutata in **walk-forward** (unica validazione realistica). Tra le config RF senza FS l'NPofB20 in walk-forward varia poco (0.574–0.594) mentre il Kappa varia molto (0.578–0.673): l'**oversampling** massimizza il Kappa (+0.095 vs baseline) al costo di un NPofB20 quasi invariato (−0.020) → miglior compromesso Kappa↔NPofB20. La riga `none+none` (NPofB20 0.594, Kappa 0.578) resta come alternativa "senza balancing" da citare.
+
+---
+
+## 6. Valutazione dei risultati (NotebookLM)
+
+1. **Divario CV↔walk-forward (Kappa 0.88 → 0.67, NPofB20 0.89 → 0.57).** Pienamente coerente con la letteratura: la cross-validation è *ottimistica/irrealistica* su dataset ordinati temporalmente perché lascia usare dati del "futuro" per predire il "passato"; l'effetto è amplificato da feature come `prevBuggy`/`Age` che creano un forte legame temporale.
+2. **Validazione ufficiale = walk-forward** (approccio time-series, ordine preservato). La CV si mantiene nel report **solo come termine di paragone** per dimostrare l'entità del bias temporale, **non** come performance attesa in produzione.
+3. **Kappa 0.88 in CV = red flag di data leakage temporale.** In contesti reali di ingegneria del software i valori attesi di Kappa stanno tipicamente tra **0.1 e 0.4**; il nostro 0.88 va argomentato come *prova* della necessità di preservare l'ordine dei dati per non sovrastimare il modello.
+4. **CFS che peggiora = risultato sperimentale valido.** La feature selection è un'euristica: se il dataset di partenza è già pulito e ben costruito, rimuovere feature può ridurre l'accuratezza in cambio di minore complessità. Si può citare InfoGain come confronto rapido, ma va soprattutto giustificato **perché il set completo è più informativo** per RF/IBk.
+5. **Metrica prioritaria = NPofB20 (effort-aware).** Ordinare correttamente le classi per densità di bug è più utile al professionista della semplice accuratezza binaria; la config migliore massimizza il compromesso tra **Kappa (walk-forward)** e **NPofB20**.
+6. **NPofB20 ≈ 0.57 è molto positivo:** ispezionando solo il **20% del codice (LOC)** si identifica il **57% dei bug**; un modello casuale ne troverebbe il 20% → guadagno quasi **triplo**.
+
+---
+
+## 7. Threats to Validity — specifici di M2
+
+- **Leakage temporale residuo:** rischio se filtri/FS/balancing non fossero isolati nel training fold. *Mitigazione:* pipeline `FilteredClassifier` fittato per-fold; walk-forward cumulativo (test sempre su release futura).
+- **Scelta del seed:** l'impatto della casualità su RF e SMOTE con **seed unico = 42** non è quantificato (nessuna analisi di varianza su più seed).
+- **Tuning assente:** uso dei **parametri di default** di Weka invece di un'ottimizzazione degli iperparametri (RF 100 alberi, IBk k=1, NB senza kernel) → possibile sottostima del potenziale dei modelli.
+- **Effort-aware limitato:** analisi ristretta alla **soglia del 20%** (NPofB20) invece dell'intera curva PofB.
+- **(Ereditati da M1):** snoring residuo, tecnica Proportion per l'IV, linkage rate ticket↔commit, copertura NSmells 13/14 release.
+
+---
+
+## 8. Struttura del report M2 e presentazione (NotebookLM)
+
+**Sezioni del report finale:**
+1. **Introduzione** — richiamo agli obiettivi della milestone.
+2. **Metodologia** — descrizione granulare di classificatori, filtri (FS, balancing) e tecnica di validazione.
+3. **Research Questions / Risultati** — risposte puntuali (es. "Qual è il classificatore più accurato?", "Il balancing ha aiutato?", "CFS migliora?").
+4. **Analisi di sensibilità** — come cambiano i risultati al variare dei parametri di M1 (snoring, Proportion, pct20 vs pct34, gh, churn).
+5. **Discussione** — interpretazione (sorprese, discrepanze tra metriche, divario CV↔WF).
+6. **Threats to Validity** — §7.
+
+**Presentazione risultati:**
+- **Tabella comparativa** completa sulla variante principale (le 16 config) — obbligatoria.
+- **Appendice:** le altre 15 varianti come analisi di sensibilità.
+- **Grafici:** *boxplot* del Kappa per classificatore (stabilità tra run/fold) e *grafici a barre* per il confronto delle metriche; opzionale curva NPofB.

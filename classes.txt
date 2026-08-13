@@ -1,0 +1,2 @@
+org.apache.avro.generic.GenericData
+org.apache.avro.io.JsonDecoder
